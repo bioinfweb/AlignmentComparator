@@ -1,1 +1,22 @@
 * text=auto !eol
+main/.classpath -text svneol=unset#text/plain
+main/.project -text svneol=unset#text/plain
+main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+main/lib/biojava3-alignment-3.0.4.jar -text
+main/lib/biojava3-core-3.0.4.jar -text
+main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/data/Alignments.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/data/SuperAlignmentCompoundSet.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/data/SuperAlignmentSequenceView.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/data/pairalgorithms/CompareAlgorithm.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/data/pairalgorithms/ConsensusPairwiseAligner.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/data/pairalgorithms/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanel.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/MainFrame.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/AlignmentComparatorAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/CompareAlignmentsAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/StartComparisonDialog.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanel.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanelFactory.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/ConsensusNeedlemanWunschPanel.java -text svneol=unset#text/plain
