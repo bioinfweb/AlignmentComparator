@@ -12,6 +12,8 @@ main/src/info/bioinfweb/alignmentcomparator/data/pairalgorithms/CompareAlgorithm
 main/src/info/bioinfweb/alignmentcomparator/data/pairalgorithms/ConsensusPairwiseAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/data/pairalgorithms/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanel.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelListener.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentPositionPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/MainFrame.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/AlignmentComparatorAction.java -text svneol=unset#text/plain

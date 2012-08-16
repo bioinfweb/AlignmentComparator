@@ -38,6 +38,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.Component;
 
 
 
@@ -50,10 +51,9 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	private JButton firstPathButton = null;
 	private JTextField secondPathTextField = null;
 	private JButton secondPathButton = null;
-	private JPanel outerPreferencesPanel = null;
-	
 	private AlgorithmPreferencesPanel preferencesPanel = null;
 	private JFileChooser fileChooser = null;
+	private JPanel algorithmPanel;
 
 	
 	/**
@@ -78,8 +78,10 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(300, 200);
+		//this.setSize(300, 200);
 		this.setContentPane(getJContentPane());
+		getApplyButton().setVisible(false);
+		pack();
 	}
 
 	
@@ -101,9 +103,9 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
-			jContentPane.setLayout(new BoxLayout(getJContentPane(), BoxLayout.Y_AXIS));
+			jContentPane.setLayout(new BoxLayout(jContentPane, BoxLayout.Y_AXIS));
 			jContentPane.add(getAlignmentsPanel(), null);
-			jContentPane.add(getOuterPreferencesPanel(), null);
+			jContentPane.add(getAlgorithmPanel(), null);
 			jContentPane.add(getButtonsPanel(), null);
 		}
 		return jContentPane;
@@ -222,22 +224,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 
 
 
-	/**
-	 * This method initializes outerPreferencesPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getOuterPreferencesPanel() {
-		if (outerPreferencesPanel == null) {
-			outerPreferencesPanel = new JPanel();
-			outerPreferencesPanel.setLayout(new GridBagLayout());
-			outerPreferencesPanel.setBorder(BorderFactory.createTitledBorder(null, "Preferences", 
-					TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-		}
-		return outerPreferencesPanel;
-	}
-	
-	
 	private void setPereferencesPanel(CompareAlgorithm algorithm) {
 		preferencesPanel = null;
 		if (algorithm != null) {
@@ -252,8 +238,7 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 			gridBagConstraints.fill = GridBagConstraints.BOTH;
 			gridBagConstraints.weightx = 1.0;
 			gridBagConstraints.weighty = 1.0;
-			getOuterPreferencesPanel().add((JComponent)preferencesPanel, 
-					gridBagConstraints);
+			getOuterPreferencesPanel().add((JComponent)preferencesPanel, gridBagConstraints);
 			getOuterPreferencesPanel().setVisible(true);
 		}
 		else {
@@ -263,7 +248,22 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	}
 	
 	
-	public static void main(String[] args) {
-		new StartComparisonDialog(null).setVisible(true);
+	private JPanel getAlgorithmPanel() {
+		if (algorithmPanel == null) {
+			algorithmPanel = new JPanel();
+			algorithmPanel.setBorder(BorderFactory.createTitledBorder(null, "Algorithm", 
+					TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+			algorithmPanel.setLayout(new GridBagLayout());
+//			GridBagConstraints gbc_outerPreferencesPanel = new GridBagConstraints();
+//			gbc_outerPreferencesPanel.gridx = 0;
+//			gbc_outerPreferencesPanel.gridy = 0;
+//			algorithmPanel.add(getOuterPreferencesPanel(), gbc_outerPreferencesPanel);
+		}
+		return algorithmPanel;
 	}
+	
+	
+	public static void main(String[] args) {
+	  new StartComparisonDialog(null).setVisible(true);
+  }
 }
