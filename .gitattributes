@@ -25,3 +25,8 @@ main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/StartComparisonDialog.ja
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanelFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/ConsensusNeedlemanWunschPanel.java -text svneol=unset#text/plain
+test/.classpath -text svneol=unset#text/plain
+test/.project -text svneol=unset#text/plain
+test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+test/lib/junit-4.9b1.jar -text
+test/src/info/bioinfweb/alignmentcomparator/data/io/results/ResultsReaderWriterTest.java -text svneol=unset#text/plain
