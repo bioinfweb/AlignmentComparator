@@ -121,6 +121,11 @@ public class Alignments {
 	}
 	
 	
+	public int[] getUnalignedIndices(int alignmentIndex) {
+		return unalignedIndices[alignmentIndex];
+	}
+	
+	
 	public void setUnalignedIndexList(int alignmentIndex, int[] value) {
 		unalignedIndices[alignmentIndex] = value;
 	}

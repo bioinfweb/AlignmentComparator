@@ -68,6 +68,22 @@ public class ResultsReader implements ResultsXMLConstants {
     }
     return result.toArray(new Sequence[result.size()]);
   }
+  
+  
+  public static int[] decodeGapPattern(String gapPattern) {
+  	int unalignedPos = 0;
+  	int[] result = new int[gapPattern.length()];
+  	for (int alignedPos = 0; alignedPos < gapPattern.length(); alignedPos++) {
+			if (gapPattern.charAt(alignedPos) == TOKEN_GAP) {
+				result[alignedPos] = SuperAlignmentSequenceView.GAP_INDEX;
+			}
+			else {
+				result[alignedPos] = unalignedPos;
+				unalignedPos++;
+			}
+		}
+  	return result;
+  }
 
   
   private void readAlternative() throws XMLStreamException {
@@ -79,19 +95,7 @@ public class ResultsReader implements ResultsXMLConstants {
         	unalignedSequences.add(readAlignment());
         }
         else if (element.getName().equals(TAG_GAP_PATTERN)) {
-        	String gapPattern = XMLUtils.readCharactersAsString(reader);  //TODO Create Indices from pattern
-        	int unalignedPos = 0;
-        	int[] unalignedIndices = new int[gapPattern.length()];
-        	for (int alignedPos = 0; alignedPos < gapPattern.length(); alignedPos++) {
-						if (gapPattern.charAt(alignedPos) == TOKEN_GAP) {
-							unalignedIndices[alignedPos] = SuperAlignmentSequenceView.GAP_INDEX;
-						}
-						else {
-							unalignedIndices[alignedPos] = unalignedPos;
-							unalignedPos++;
-						}
-					}
-        	unalignedIndicesList.add(unalignedIndices);
+        	unalignedIndicesList.add(decodeGapPattern(XMLUtils.readCharactersAsString(reader)));
         	XMLUtils.reachElementEnd(reader);
         }
         else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird

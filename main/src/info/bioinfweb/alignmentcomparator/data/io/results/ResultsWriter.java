@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.data.io.results;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.data.Alignments;
+import info.bioinfweb.alignmentcomparator.data.SuperAlignmentSequenceView;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
 import info.webinsel.util.io.XMLUtils;
 
@@ -53,18 +54,23 @@ public class ResultsWriter implements ResultsXMLConstants {
 	}
 	
 	
-	private void writeGapPattern(Alignments alignments, int alignmentIndex) throws XMLStreamException {
-		writer.writeStartElement(TAG_GAP_PATTERN.getLocalPart());
-		StringBuffer pattern = new StringBuffer(alignments.getAlignedLength());
-		for (int pos = 0; pos < alignments.getSequenceCount(); pos++) {  
-			if (alignments.getUnalignedIndex(alignmentIndex, pos) == -1) {
+	public static String encodeGapPattern(int[] indices) {
+		StringBuffer pattern = new StringBuffer(indices.length);
+		for (int pos = 0; pos < indices.length; pos++) {  
+			if (indices[pos] == SuperAlignmentSequenceView.GAP_INDEX) {
 				pattern.append(TOKEN_GAP);
 			}
 			else {
 				pattern.append(TOKEN_CHARACTER);
 			}
-		}
-		writer.writeCharacters(pattern.toString());
+    }
+		return pattern.toString();
+	}
+	
+	
+	private void writeGapPattern(Alignments alignments, int alignmentIndex) throws XMLStreamException {
+		writer.writeStartElement(TAG_GAP_PATTERN.getLocalPart());
+		writer.writeCharacters(encodeGapPattern(alignments.getUnalignedIndices(alignmentIndex)));
 		writer.writeEndElement();
 	}
 	
