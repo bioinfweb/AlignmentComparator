@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben StÃ¶ver
+ * Copyright (C) 2012  Ben Stöver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ public class Main extends ProgramMainClass {
 	
 	private static Main firstInstance = null;
 	
+	private MainFrame mainFrame = null;
 	private WikiHelp wikiHelp = new WikiHelp(WIKI_URL, new SwingErrorHandler(WIKI_URL));
 	
 	
@@ -77,8 +78,9 @@ public class Main extends ProgramMainClass {
 		SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						MainFrame.getInstance().setVisible(true); 
-						//openInitialFile();
+						//TODO Load alignments or results
+						mainFrame = new MainFrame();
+						mainFrame.setVisible(true); 
 					}
 				});
   }

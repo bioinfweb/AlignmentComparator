@@ -165,7 +165,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinY() - y) / getCompoundHeight()) - 1);
 		int lastIndex = Math.min(alignments.getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
 		for (int i = firstIndex; i <= lastIndex; i++) {
-			paintSequence(g, alignments.getSequence(alignmentIndex, i), lastIndex, y);
+			paintSequence(g, alignments.getAlignedSequence(alignmentIndex, i), lastIndex, y);
 	    y += getCompoundHeight();
     }
 	}

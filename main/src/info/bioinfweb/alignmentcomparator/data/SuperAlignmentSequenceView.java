@@ -10,6 +10,8 @@ import org.biojava3.core.sequence.template.SequenceView;
 public class SuperAlignmentSequenceView extends SequenceProxyView<NucleotideCompound> 
     implements SequenceView<NucleotideCompound> {
 	
+	public static final int GAP_INDEX = -1; 
+	
 	private Alignments parent;
 	private int alignmentIndex;
 	
@@ -24,7 +26,7 @@ public class SuperAlignmentSequenceView extends SequenceProxyView<NucleotideComp
 	@Override
 	public NucleotideCompound getCompoundAt(int position) {
 		int index = parent.getUnalignedIndex(alignmentIndex, position); 
-		if (index == -1) {
+		if (index == GAP_INDEX) {
 			return SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet().getCompoundForString(
 					SuperAlignmentCompoundSet.SUPER_ALIGNMENT_GAP);
 		}

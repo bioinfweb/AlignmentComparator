@@ -40,21 +40,52 @@ public class Alignments {
 	private int[][] unalignedIndices; 
 	
 	
-	public Alignments(Map<String, Sequence<NucleotideCompound>> firstAlignment, 
+	public Alignments() {
+		super();
+	}
+	
+	
+	public void setUnalignedData(Map<String, Sequence<NucleotideCompound>> firstAlignment, 
 			Map<String, Sequence<NucleotideCompound>> secondAlignment, SuperAlignmentAlgorithm algorithm) {
 		
-		super();
-		
+		clear();
 		createArrays(firstAlignment.size());
 		Iterator<String> iterator = firstAlignment.keySet().iterator();
 		for (int i = 0; i < firstAlignment.size(); i++) {
 			names[i] = iterator.next();
 			unalignedSequences[0][i] = firstAlignment.get(names[i]);
+			alignedSequences[0][i] = new SuperAlignmentSequenceView(this, 0, i);
 			unalignedSequences[1][i] = secondAlignment.get(names[i]);
+			alignedSequences[1][i] = new SuperAlignmentSequenceView(this, 1, i);
 		}
 		
 		algorithm.performAlignment(this);
-		//TODO align
+	}
+	
+	
+	public void setAlignedData(String[] names, Sequence<NucleotideCompound>[][] sequences, int[][] unalignedIndices) {
+		clear();
+		this.names = names;
+		unalignedSequences = sequences;
+		this.unalignedIndices = unalignedIndices;
+		for (int alignmentIndex = 0; alignmentIndex < unalignedSequences.length; alignmentIndex++) {
+			for (int sequenceIndex = 0; sequenceIndex < unalignedSequences[alignmentIndex].length; sequenceIndex++) {
+				alignedSequences[alignmentIndex][sequenceIndex] = new SuperAlignmentSequenceView(this, alignmentIndex, sequenceIndex);
+			}
+		}
+	}
+
+	
+	public void clear() {
+		names = new String[0];
+		unalignedSequences = new Sequence[0][];
+		alignedSequences = new SequenceView[0][];
+		unalignedIndices = new int[0][];
+	}
+	
+	
+	public boolean isEmpty() {
+		return names.length == 0;
 	}
 	
 	
@@ -75,7 +106,12 @@ public class Alignments {
 	}
 	
 	
-	public Sequence<NucleotideCompound> getSequence(int alignmentIndex, int sequenceIndex) {
+	public Sequence<NucleotideCompound> getAlignedSequence(int alignmentIndex, int sequenceIndex) {
+		return alignedSequences[alignmentIndex][sequenceIndex];
+	}
+	
+	
+	public Sequence<NucleotideCompound> getUnalignedSequence(int alignmentIndex, int sequenceIndex) {
 		return unalignedSequences[alignmentIndex][sequenceIndex];
 	}
 	
@@ -99,6 +135,11 @@ public class Alignments {
 	
 	
 	public int getAlignedLength() {
-		return unalignedIndices[0].length;
+		if (isEmpty()) {
+			return 0;
+		}
+		else {
+			return unalignedIndices[0].length;
+		}
 	}
 }

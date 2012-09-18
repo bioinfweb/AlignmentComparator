@@ -34,10 +34,8 @@ import java.awt.GridBagLayout;
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
-	private static MainFrame firstInstance = null;
 	
-	
-	private Alignments alignments = null;
+	private Alignments alignments = new Alignments();
 	
 	private JPanel jContentPane = null;
 	private JMenuBar mainMenu = null;
@@ -55,14 +53,6 @@ public class MainFrame extends JFrame {
 	}
 
 	
-	public static MainFrame getInstance() {
-		if (firstInstance == null) {
-			firstInstance = new MainFrame();
-		}
-		return firstInstance;
-	}
-
-	
 	/**
 	 * This method initializes this
 	 * 
@@ -76,6 +66,11 @@ public class MainFrame extends JFrame {
 	}
 
 	
+	public Alignments getAlignments() {
+		return alignments;
+	}
+
+
 	/**
 	 * This method initializes jContentPane
 	 * 
@@ -140,7 +135,7 @@ public class MainFrame extends JFrame {
 	 */
 	private AlignmentComparisonPanel getComparisonPanel() {
 		if (comparisonPanel == null) {
-			comparisonPanel = new AlignmentComparisonPanel();
+			comparisonPanel = new AlignmentComparisonPanel(getAlignments());
 			comparisonPanel.setLayout(new GridBagLayout());
 		}
 		return comparisonPanel;
