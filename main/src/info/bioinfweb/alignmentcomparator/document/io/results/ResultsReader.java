@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.webinsel.util.appversion.AppVersionXMLConstants;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
 import info.webinsel.util.io.XMLUtils;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -144,6 +146,36 @@ public class ResultsReader implements ResultsXMLConstants {
   }
 
   
+  private int readPosAttribute(StartElement element, QName attribute) throws XMLStreamException {
+  	int result= XMLUtils.readIntAttr(element, ATTR_COMMENT_FIRST_POS, Integer.MIN_VALUE);
+  	if (result < 0) {
+  		throw new XMLStreamException("Elements of the type " + TAG_COMMENT + " must contain the attribute " + 
+  	      ATTR_COMMENT_FIRST_POS + " which must be greater or equal 0.");
+  	}
+  	return result;
+  }
+  
+  
+  private void readComments(CommentList list) throws XMLStreamException {
+  	list.clear();
+    XMLEvent event = reader.nextEvent();
+    while (event.getEventType() != XMLStreamConstants.END_ELEMENT) {
+      if (event.getEventType() == XMLStreamConstants.START_ELEMENT) {
+      	StartElement element = event.asStartElement();
+        if (element.getName().equals(TAG_COMMENT)) {
+        	list.add(readPosAttribute(element, ATTR_COMMENT_FIRST_POS), readPosAttribute(element, ATTR_COMMENT_LAST_POS), 
+        			XMLUtils.readCharactersAsString(reader));
+        	XMLUtils.reachElementEnd(reader);
+        }
+        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+          XMLUtils.reachElementEnd(reader);  
+        }
+      }
+      event = reader.nextEvent();
+    }
+  }
+
+  
   private void readDocument(StartElement rootElement, Document alignments) throws XMLStreamException {
   	String[] names = null;
   	
@@ -165,6 +197,9 @@ public class ResultsReader implements ResultsXMLConstants {
         	else {
         		readAlternatives(names.length);
         	}
+        }
+        else if (element.getName().equals(TAG_COMMENTS)) {
+        	readComments(alignments.getComments());
         }
         else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  

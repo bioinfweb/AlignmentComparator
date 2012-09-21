@@ -19,11 +19,10 @@
 package info.bioinfweb.alignmentcomparator.document;
 
 
+import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
@@ -40,7 +39,7 @@ public class Document {
 	private Sequence<NucleotideCompound>[][] unalignedSequences;
 	private SequenceView<NucleotideCompound> [][] alignedSequences;
 	private int[][] unalignedIndices; 
-	private List<Comment> comments = new ArrayList<Comment>();
+	private CommentList comments = new CommentList();
 	
 	
 	public Document() {
@@ -67,10 +66,10 @@ public class Document {
 	
 	
 	public void setAlignedData(String[] names, Sequence<NucleotideCompound>[][] sequences, int[][] unalignedIndices) {
-		clear();
 		this.names = names;
 		unalignedSequences = sequences;
 		this.unalignedIndices = unalignedIndices;
+		//TODO alignedSequences array erzeugen
 		for (int alignmentIndex = 0; alignmentIndex < unalignedSequences.length; alignmentIndex++) {
 			for (int sequenceIndex = 0; sequenceIndex < unalignedSequences[alignmentIndex].length; sequenceIndex++) {
 				alignedSequences[alignmentIndex][sequenceIndex] = new SuperAlignmentSequenceView(this, alignmentIndex, sequenceIndex);
@@ -153,7 +152,7 @@ public class Document {
 	}
 
 
-	public List<Comment> getComments() {
+	public CommentList getComments() {
 		return comments;
 	}
 }

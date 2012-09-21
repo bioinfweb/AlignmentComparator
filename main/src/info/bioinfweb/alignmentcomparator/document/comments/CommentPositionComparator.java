@@ -16,50 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document;
+package info.bioinfweb.alignmentcomparator.document.comments;
+
+
+import java.util.Comparator;
 
 
 
-public class Comment {
-  private String text;
-  private int fistPos;
-  private int lastPos;
-  
-  
-	public Comment(String text, int fistPos, int lastPos) {
-		super();
-		this.text = text;
-		this.fistPos = fistPos;
-		this.lastPos = lastPos;
-	}
-
-
-	public String getText() {
-		return text;
-	}
-
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-
-	public int getFistPos() {
-		return fistPos;
-	}
-
-
-	public void setFistPos(int fistPos) {
-		this.fistPos = fistPos;
-	}
-
-
-	public int getLastPos() {
-		return lastPos;
-	}
-
-
-	public void setLastPos(int lastPos) {
-		this.lastPos = lastPos;
+/**
+ * Compares two comment positions by their position in the super alignment.
+ * 
+ * @author Ben St&ouml;ver
+ */
+public class CommentPositionComparator implements Comparator<CommentPosition> {
+	@Override
+	public int compare(CommentPosition pos1, CommentPosition pos2) {
+		if (pos1.getFirstPos() == pos2.getFirstPos()) {
+			return pos1.getLastPos() - pos2.getLastPos(); 
+ 		}
+		else {
+			return pos1.getFirstPos() - pos2.getFirstPos(); 
+		}
 	}
 }

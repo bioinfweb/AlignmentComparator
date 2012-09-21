@@ -22,11 +22,14 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
 import info.webinsel.util.io.XMLUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -98,7 +101,22 @@ public class ResultsWriter implements ResultsXMLConstants {
 	}
 	
 
-	public void write(OutputStream stream, Document alignments) 
+	private void writeComments(CommentList list) throws XMLStreamException {
+		writer.writeStartElement(TAG_COMMENTS.getLocalPart());
+		Iterator<CommentPosition> iterator = list.positionIterator();
+		while (iterator.hasNext()) {
+			CommentPosition pos = iterator.next();
+			writer.writeStartElement(TAG_COMMENT.getLocalPart());
+			writer.writeAttribute(ATTR_COMMENT_FIRST_POS.getLocalPart(), "" + pos.getFirstPos());
+			writer.writeAttribute(ATTR_COMMENT_LAST_POS.getLocalPart(), "" + pos.getLastPos());
+			writer.writeCharacters(list.getText(pos));
+			writer.writeEndElement();
+		}
+		writer.writeEndElement();
+	}
+	
+
+	public void write(OutputStream stream, Document document) 
 	    throws XMLStreamException, IOException {
 		
 		try {
@@ -111,8 +129,9 @@ public class ResultsWriter implements ResultsXMLConstants {
 				XMLUtils.writeNamespaceXSDAttr(writer, NAMESPACE_URI, NAMESPACE_URI + "/" +	VERSION + ".xsd");
 
 				AppVersionXMLReadWrite.write(writer, Main.getInstance().getVersion());
-				writeNames(alignments);
-				writeAlignments(alignments);
+				writeNames(document);
+				writeAlignments(document);
+				writeComments(document.getComments());
 				
 				writer.writeEndElement();
 				writer.writeEndDocument();
