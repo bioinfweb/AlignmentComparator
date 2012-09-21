@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import info.bioinfweb.alignmentcomparator.data.Alignments;
+import info.bioinfweb.alignmentcomparator.document.Document;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -35,7 +35,7 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private Alignments alignments = new Alignments();
+	private Document alignments = new Document();
 	
 	private JPanel jContentPane = null;
 	private JMenuBar mainMenu = null;
@@ -66,7 +66,7 @@ public class MainFrame extends JFrame {
 	}
 
 	
-	public Alignments getAlignments() {
+	public Document getAlignments() {
 		return alignments;
 	}
 

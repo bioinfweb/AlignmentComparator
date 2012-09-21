@@ -1,4 +1,4 @@
-package info.bioinfweb.alignmentcomparator.data.pairalgorithms;
+package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 
 

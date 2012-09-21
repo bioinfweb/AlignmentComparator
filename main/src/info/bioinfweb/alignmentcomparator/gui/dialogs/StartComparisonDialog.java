@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs;
 
 
-import info.bioinfweb.alignmentcomparator.data.pairalgorithms.CompareAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.CompareAlgorithm;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanel;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
 import info.webinsel.util.swing.OkCancelApplyDialog;
@@ -39,6 +39,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Component;
+import javax.swing.JComboBox;
+import java.awt.Insets;
 
 
 
@@ -54,6 +56,8 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	private AlgorithmPreferencesPanel preferencesPanel = null;
 	private JFileChooser fileChooser = null;
 	private JPanel algorithmPanel;
+	private JComboBox algorithmComboBox;
+	private JPanel outerPreferencesPanel;
 
 	
 	/**
@@ -223,7 +227,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	}
 
 
-
 	private void setPereferencesPanel(CompareAlgorithm algorithm) {
 		preferencesPanel = null;
 		if (algorithm != null) {
@@ -253,17 +256,38 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 			algorithmPanel = new JPanel();
 			algorithmPanel.setBorder(BorderFactory.createTitledBorder(null, "Algorithm", 
 					TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-			algorithmPanel.setLayout(new GridBagLayout());
-//			GridBagConstraints gbc_outerPreferencesPanel = new GridBagConstraints();
-//			gbc_outerPreferencesPanel.gridx = 0;
-//			gbc_outerPreferencesPanel.gridy = 0;
-//			algorithmPanel.add(getOuterPreferencesPanel(), gbc_outerPreferencesPanel);
+			GridBagLayout gbl_algorithmPanel = new GridBagLayout();
+			gbl_algorithmPanel.rowWeights = new double[]{0.0, 1.0};
+			gbl_algorithmPanel.columnWeights = new double[]{1.0};
+			algorithmPanel.setLayout(gbl_algorithmPanel);
+			GridBagConstraints gbc_algorithmComboBox = new GridBagConstraints();
+			gbc_algorithmComboBox.insets = new Insets(0, 0, 5, 0);
+			gbc_algorithmComboBox.fill = GridBagConstraints.HORIZONTAL;
+			gbc_algorithmComboBox.gridx = 0;
+			gbc_algorithmComboBox.gridy = 0;
+			algorithmPanel.add(getAlgorithmComboBox(), gbc_algorithmComboBox);
+			GridBagConstraints gbc_outerPreferencesPanel = new GridBagConstraints();
+			gbc_outerPreferencesPanel.fill = GridBagConstraints.BOTH;
+			gbc_outerPreferencesPanel.gridx = 0;
+			gbc_outerPreferencesPanel.gridy = 1;
+			algorithmPanel.add(getOuterPreferencesPanel(), gbc_outerPreferencesPanel);
 		}
 		return algorithmPanel;
 	}
 	
 	
-	public static void main(String[] args) {
-	  new StartComparisonDialog(null).setVisible(true);
-  }
+	private JComboBox getAlgorithmComboBox() {
+		if (algorithmComboBox == null) {
+			algorithmComboBox = new JComboBox();
+		}
+		return algorithmComboBox;
+	}
+	
+	
+	private JPanel getOuterPreferencesPanel() {
+		if (outerPreferencesPanel == null) {
+			outerPreferencesPanel = new JPanel();
+		}
+		return outerPreferencesPanel;
+	}
 }

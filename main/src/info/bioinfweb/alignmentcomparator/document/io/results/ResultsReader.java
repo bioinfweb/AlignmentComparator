@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.data.io.results;
+package info.bioinfweb.alignmentcomparator.document.io.results;
 
 
-import info.bioinfweb.alignmentcomparator.data.Alignments;
-import info.bioinfweb.alignmentcomparator.data.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.webinsel.util.appversion.AppVersionXMLConstants;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
 import info.webinsel.util.io.XMLUtils;
@@ -144,7 +144,7 @@ public class ResultsReader implements ResultsXMLConstants {
   }
 
   
-  private void readDocument(StartElement rootElement, Alignments alignments) throws XMLStreamException {
+  private void readDocument(StartElement rootElement, Document alignments) throws XMLStreamException {
   	String[] names = null;
   	
     XMLEvent event = reader.nextEvent();
@@ -185,7 +185,7 @@ public class ResultsReader implements ResultsXMLConstants {
   }
   
   
-	public void read(InputStream stream, Alignments alignments) throws XMLStreamException, IOException {
+	public void read(InputStream stream, Document alignments) throws XMLStreamException, IOException {
   	reader = XMLInputFactory.newInstance().createXMLEventReader(stream);
 		try {
 			XMLEvent event;

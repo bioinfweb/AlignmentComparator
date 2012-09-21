@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import info.bioinfweb.alignmentcomparator.data.Alignments;
+import info.bioinfweb.alignmentcomparator.document.Document;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -59,7 +59,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	private float zoom = 1f;
 	private float compoundWidth = COMPOUND_WIDTH;
 	private float compoundHeight = COMPOUND_HEIGHT;
-	private Alignments alignments = null;
+	private Document alignments = null;
 	private List<AlignmentComparisonPanelListener> listeners = new LinkedList<AlignmentComparisonPanelListener>();
 	
 
@@ -82,7 +82,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	/**
 	 * This is the default constructor
 	 */
-	public AlignmentComparisonPanel(Alignments alignments) {
+	public AlignmentComparisonPanel(Document alignments) {
 		super();
 		this.alignments = alignments;
 	}

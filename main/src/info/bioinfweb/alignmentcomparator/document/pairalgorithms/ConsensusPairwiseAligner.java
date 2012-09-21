@@ -1,7 +1,7 @@
-package info.bioinfweb.alignmentcomparator.data.pairalgorithms;
+package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 
-import info.bioinfweb.alignmentcomparator.data.Alignments;
+import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.util.ConsensusSequenceCreator;
 
 import org.biojava3.alignment.NeedlemanWunsch;
@@ -25,14 +25,14 @@ public class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
 	}
 
 
-	private Sequence<NucleotideCompound> consensusSequence(Alignments alignments, int alignmentIndex) {
+	private Sequence<NucleotideCompound> consensusSequence(Document alignments, int alignmentIndex) {
 		return ConsensusSequenceCreator.getInstance().majorityRuleConsensus(
 				alignments.getSingleAlignment(alignmentIndex));
   }
 
 	
 	private void addSuperGaps(Profile<Sequence<NucleotideCompound>, NucleotideCompound> globalAlignment, 
-			Alignments alignments) {
+			Document alignments) {
 		
 		for (int i = 0; i < globalAlignment.getSize(); i++) {
 			AlignedSequence<Sequence<NucleotideCompound>, NucleotideCompound> sequence = 
@@ -55,7 +55,7 @@ public class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
 	
   
 	@Override
-	public void performAlignment(Alignments alignments) {
+	public void performAlignment(Document alignments) {
 		//TODO restliche Parameter für Aligner setzen
 		aligner.setQuery(consensusSequence(alignments, 0));
 		aligner.setTarget(consensusSequence(alignments, 1));

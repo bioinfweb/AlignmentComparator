@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.data;
+package info.bioinfweb.alignmentcomparator.document;
 
 
-import info.bioinfweb.alignmentcomparator.data.pairalgorithms.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
@@ -30,7 +32,7 @@ import org.biojava3.core.sequence.template.SequenceView;
 
 
 
-public class Alignments {
+public class Document {
 	public static final int GAP_INDEX = -1;
 	
 	
@@ -38,9 +40,10 @@ public class Alignments {
 	private Sequence<NucleotideCompound>[][] unalignedSequences;
 	private SequenceView<NucleotideCompound> [][] alignedSequences;
 	private int[][] unalignedIndices; 
+	private List<Comment> comments = new ArrayList<Comment>();
 	
 	
-	public Alignments() {
+	public Document() {
 		super();
 	}
 	
@@ -81,6 +84,7 @@ public class Alignments {
 		unalignedSequences = new Sequence[0][];
 		alignedSequences = new SequenceView[0][];
 		unalignedIndices = new int[0][];
+		comments.clear();
 	}
 	
 	
@@ -146,5 +150,10 @@ public class Alignments {
 		else {
 			return unalignedIndices[0].length;
 		}
+	}
+
+
+	public List<Comment> getComments() {
+		return comments;
 	}
 }

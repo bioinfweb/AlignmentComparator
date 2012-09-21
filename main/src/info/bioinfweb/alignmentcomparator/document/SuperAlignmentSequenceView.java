@@ -1,4 +1,4 @@
-package info.bioinfweb.alignmentcomparator.data;
+package info.bioinfweb.alignmentcomparator.document;
 
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
@@ -12,11 +12,11 @@ public class SuperAlignmentSequenceView extends SequenceProxyView<NucleotideComp
 	
 	public static final int GAP_INDEX = -1; 
 	
-	private Alignments parent;
+	private Document parent;
 	private int alignmentIndex;
 	
 
-	public SuperAlignmentSequenceView(Alignments parent, int alignmentIndex, int sequenceIndex) {
+	public SuperAlignmentSequenceView(Document parent, int alignmentIndex, int sequenceIndex) {
 		super(parent.getSingleAlignment(alignmentIndex)[sequenceIndex]);
 		this.alignmentIndex = alignmentIndex;
 		this.parent = parent;

@@ -16,13 +16,50 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
-
-
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
+package info.bioinfweb.alignmentcomparator.document;
 
 
 
-public interface AlgorithmPreferencesPanel {
-  public SuperAlignmentAlgorithm getAlgorithm();
+public class Comment {
+  private String text;
+  private int fistPos;
+  private int lastPos;
+  
+  
+	public Comment(String text, int fistPos, int lastPos) {
+		super();
+		this.text = text;
+		this.fistPos = fistPos;
+		this.lastPos = lastPos;
+	}
+
+
+	public String getText() {
+		return text;
+	}
+
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+
+	public int getFistPos() {
+		return fistPos;
+	}
+
+
+	public void setFistPos(int fistPos) {
+		this.fistPos = fistPos;
+	}
+
+
+	public int getLastPos() {
+		return lastPos;
+	}
+
+
+	public void setLastPos(int lastPos) {
+		this.lastPos = lastPos;
+	}
 }

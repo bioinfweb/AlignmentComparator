@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.data.io.results;
+package info.bioinfweb.alignmentcomparator.document.io.results;
 
 
 import javax.xml.namespace.QName;
@@ -43,4 +43,9 @@ public interface ResultsXMLConstants {
 	
 	public static final char TOKEN_GAP = '-';
 	public static final char TOKEN_CHARACTER = 'N';
+
+	public static final QName TAG_COMMENTS = new QName(NAMESPACE_URI, "comments");
+	public static final QName TAG_COMMENT = new QName(NAMESPACE_URI, "comment");
+  public static final QName ATTR_COMMENT_FIRST_POS = new QName("first");
+  public static final QName ATTR_COMMENT_LAST_POS = new QName("last");
 }

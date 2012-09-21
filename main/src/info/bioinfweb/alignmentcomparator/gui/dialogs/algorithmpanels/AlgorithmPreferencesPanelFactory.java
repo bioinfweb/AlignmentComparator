@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 
-import info.bioinfweb.alignmentcomparator.data.pairalgorithms.CompareAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.CompareAlgorithm;
 
 import java.util.EnumMap;
 

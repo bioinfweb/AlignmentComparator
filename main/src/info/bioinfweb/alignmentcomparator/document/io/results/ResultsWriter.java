@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.data.io.results;
+package info.bioinfweb.alignmentcomparator.document.io.results;
 
 
 import info.bioinfweb.alignmentcomparator.Main;
-import info.bioinfweb.alignmentcomparator.data.Alignments;
-import info.bioinfweb.alignmentcomparator.data.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
 import info.webinsel.util.io.XMLUtils;
 
@@ -43,7 +43,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 	private XMLStreamWriter writer = null;
 
 	
-	private void writeAlignment(Alignments alignments, int alignmentIndex) throws XMLStreamException {
+	private void writeAlignment(Document alignments, int alignmentIndex) throws XMLStreamException {
 		writer.writeStartElement(TAG_ALIGNMENT.getLocalPart());
 		for (int sequenceIndex = 0; sequenceIndex < alignments.getSequenceCount(); sequenceIndex++) {  
 			writer.writeStartElement(TAG_SEQUENCE.getLocalPart());
@@ -68,14 +68,14 @@ public class ResultsWriter implements ResultsXMLConstants {
 	}
 	
 	
-	private void writeGapPattern(Alignments alignments, int alignmentIndex) throws XMLStreamException {
+	private void writeGapPattern(Document alignments, int alignmentIndex) throws XMLStreamException {
 		writer.writeStartElement(TAG_GAP_PATTERN.getLocalPart());
 		writer.writeCharacters(encodeGapPattern(alignments.getUnalignedIndices(alignmentIndex)));
 		writer.writeEndElement();
 	}
 	
 	
-	private void writeAlignments(Alignments alignments) throws XMLStreamException {
+	private void writeAlignments(Document alignments) throws XMLStreamException {
 		writer.writeStartElement(TAG_ALTERNATIVES.getLocalPart());
 		for (int alignmentIndex = 0; alignmentIndex < 2; alignmentIndex++) {  //TODO Optionally parameterize loop, if future versions allow the comparison of more than two MSAs  
 			writer.writeStartElement(TAG_ALTERNATIVE.getLocalPart());
@@ -87,7 +87,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 	}
 	
 
-	private void writeNames(Alignments alignments) throws XMLStreamException {
+	private void writeNames(Document alignments) throws XMLStreamException {
 		writer.writeStartElement(TAG_NAMES.getLocalPart());
 		for (int i = 0; i < alignments.getSequenceCount(); i++) {  
 			writer.writeStartElement(TAG_NAME.getLocalPart());
@@ -98,7 +98,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 	}
 	
 
-	public void write(OutputStream stream, Alignments alignments) 
+	public void write(OutputStream stream, Document alignments) 
 	    throws XMLStreamException, IOException {
 		
 		try {
