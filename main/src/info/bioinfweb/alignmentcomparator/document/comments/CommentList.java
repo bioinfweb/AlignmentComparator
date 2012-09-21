@@ -80,6 +80,11 @@ public class CommentList {
 	}
 
 	
+	public String remove(Object o) {
+		return map.remove(o);
+	}
+
+
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}

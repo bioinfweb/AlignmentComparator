@@ -16,28 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.comments;
+package info.bioinfweb.alignmentcomparator.document.undo;
+
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 
 
 
-public class CommentPosition {
-  private int firstPos;
-  private int lastPos;
-  
-  
-	public CommentPosition(int firstPos, int lastPos) {
-		super();
-		this.firstPos = firstPos;
-		this.lastPos = lastPos;
+public class RemoveCommentEdit extends DocumentEdit {
+	//TODO Wie soll von GUI erkannt werden, welcher Comment mit der Maus markiert wurde? (Soll Bildschirmposition gespeichert werden oder sollte direkt Positionierungsalgorithmus rekonstruiert werden?)
+	
+
+	@Override
+	public String getPresentationName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
-	
-	public int getFirstPos() {
-		return firstPos;
+
+	@Override
+	public void redo() throws CannotRedoException {
+		// TODO Auto-generated method stub
+		super.redo();
 	}
-	
-	
-	public int getLastPos() {
-		return lastPos;
+
+	@Override
+	public void undo() throws CannotUndoException {
+		// TODO Auto-generated method stub
+		super.undo();
 	}
+
 }

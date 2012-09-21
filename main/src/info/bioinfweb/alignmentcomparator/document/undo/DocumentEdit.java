@@ -16,28 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.comments;
+package info.bioinfweb.alignmentcomparator.document.undo;
+
+
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.webinsel.util.swing.AbstractDocumentEdit;
 
 
 
-public class CommentPosition {
-  private int firstPos;
-  private int lastPos;
+public abstract class DocumentEdit extends AbstractDocumentEdit {
+  private Document document;
+
   
-  
-	public CommentPosition(int firstPos, int lastPos) {
+	public DocumentEdit(Document document) {
 		super();
-		this.firstPos = firstPos;
-		this.lastPos = lastPos;
+		this.document = document;
 	}
-	
-	
-	public int getFirstPos() {
-		return firstPos;
+
+
+	public Document getDocument() {
+		return document;
 	}
+
 	
-	
-	public int getLastPos() {
-		return lastPos;
+	@Override
+	public void registerDocumentChange() {
+		//TODO Implement
 	}
 }

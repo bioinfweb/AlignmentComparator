@@ -18,6 +18,10 @@ main/src/info/bioinfweb/alignmentcomparator/document/io/results/ResultsXMLConsta
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/CompareAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/ConsensusPairwiseAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/undo/AddCommentEdit.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/undo/DocumentEdit.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/undo/MoveCommentEdit.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/undo/RemoveCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentPositionPanel.java -text svneol=unset#text/plain

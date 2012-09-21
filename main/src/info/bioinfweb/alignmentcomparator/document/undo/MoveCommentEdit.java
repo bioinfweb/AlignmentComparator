@@ -16,28 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.comments;
+package info.bioinfweb.alignmentcomparator.document.undo;
 
+public class MoveCommentEdit {
 
-
-public class CommentPosition {
-  private int firstPos;
-  private int lastPos;
-  
-  
-	public CommentPosition(int firstPos, int lastPos) {
-		super();
-		this.firstPos = firstPos;
-		this.lastPos = lastPos;
-	}
-	
-	
-	public int getFirstPos() {
-		return firstPos;
-	}
-	
-	
-	public int getLastPos() {
-		return lastPos;
-	}
 }
