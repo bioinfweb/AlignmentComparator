@@ -29,7 +29,7 @@ import java.util.TreeMap;
 
 
 public class CommentList {
-	private TreeMap<CommentPosition, String> map = new TreeMap<CommentPosition, String>(new CommentPositionComparator());
+	private TreeMap<CommentPosition, Comment> map = new TreeMap<CommentPosition, Comment>(new CommentPositionComparator());
 
   
 	public CommentPositionComparator comparator() {
@@ -43,12 +43,12 @@ public class CommentList {
 	
 	
 	public void add(CommentPosition position, String text) {
-		map.put(position, text);
+		add(new Comment(position, text));
 	}
 	
 	
 	public void add(Comment comment) {
-		add(comment.getPosition(), comment.getText());
+		map.put(comment.getPosition(), comment);
 	}
 	
 	
@@ -58,7 +58,10 @@ public class CommentList {
 		while (posIterator.hasNext()) {
 			CommentPosition pos = posIterator.next();
 			if (Math2.overlaps(firstPos, lastPos, pos.getFirstPos(), pos.getLastPos())) {
-				result.add(new Comment(pos, map.get(pos)));
+				result.add(map.get(pos));
+			}
+			else if (pos.getFirstPos() > lastPos) {
+				break;
 			}
 		}
 		return result;
@@ -68,9 +71,34 @@ public class CommentList {
 	public Iterator<CommentPosition> positionIterator() {
 		return map.keySet().iterator();
 	}
+	
+	
+	public Iterator<Comment> commentIterator() {
+		return new Iterator<Comment>() {
+			private Iterator<CommentPosition> positionIterator = positionIterator(); 
+			
+			
+			@Override
+			public boolean hasNext() {
+				return positionIterator.hasNext();
+			}
+			
+
+			@Override
+			public Comment next() {
+				return get(positionIterator.next());
+			}
+			
+
+			@Override
+			public void remove() {
+				positionIterator.remove();
+			}
+		};
+	}
 
 	
-	public String getText(CommentPosition pos) {
+	public Comment get(CommentPosition pos) {
 		return map.get(pos);
 	}
 
@@ -80,7 +108,7 @@ public class CommentList {
 	}
 
 	
-	public String remove(Object o) {
+	public Comment remove(Object o) {
 		return map.remove(o);
 	}
 

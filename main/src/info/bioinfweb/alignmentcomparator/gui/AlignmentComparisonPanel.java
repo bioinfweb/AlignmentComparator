@@ -23,6 +23,7 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -47,8 +48,10 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String DEFAULT_BG_COLOR_ID = "DEFAULT";
-	public static final String BORDER_COLOR_ID = "BORDER";
+	public static final String COMPOUND_BORDER_COLOR_ID = "COMPOUND_BORDER";
 	public static final String FONT_COLOR_ID = "FONT";
+	public static final String COMMENT_BORDER_COLOR_ID = "COMMENT_BORDER";
+	public static final String COMMENT_OVERLAPPING_BORDER_COLOR_ID = "COMMENT_BORDER_2";
 	
 	public static final float COMPOUND_WIDTH = 10f;
 	public static final float COMPOUND_HEIGHT = 14f;
@@ -59,7 +62,8 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	private float zoom = 1f;
 	private float compoundWidth = COMPOUND_WIDTH;
 	private float compoundHeight = COMPOUND_HEIGHT;
-	private Document alignments = null;
+	private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(COMPOUND_HEIGHT * 0.7f));
+	private Document document = null;
 	private List<AlignmentComparisonPanelListener> listeners = new LinkedList<AlignmentComparisonPanelListener>();
 	
 
@@ -72,8 +76,10 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 		result.put("-", Color.GRAY);
 		result.put(".", Color.LIGHT_GRAY);
 		result.put(DEFAULT_BG_COLOR_ID, Color.LIGHT_GRAY.brighter());
-		result.put(BORDER_COLOR_ID, Color.WHITE);
+		result.put(COMPOUND_BORDER_COLOR_ID, Color.WHITE);
 		result.put(FONT_COLOR_ID, Color.BLACK);
+		result.put(COMMENT_BORDER_COLOR_ID, Color.BLUE.brighter());
+		result.put(COMMENT_OVERLAPPING_BORDER_COLOR_ID, Color.GRAY);
 		return result;
 		// Bei Bedarf können alternative Farbsätze später aus einer Datei gelesen werden.
 	}
@@ -82,16 +88,16 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	/**
 	 * This is the default constructor
 	 */
-	public AlignmentComparisonPanel(Document alignments) {
+	public AlignmentComparisonPanel(Document document) {
 		super();
-		this.alignments = alignments;
+		this.document = document;  //TODO Bleibt es während der gesamten Laufzeit die selbe Instanz?
 	}
 
 	
 	public Map<String, Color> getColorMap() {
 		return colorMap;
 	}
-	
+
 	
 	public float getZoom() {
 		return zoom;
@@ -102,6 +108,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 		this.zoom = zoom;
 		compoundWidth = COMPOUND_WIDTH * zoom;
 		compoundHeight = COMPOUND_HEIGHT * zoom;
+		font = new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(zoom * COMPOUND_HEIGHT * 0.7f));
 		assignPaintSize();
 		fireZoomChanged();
 	}
@@ -115,6 +122,11 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	public float getCompoundHeight() {
 		return compoundHeight;
 	}
+	
+	
+	public Font getFont() {
+		return font;
+	}
 
 
 	@Override
@@ -125,9 +137,9 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 
 
 	private void assignPaintSize() {
-		setSize(Math.round(alignments.getAlignedLength() * getCompoundWidth()), 
-				Math.round(2 * alignments.getSequenceCount() * getCompoundHeight() + getZoom() * ALIGNMENT_DISTANCE));
-		setPreferredSize(getSize());  //TODO Was ist der genaue Unterschied der beiden Größen?
+		setSize(Math.round(document.getAlignedLength() * getCompoundWidth()),  //TODO Breite evtl. größer, falls überstehender Kommentar vorhanden 
+				Math.round(2 * document.getSequenceCount() * getCompoundHeight() + getZoom() * ALIGNMENT_DISTANCE));  //TODO Höhe der Kommentare hinzufügen
+		setPreferredSize(getSize());  // Show everthing, if possible
 		fireSizeChanged();
 	}
 	
@@ -157,15 +169,15 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	
 	private void paintAlignments(Graphics2D g) {
 		paintAlignment(g, 0, 0, 0);
-		paintAlignment(g, 1, 0, alignments.getSequenceCount() * getCompoundHeight() + ALIGNMENT_DISTANCE * getZoom());
+		paintAlignment(g, 1, 0, document.getSequenceCount() * getCompoundHeight() + ALIGNMENT_DISTANCE * getZoom());
 	}
 	
 
 	private void paintAlignment(Graphics2D g, int alignmentIndex, float x, float y) {
 		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinY() - y) / getCompoundHeight()) - 1);
-		int lastIndex = Math.min(alignments.getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
+		int lastIndex = Math.min(document.getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
 		for (int i = firstIndex; i <= lastIndex; i++) {
-			paintSequence(g, alignments.getAlignedSequence(alignmentIndex, i), lastIndex, y);
+			paintSequence(g, document.getAlignedSequence(alignmentIndex, i), lastIndex, y);
 	    y += getCompoundHeight();
     }
 	}
@@ -182,7 +194,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 
 
   private void paintCompound(Graphics2D g, NucleotideCompound compound, float x, float y) {
-  	g.setColor(getColorMap().get(BORDER_COLOR_ID));
+  	g.setColor(getColorMap().get(COMPOUND_BORDER_COLOR_ID));
   	g.draw(new Rectangle2D.Float(x, y, getCompoundWidth(), getCompoundHeight()));
   	
   	Set<NucleotideCompound> consituents = compound.getConsituents();
@@ -199,8 +211,9 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
   	}
   	
   	g.setColor(getColorMap().get(FONT_COLOR_ID));
-  	g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(getZoom() * COMPOUND_HEIGHT * 0.7f)));
-  	g.drawString(compound.getBase(), x, y);  	//TODO evtl. Verschiebung addieren
+  	g.setFont(getFont());
+		FontMetrics fm = g.getFontMetrics(); 
+  	g.drawString(compound.getBase(), x + fm.getAscent() + fm.getHeight(), y);
   }
 
 

@@ -18,11 +18,17 @@
  */
 package info.bioinfweb.alignmentcomparator.document.comments;
 
+import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
+
+import java.util.Map;
+import java.util.TreeMap;
+
 
 
 public class Comment {
-  private String text;
   private CommentPosition position;
+  private String text;
+  private Map<Class<? extends CommentPositioner>, Object> positionData = new TreeMap<Class<? extends CommentPositioner>, Object>();
   
   
 	public Comment(int firstPos, int lastPos, String text) {
@@ -51,5 +57,15 @@ public class Comment {
 
 	public CommentPosition getPosition() {
 		return position;
+	}
+	
+	
+	public Object getPositionData(Class<? extends CommentPositioner> type) {
+		return positionData.get(type);
+	}
+	
+	
+	public void setPositionData(Class<? extends CommentPositioner> type, Object data) {
+		positionData.put(type, data);
 	}
 }

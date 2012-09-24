@@ -109,7 +109,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 			writer.writeStartElement(TAG_COMMENT.getLocalPart());
 			writer.writeAttribute(ATTR_COMMENT_FIRST_POS.getLocalPart(), "" + pos.getFirstPos());
 			writer.writeAttribute(ATTR_COMMENT_LAST_POS.getLocalPart(), "" + pos.getLastPos());
-			writer.writeCharacters(list.getText(pos));
+			writer.writeCharacters(list.get(pos).getText());
 			writer.writeEndElement();
 		}
 		writer.writeEndElement();

@@ -30,6 +30,9 @@ main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -t
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/AlignmentComparatorAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/CompareAlignmentsAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/OpenResultsAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentPositioner.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositionData.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositioner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/StartComparisonDialog.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanelFactory.java -text svneol=unset#text/plain
