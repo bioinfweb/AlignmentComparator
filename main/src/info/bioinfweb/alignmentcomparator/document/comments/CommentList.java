@@ -19,17 +19,21 @@
 package info.bioinfweb.alignmentcomparator.document.comments;
 
 
+import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.webinsel.util.Math2;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 
 
 public class CommentList {
 	private TreeMap<CommentPosition, Comment> map = new TreeMap<CommentPosition, Comment>(new CommentPositionComparator());
+	private Map<Class<? extends CommentPositioner>, Object> gloabelPositionerData = 
+			new TreeMap<Class<? extends CommentPositioner>, Object>();
 
   
 	public CommentPositionComparator comparator() {
@@ -120,5 +124,15 @@ public class CommentList {
 	
 	public int size() {
 		return map.size();
+	}
+	
+	
+	public void setGlobalPositionerData(Class<? extends CommentPositioner> type, Object data) {
+		gloabelPositionerData.put(type, data);
+	}
+	
+	
+	public Object getGlobalPositionerData(Class<? extends CommentPositioner> type) {
+		return gloabelPositionerData.get(type);
 	}
 }

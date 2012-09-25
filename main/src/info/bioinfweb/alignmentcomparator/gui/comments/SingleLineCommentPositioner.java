@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
@@ -37,7 +38,7 @@ import info.webinsel.util.Math2;
 
 public class SingleLineCommentPositioner implements CommentPositioner {
 	private List<Comment> blockingComments;
-	private int maxLines;
+	private int maxLine;
 	
 	
 	private SingleLineCommentPositionData getData(Comment comment) {
@@ -54,7 +55,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	 */
 	private int calculateLine(int column, int length) {
 		// Prepare array:
-		boolean[] blockedLines = new boolean[maxLines];
+		boolean[] blockedLines = new boolean[maxLine];
 		for (int i = 0; i < blockedLines.length; i++) {
 			blockedLines[i] = false;
 		}
@@ -79,7 +80,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 				return i;
 			}
 		}
-		return maxLines + 1;
+		return maxLine + 1;
 	}
 	
 	
@@ -91,15 +92,20 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	@Override
 	public void position(CommentList comments) {
 		blockingComments = new LinkedList<Comment>();
-		maxLines = 0;
+		maxLine = 0;
+		int maxColumn = 0;
 		Iterator<Comment> iterator = comments.commentIterator();
 		while (iterator.hasNext()) {
 			Comment comment = iterator.next();
 			int length = calculateLength(comment.getText());
-			comment.setPositionData(SingleLineCommentPositioner.class, new SingleLineCommentPositionData(
-					calculateLine(comment.getPosition().getFirstPos(), length), length));
+			int line = calculateLine(comment.getPosition().getFirstPos(), length); 
+			comment.setPositionData(SingleLineCommentPositioner.class, new SingleLineCommentPositionData(line, length));
 			blockingComments.add(comment);
+			maxLine = Math.max(maxLine, line);
+			maxColumn = Math.max(maxColumn, comment.getPosition().getFirstPos() + length);
 		}
+		comments.setGlobalPositionerData(SingleLineCommentPositioner.class, 
+				new SingleLineGlobalCommentPositionerData(maxColumn, maxLine));
 	}
 	
 	
@@ -147,6 +153,15 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		while (iterator.hasNext()) {
 			paintComment(panel, g, iterator.next(), x, y);
 		}
+	}
+
+
+	@Override
+	public Dimension getCommentDimension(CommentList comments, AlignmentComparisonPanel panel) {
+		SingleLineGlobalCommentPositionerData data = 
+				(SingleLineGlobalCommentPositionerData)comments.getGlobalPositionerData(SingleLineCommentPositioner.class);
+		return new Dimension(Math2.roundUp(data.getMaxColumn() * panel.getCompoundWidth()), 
+				Math2.roundUp(data.getMaxLine() + panel.getCompoundHeight()));
 	}
 
 

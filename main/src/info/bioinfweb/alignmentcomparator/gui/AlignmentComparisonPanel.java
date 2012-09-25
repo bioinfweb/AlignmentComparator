@@ -20,8 +20,12 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
+import info.bioinfweb.alignmentcomparator.gui.comments.SingleLineCommentPositioner;
+import info.webinsel.util.Math2;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -56,6 +60,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	public static final float COMPOUND_WIDTH = 10f;
 	public static final float COMPOUND_HEIGHT = 14f;
 	public static final float ALIGNMENT_DISTANCE = 7f;
+	public static final float COMMENTS_DISTANCE = 7f;
 	
 	
 	private Map<String, Color> colorMap = createColorMap();
@@ -65,6 +70,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(COMPOUND_HEIGHT * 0.7f));
 	private Document document = null;
 	private List<AlignmentComparisonPanelListener> listeners = new LinkedList<AlignmentComparisonPanelListener>();
+	private CommentPositioner commentPositioner = new SingleLineCommentPositioner();  // Default strategy as long as there is no factory
 	
 
 	private static Map<String, Color> createColorMap() {
@@ -99,6 +105,11 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	}
 
 	
+	public CommentPositioner getCommentPositioner() {
+		return commentPositioner;
+	}  //TODO Future versions might also need a setter.
+
+
 	public float getZoom() {
 		return zoom;
 	}
@@ -137,9 +148,11 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 
 
 	private void assignPaintSize() {
-		setSize(Math.round(document.getAlignedLength() * getCompoundWidth()),  //TODO Breite evtl. größer, falls überstehender Kommentar vorhanden 
-				Math.round(2 * document.getSequenceCount() * getCompoundHeight() + getZoom() * ALIGNMENT_DISTANCE));  //TODO Höhe der Kommentare hinzufügen
-		setPreferredSize(getSize());  // Show everthing, if possible
+		Dimension commentSize = getCommentPositioner().getCommentDimension(document.getComments(), this);
+		setSize(Math.max(Math2.roundUp(document.getAlignedLength() * getCompoundWidth()), commentSize.width), 
+				Math2.roundUp(2 * document.getSequenceCount() * getCompoundHeight() + 
+						getZoom() * (ALIGNMENT_DISTANCE + COMMENTS_DISTANCE) + commentSize.height));
+		setPreferredSize(getSize());  // Show everything, if possible
 		fireSizeChanged();
 	}
 	
@@ -150,16 +163,15 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
   	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
   			RenderingHints.VALUE_ANTIALIAS_ON);
   	paintAlignments((Graphics2D)g);
+  	paintComments((Graphics2D)g);
 	}
 
 
 	public void paintPreview(Graphics2D g, double scale) {
-  	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-  			RenderingHints.VALUE_ANTIALIAS_ON);
   	float zoom = getZoom();
   	try {  // Wenn nebenläufige Prozesse während der Ausführung dieses Blocks den Zoom auslesen würden, käme es zu Fehlern.
   		setZoom(zoom * (float)scale);
-  		paintAlignments(g);
+  		paintComponent(g);
   	}
   	finally {
   		setZoom(zoom);
@@ -214,6 +226,13 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
   	g.setFont(getFont());
 		FontMetrics fm = g.getFontMetrics(); 
   	g.drawString(compound.getBase(), x + fm.getAscent() + fm.getHeight(), y);
+  }
+  
+  
+  public void paintComments(Graphics2D g) {
+  	//TODO Make sure that positioning was done
+  	getCommentPositioner().paint(document.getComments(), this, document.getAlignedLength(), g, 0, 
+  			2 * document.getSequenceCount() * getCompoundHeight() +	getZoom() * (ALIGNMENT_DISTANCE + COMMENTS_DISTANCE));
   }
 
 
