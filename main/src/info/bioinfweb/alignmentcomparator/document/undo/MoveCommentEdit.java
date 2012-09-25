@@ -18,6 +18,44 @@
  */
 package info.bioinfweb.alignmentcomparator.document.undo;
 
-public class MoveCommentEdit {
 
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
+
+
+
+public class MoveCommentEdit extends CommentEdit {
+  private CommentPosition newPosition = null;
+  private CommentPosition oldPosition = null;
+
+  
+	public MoveCommentEdit(Document document, Comment comment, CommentPosition newPosition) {
+		super(document, comment);
+		this.newPosition = newPosition;
+		oldPosition = getComment().getPosition();
+	}
+	
+	
+	@Override
+	public void redo() throws CannotRedoException {
+		getComment().setPosition(newPosition);
+		super.redo();
+	}
+
+
+	@Override
+	public void undo() throws CannotUndoException {
+		getComment().setPosition(oldPosition);
+		super.undo();
+	}
+  
+  
+	@Override
+	public String getPresentationName() {
+		return "Move comment from " + oldPosition.getFirstPos() + " to " + newPosition.getFirstPos();
+	}
 }

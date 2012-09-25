@@ -27,28 +27,39 @@ import javax.swing.undo.CannotUndoException;
 
 
 
-public class AddCommentEdit extends AddRemoveCommentEdit {
-	public AddCommentEdit(Document document, Comment comment) {
+public class ChangeCommentTextEdit extends CommentEdit {
+	private String otherText;
+	
+	
+	public ChangeCommentTextEdit(Document document, String newText,	Comment comment) {
 		super(document, comment);
+		this.otherText = newText;
 	}
 
+	
+	private void interchangeTexts() {
+		String save = getComment().getText();
+		getComment().setText(otherText);
+		otherText = save;
+	}
+	
 
 	@Override
 	public void redo() throws CannotRedoException {
-		add();
+		interchangeTexts();
 		super.redo();
 	}
 
 	
 	@Override
 	public void undo() throws CannotUndoException {
-		remove();
+		interchangeTexts();
 		super.undo();
 	}
 
 	
 	@Override
 	public String getPresentationName() {
-		return "Add comment at column " + getComment().getPosition().getFirstPos();
+		return "Change text for comment at column " + getComment().getPosition().getFirstPos();
 	}
 }

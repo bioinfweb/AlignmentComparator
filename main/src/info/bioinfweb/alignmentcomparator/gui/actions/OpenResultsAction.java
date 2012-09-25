@@ -39,7 +39,7 @@ public class OpenResultsAction extends AlignmentComparatorAction {
 		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {  //TODO hier nicht MainFrame verwenden, falls Aktion auch vor Anzeige des MainFrames verfügbar sein soll
 			try {
 				reader.read(new BufferedInputStream(new FileInputStream(getFileChooser().getSelectedFile())), 
-						getMainFrame().getAlignments());
+						getMainFrame().getDocument());
 				//TODO Inform Model
 			}
 			catch (Exception ex) {

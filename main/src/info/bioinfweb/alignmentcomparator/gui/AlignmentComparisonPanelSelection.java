@@ -16,39 +16,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.undo;
+package info.bioinfweb.alignmentcomparator.gui;
 
 
-import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
 
 
-
-public class AddCommentEdit extends AddRemoveCommentEdit {
-	public AddCommentEdit(Document document, Comment comment) {
-		super(document, comment);
+public class AlignmentComparisonPanelSelection {
+	private int firstPos = -1;
+	private int lastPos = -1;
+  private Comment comment = null;
+  
+  
+	public int getFirstPos() {
+		return firstPos;
 	}
-
-
-	@Override
-	public void redo() throws CannotRedoException {
-		add();
-		super.redo();
-	}
-
 	
-	@Override
-	public void undo() throws CannotUndoException {
-		remove();
-		super.undo();
-	}
-
 	
-	@Override
-	public String getPresentationName() {
-		return "Add comment at column " + getComment().getPosition().getFirstPos();
+	public void setFirstPos(int firstPos) {
+		this.firstPos = firstPos;
+	}
+	
+	
+	public int getLastPos() {
+		return lastPos;
+	}
+	
+	
+	public void setLastPos(int lastPos) {
+		this.lastPos = lastPos;
+	}
+	
+	
+	public Comment getComment() {
+		return comment;
+	}
+	
+	
+	public void setComment(Comment comment) {
+		this.comment = comment;
 	}
 }

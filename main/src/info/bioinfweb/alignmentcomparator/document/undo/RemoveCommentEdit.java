@@ -18,31 +18,37 @@
  */
 package info.bioinfweb.alignmentcomparator.document.undo;
 
+
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 
 
-public class RemoveCommentEdit extends DocumentEdit {
-	//TODO Wie soll von GUI erkannt werden, welcher Comment mit der Maus markiert wurde? (Soll Bildschirmposition gespeichert werden oder sollte direkt Positionierungsalgorithmus rekonstruiert werden?)
-	
-
-	@Override
-	public String getPresentationName() {
-		// TODO Auto-generated method stub
-		return null;
+public class RemoveCommentEdit extends AddRemoveCommentEdit {
+	public RemoveCommentEdit(Document document, Comment comment) {
+		super(document, comment);
 	}
+
 
 	@Override
 	public void redo() throws CannotRedoException {
-		// TODO Auto-generated method stub
+		remove();
 		super.redo();
 	}
 
+	
 	@Override
 	public void undo() throws CannotUndoException {
-		// TODO Auto-generated method stub
+		add();
 		super.undo();
 	}
 
+	
+	@Override
+	public String getPresentationName() {
+		return "Remove comment at column " + getComment().getPosition().getFirstPos();
+	}
 }

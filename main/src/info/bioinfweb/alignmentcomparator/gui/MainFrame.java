@@ -35,8 +35,7 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private Document alignments = new Document();
-	
+	private Document document = new Document();
 	private JPanel jContentPane = null;
 	private JMenuBar mainMenu = null;
 	private JMenu fileMenu = null;
@@ -66,8 +65,13 @@ public class MainFrame extends JFrame {
 	}
 
 	
-	public Document getAlignments() {
-		return alignments;
+	public Document getDocument() {
+		return document;
+	}
+	
+	
+	public AlignmentComparisonPanelSelection getSelection() {
+		return getComparisonPanel().getSelection();
 	}
 
 
@@ -135,7 +139,7 @@ public class MainFrame extends JFrame {
 	 */
 	private AlignmentComparisonPanel getComparisonPanel() {
 		if (comparisonPanel == null) {
-			comparisonPanel = new AlignmentComparisonPanel(getAlignments());
+			comparisonPanel = new AlignmentComparisonPanel(getDocument());
 			comparisonPanel.setLayout(new GridBagLayout());
 		}
 		return comparisonPanel;

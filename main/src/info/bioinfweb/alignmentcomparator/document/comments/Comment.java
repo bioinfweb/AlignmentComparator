@@ -60,6 +60,11 @@ public class Comment {
 	}
 	
 	
+	public void setPosition(CommentPosition position) {
+		this.position = position;
+	}
+
+
 	public Object getPositionData(Class<? extends CommentPositioner> type) {
 		return positionData.get(type);
 	}

@@ -22,33 +22,19 @@ package info.bioinfweb.alignmentcomparator.document.undo;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
 
 
-
-public class AddCommentEdit extends AddRemoveCommentEdit {
-	public AddCommentEdit(Document document, Comment comment) {
-		super(document, comment);
-	}
-
-
-	@Override
-	public void redo() throws CannotRedoException {
-		add();
-		super.redo();
-	}
+public abstract class CommentEdit extends DocumentEdit {
+	private Comment comment = null;
 
 	
-	@Override
-	public void undo() throws CannotUndoException {
-		remove();
-		super.undo();
+	public CommentEdit(Document document, Comment comment) {
+		super(document);
+		this.comment = comment;
 	}
 
-	
-	@Override
-	public String getPresentationName() {
-		return "Add comment at column " + getComment().getPosition().getFirstPos();
+
+	protected Comment getComment() {
+		return comment;
 	}
 }

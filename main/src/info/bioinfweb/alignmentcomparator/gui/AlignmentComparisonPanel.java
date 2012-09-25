@@ -69,6 +69,7 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	private float compoundHeight = COMPOUND_HEIGHT;
 	private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(COMPOUND_HEIGHT * 0.7f));
 	private Document document = null;
+	private AlignmentComparisonPanelSelection selection = new AlignmentComparisonPanelSelection();
 	private List<AlignmentComparisonPanelListener> listeners = new LinkedList<AlignmentComparisonPanelListener>();
 	private CommentPositioner commentPositioner = new SingleLineCommentPositioner();  // Default strategy as long as there is no factory
 	
@@ -105,6 +106,11 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 	}
 
 	
+	public AlignmentComparisonPanelSelection getSelection() {
+		return selection;
+	}
+
+
 	public CommentPositioner getCommentPositioner() {
 		return commentPositioner;
 	}  //TODO Future versions might also need a setter.
