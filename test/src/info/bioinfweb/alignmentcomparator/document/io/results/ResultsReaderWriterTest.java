@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.data.io.results;
+package info.bioinfweb.alignmentcomparator.document.io.results;
 
 
-import info.bioinfweb.alignmentcomparator.data.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 
 import org.junit.* ;
 

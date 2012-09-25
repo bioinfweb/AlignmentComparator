@@ -42,4 +42,4 @@ test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 test/lib/junit-4.9b1.jar -text
-test/src/info/bioinfweb/alignmentcomparator/data/io/results/ResultsReaderWriterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/alignmentcomparator/document/io/results/ResultsReaderWriterTest.java -text svneol=unset#text/plain
