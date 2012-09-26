@@ -20,12 +20,21 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 
 
 
+/**
+ * Represents the selection in a {@link AlignmentComparisonPanel}.
+ * 
+ * @author Ben St&ouml;ver
+ */
 public class AlignmentComparisonPanelSelection {
-	private int firstPos = -1;
-	private int lastPos = -1;
+	public static final int NO_SELECTION = -1;
+	
+	
+	private int firstPos = NO_SELECTION;
+	private int lastPos = NO_SELECTION;
   private Comment comment = null;
   
   
@@ -36,6 +45,9 @@ public class AlignmentComparisonPanelSelection {
 	
 	public void setFirstPos(int firstPos) {
 		this.firstPos = firstPos;
+		if ((getLastPos() < firstPos) || (lastPos == NO_SELECTION)) {  // also true if lastPos == NO_SELECTION
+			setLastPos(firstPos);
+		}
 	}
 	
 	
@@ -45,7 +57,27 @@ public class AlignmentComparisonPanelSelection {
 	
 	
 	public void setLastPos(int lastPos) {
-		this.lastPos = lastPos;
+		if (lastPos == NO_SELECTION) {
+			this.lastPos = getFirstPos();
+		}
+		else {
+			this.lastPos = lastPos;
+		}
+	}
+	
+	
+	public CommentPosition getCommentPosition() {
+		return new CommentPosition(getFirstPos(), getLastPos());
+	}
+	
+	
+	public void clearSequenceSelection() {
+		setFirstPos(NO_SELECTION);  // lastPos will be set automatically
+	}
+	
+	
+	public boolean isSequenceSelected() {
+		return getFirstPos() != NO_SELECTION;
 	}
 	
 	
@@ -56,5 +88,21 @@ public class AlignmentComparisonPanelSelection {
 	
 	public void setComment(Comment comment) {
 		this.comment = comment;
+	}
+	
+	
+	public void clearCommentSelection() {
+		setComment(null);
+	}
+	
+	
+	public boolean isCommentSelected() {
+		return getComment() != null;
+	}
+	
+	
+	public void clear() {
+		clearSequenceSelection();
+		clearCommentSelection();
 	}
 }

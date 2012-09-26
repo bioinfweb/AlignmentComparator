@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -36,9 +37,12 @@ public class MainFrame extends JFrame {
 	
 	
 	private Document document = new Document();
+	private ActionManagement actionManagement = new ActionManagement(this);
+	
 	private JPanel jContentPane = null;
 	private JMenuBar mainMenu = null;
 	private JMenu fileMenu = null;
+	private JMenu editMenu = null;
 	private JScrollPane scrollPane = null;
 	private AlignmentComparisonPanel comparisonPanel = null;
 
@@ -70,6 +74,11 @@ public class MainFrame extends JFrame {
 	}
 	
 	
+	public ActionManagement getActionManagement() {
+		return actionManagement;
+	}
+
+
 	public AlignmentComparisonPanelSelection getSelection() {
 		return getComparisonPanel().getSelection();
 	}
@@ -99,6 +108,7 @@ public class MainFrame extends JFrame {
 		if (mainMenu == null) {
 			mainMenu = new JMenuBar();
 			mainMenu.add(getFileMenu());
+			mainMenu.add(getEditMenu());
 		}
 		return mainMenu;
 	}
@@ -115,6 +125,25 @@ public class MainFrame extends JFrame {
 			fileMenu.setText("File");
 		}
 		return fileMenu;
+	}
+
+
+	/**
+	 * This method initializes fileMenu	
+	 * 	
+	 * @return javax.swing.JMenu	
+	 */
+	private JMenu getEditMenu() {
+		if (editMenu == null) {
+			editMenu = new JMenu();
+			editMenu.setText("Edit");
+			//editMenu.addSeparator();
+			editMenu.add(getActionManagement().get("edit.addComment"));
+			editMenu.add(getActionManagement().get("edit.moveComment"));
+			editMenu.add(getActionManagement().get("edit.changeCommentText"));
+			editMenu.add(getActionManagement().get("edit.removeComment"));
+		}
+		return editMenu;
 	}
 
 

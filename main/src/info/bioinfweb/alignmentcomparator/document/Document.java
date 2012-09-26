@@ -21,6 +21,8 @@ package info.bioinfweb.alignmentcomparator.document;
 
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
+import info.webinsel.util.swing.AccessibleUndoManager;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -40,6 +42,7 @@ public class Document {
 	private SequenceView<NucleotideCompound> [][] alignedSequences;
 	private int[][] unalignedIndices; 
 	private CommentList comments = new CommentList();
+	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
 	
 	
 	public Document() {
@@ -155,4 +158,17 @@ public class Document {
 	public CommentList getComments() {
 		return comments;
 	}
+	
+	
+  public AccessibleUndoManager getUndoManager() {
+		return undoManager;
+	}
+
+
+	public void executeEdit(DocumentEdit edit) {
+    if (!getUndoManager().addEdit(edit)) {  // Muss vor Ausführung erfolgen da sonst Undo-Schalter ggf. nicht aktiviert werden.
+      throw new RuntimeException("The edit could not be executed.");
+    }
+    edit.redo();  // for real this time
+  }
 }

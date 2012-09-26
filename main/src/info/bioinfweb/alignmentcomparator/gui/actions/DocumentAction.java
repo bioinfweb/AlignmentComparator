@@ -26,11 +26,11 @@ import info.webinsel.util.swing.ExtendedAbstractAction;
 
 
 
-public abstract class AlignmentComparatorAction extends ExtendedAbstractAction {
+public abstract class DocumentAction extends ExtendedAbstractAction {
   private MainFrame mainFrame = null;
 
   
-	public AlignmentComparatorAction(MainFrame mainFrame) {
+	public DocumentAction(MainFrame mainFrame) {
 		super();
 		this.mainFrame = mainFrame;
 	}
@@ -49,4 +49,7 @@ public abstract class AlignmentComparatorAction extends ExtendedAbstractAction {
 	public AlignmentComparisonPanelSelection getSelection() {
 		return getMainFrame().getSelection();
 	}
+	
+	
+	public abstract void setEnabled();
 }

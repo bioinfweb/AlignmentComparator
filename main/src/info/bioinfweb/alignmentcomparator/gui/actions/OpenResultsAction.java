@@ -1,3 +1,21 @@
+/*
+ * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
+ * Copyright (C) 2012  Ben Stöver
+ * <http://bioinfweb.info/Software>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package info.bioinfweb.alignmentcomparator.gui.actions;
 
 
@@ -14,7 +32,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
-public class OpenResultsAction extends AlignmentComparatorAction {
+public class OpenResultsAction extends DocumentAction {
   private JFileChooser fileChooser = null;
   private ResultsReader reader = new ResultsReader();
 
@@ -50,4 +68,8 @@ public class OpenResultsAction extends AlignmentComparatorAction {
 			}
 		}
 	}
+
+
+	@Override
+	public void setEnabled() {}  // nothing to do (opening new files is always possible)
 }
