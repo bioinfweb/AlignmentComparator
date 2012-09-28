@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.gui.actions;
+package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
+import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 
 import java.awt.event.ActionEvent;

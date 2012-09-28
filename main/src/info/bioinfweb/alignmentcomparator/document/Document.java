@@ -20,12 +20,22 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.bioinfweb.alignmentcomparator.document.io.results.ResultsWriter;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
+import info.webinsel.util.ChangeMonitorable;
+import info.webinsel.util.io.Savable;
 import info.webinsel.util.swing.AccessibleUndoManager;
+import info.webinsel.util.swing.SwingSavable;
+import info.webinsel.util.swing.SwingSaver;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
@@ -33,7 +43,9 @@ import org.biojava3.core.sequence.template.SequenceView;
 
 
 
-public class Document {
+public class Document extends SwingSaver 
+    implements ChangeMonitorable, Savable, SwingSavable {
+	
 	public static final int GAP_INDEX = -1;
 	
 	
@@ -43,10 +55,12 @@ public class Document {
 	private int[][] unalignedIndices; 
 	private CommentList comments = new CommentList();
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
+	private ResultsWriter writer = new ResultsWriter();
 	
 	
 	public Document() {
 		super();
+		clear();
 	}
 	
 	
@@ -81,6 +95,18 @@ public class Document {
 	}
 
 	
+	@Override
+	protected void saveDataToFile(File file) {
+		try {
+			writer.write(new BufferedOutputStream(new FileOutputStream(file)), this);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "The error \"" + e.getMessage() + "\" occured when writing to the file \"" + file.getAbsolutePath() + "\"", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+
 	public void clear() {
 		names = new String[0];
 		unalignedSequences = new Sequence[0][];

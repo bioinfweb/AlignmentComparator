@@ -16,18 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.gui.actions;
+package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsReader;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
+import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
+import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -39,6 +44,13 @@ public class OpenResultsAction extends DocumentAction {
   
 	public OpenResultsAction(MainFrame mainFrame) {
 		super(mainFrame);
+		putValue(Action.NAME, "Open results"); 
+	  putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
+		putValue(Action.SHORT_DESCRIPTION, "Open results");
+		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', 
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+	  loadSymbols("Open");
 	}
 
 

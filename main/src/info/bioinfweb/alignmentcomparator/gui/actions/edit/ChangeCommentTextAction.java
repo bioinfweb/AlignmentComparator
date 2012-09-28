@@ -16,8 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.gui.actions;
+package info.bioinfweb.alignmentcomparator.gui.actions.edit;
 
+
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+import info.bioinfweb.alignmentcomparator.document.undo.ChangeCommentTextEdit;
+import info.bioinfweb.alignmentcomparator.gui.MainFrame;
+import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -27,34 +32,31 @@ import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.undo.AddCommentEdit;
-import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 
 
-
-public class AddCommentAction extends DocumentAction {
-	public AddCommentAction(MainFrame mainFrame) {
+public class ChangeCommentTextAction extends DocumentAction {
+	public ChangeCommentTextAction(MainFrame mainFrame) {
 		super(mainFrame);
-		putValue(Action.NAME, "Add comment"); 
-		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
-		putValue(Action.SHORT_DESCRIPTION, "Add comment"); 
-		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('N', 
+		putValue(Action.NAME, "Change comment text"); 
+		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
+		putValue(Action.SHORT_DESCRIPTION, "Change comment text"); 
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('T', 
 		    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String text = JOptionPane.showInputDialog(getMainFrame(), "Comment text:");
-		if (text != null) {
-			getDocument().executeEdit(new AddCommentEdit(getDocument(), new Comment(getSelection().getCommentPosition(), text)));
+		Comment comment = getSelection().getComment();
+		String newText = JOptionPane.showInputDialog(getMainFrame(), "Comment text:", comment.getText());
+		if (newText != null) {
+			getDocument().executeEdit(new ChangeCommentTextEdit(getDocument(), newText, comment));
 		}
 	}
 
-	
+
 	@Override
 	public void setEnabled() {
-		setEnabled(getSelection().isSequenceSelected());
+		setEnabled(getSelection().isCommentSelected());
 	}
 }

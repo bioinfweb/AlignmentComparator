@@ -22,13 +22,28 @@ package info.bioinfweb.alignmentcomparator.gui.actions;
 import java.util.Iterator;
 
 import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.undo.UndoableEdit;
 
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
-import info.webinsel.util.swing.ActionHashMap;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.AddCommentAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.ChangeCommentTextAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.MoveCommentAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.RedoAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.RedoToAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveCommentAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.UndoAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.UndoToAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.file.CompareAlignmentsAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.file.OpenResultsAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAsAction;
+import info.webinsel.util.swing.AbstractUndoActionManagement;
+import info.webinsel.util.swing.AccessibleUndoManager;
 
 
 
-public class ActionManagement extends ActionHashMap {
+public class ActionManagement extends AbstractUndoActionManagement {
 	private MainFrame mainFrame = null;
 	
 	
@@ -44,6 +59,13 @@ public class ActionManagement extends ActionHashMap {
 	 * in this method. New actions should be added here as well.
 	 */
 	protected void fillMap() {
+		put("file.compareAlignments", new CompareAlignmentsAction(mainFrame));
+		put("file.openResults", new OpenResultsAction(mainFrame));
+		put("file.save", new SaveAction(mainFrame));
+		put("file.saveAs", new SaveAsAction(mainFrame));
+		
+		put("edit.undo", new UndoAction(mainFrame));
+		put("edit.redo", new RedoAction(mainFrame));
 		put("edit.addComment", new AddCommentAction(mainFrame));
 		put("edit.moveComment", new MoveCommentAction(mainFrame));
 		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
@@ -64,6 +86,36 @@ public class ActionManagement extends ActionHashMap {
 	@Override
 	public void refreshActionStatus() {
 		setActionStatusBySelection();
-		//TODO undo und redo status setzen
+		editUndoRedoMenus();
+	}
+
+
+	@Override
+	protected AccessibleUndoManager getUndoManager() {
+		return mainFrame.getDocument().getUndoManager();
+	}
+
+
+	@Override
+	protected JMenu getUndoMenu() {
+		return mainFrame.getUndoMenu();
+	}
+
+
+	@Override
+	protected JMenu getRedoMenu() {
+		return mainFrame.getRedoMenu();
+	}
+
+
+	@Override
+	protected Action createUndoAction(UndoableEdit edit) {
+		return new UndoToAction(mainFrame, edit);
+	}
+
+
+	@Override
+	protected Action createRedoAction(UndoableEdit edit) {
+		return new RedoToAction(mainFrame, edit);
 	}
 }

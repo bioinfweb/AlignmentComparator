@@ -4,6 +4,20 @@ main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/lib/biojava3-alignment-3.0.4.jar -text
 main/lib/biojava3-core-3.0.4.jar -text
+main/resources/symbols/Delete16.png -text
+main/resources/symbols/Delete22.png -text
+main/resources/symbols/NewComment16.png -text
+main/resources/symbols/NewComment22.png -text
+main/resources/symbols/Open16.png -text
+main/resources/symbols/Open22.png -text
+main/resources/symbols/Redo16.png -text
+main/resources/symbols/Redo22.png -text
+main/resources/symbols/Save16.png -text
+main/resources/symbols/Save22.png -text
+main/resources/symbols/SaveAs16.png -text
+main/resources/symbols/SaveAs22.png -text
+main/resources/symbols/Undo16.png -text
+main/resources/symbols/Undo22.png -text
 main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignmentCompoundSet.java -text svneol=unset#text/plain
@@ -31,13 +45,21 @@ main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelSelectio
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentPositionPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/MainFrame.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/AddCommentAction.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/ChangeCommentTextAction.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/CompareAlignmentsAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/DocumentAction.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/MoveCommentAction.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/OpenResultsAction.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/RemoveCommentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/AddCommentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/ChangeCommentTextAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/MoveCommentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RedoAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RedoToAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveCommentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoRedoToAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoToAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/CompareAlignmentsAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/ExitAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/OpenResultsAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/SaveAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/SaveAsAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentPositioner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositionData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositioner.java -text svneol=unset#text/plain

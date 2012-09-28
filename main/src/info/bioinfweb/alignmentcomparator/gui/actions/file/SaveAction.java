@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.gui.actions;
+package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
 import java.awt.Toolkit;
@@ -26,30 +26,32 @@ import java.awt.event.KeyEvent;
 import javax.swing.Action;
 import javax.swing.KeyStroke;
 
-import info.bioinfweb.alignmentcomparator.document.undo.MoveCommentEdit;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
+import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 
 
 
-public class MoveCommentAction extends DocumentAction {
-	public MoveCommentAction(MainFrame mainFrame) {
+public class SaveAction extends DocumentAction{
+	public SaveAction(MainFrame mainFrame) {
 		super(mainFrame);
-		putValue(Action.NAME, "Move comment"); 
-		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_M);
-		putValue(Action.SHORT_DESCRIPTION, "Move comment"); 
-		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('M', 
-		    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		putValue(Action.NAME, "Save"); 
+	  putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+		putValue(Action.SHORT_DESCRIPTION, "Save document");
+		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('S', 
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+	  loadSymbols("Save");
 	}
 
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		getDocument().executeEdit(new MoveCommentEdit(getDocument(), getSelection().getComment(), getSelection().getCommentPosition()));
+		getDocument().save();
 	}
 
 	
 	@Override
 	public void setEnabled() {
-		setEnabled(getSelection().isSequenceSelected() && getSelection().isCommentSelected());
+		setEnabled(!getDocument().isEmpty());
 	}
 }
