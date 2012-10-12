@@ -37,7 +37,9 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
+import org.biojava3.core.sequence.template.Compound;
 import org.biojava3.core.sequence.template.Sequence;
 import org.biojava3.core.sequence.template.SequenceView;
 
@@ -50,8 +52,8 @@ public class Document extends SwingSaver
 	
 	
 	private String[] names;
-	private Sequence<NucleotideCompound>[][] unalignedSequences;
-	private SequenceView<NucleotideCompound> [][] alignedSequences;
+	private DNASequence[][] unalignedSequences;
+	private SequenceView[][] alignedSequences;
 	private int[][] unalignedIndices; 
 	private CommentList comments = new CommentList();
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
@@ -64,8 +66,8 @@ public class Document extends SwingSaver
 	}
 	
 	
-	public void setUnalignedData(Map<String, Sequence<NucleotideCompound>> firstAlignment, 
-			Map<String, Sequence<NucleotideCompound>> secondAlignment, SuperAlignmentAlgorithm algorithm) {
+	public void setUnalignedData(Map<String, DNASequence> firstAlignment, Map<String, DNASequence> secondAlignment, 
+			SuperAlignmentAlgorithm algorithm) {
 		
 		clear();
 		createArrays(firstAlignment.size());
@@ -82,7 +84,7 @@ public class Document extends SwingSaver
 	}
 	
 	
-	public void setAlignedData(String[] names, Sequence<NucleotideCompound>[][] sequences, int[][] unalignedIndices) {
+	public void setAlignedData(String[] names, DNASequence[][] sequences, int[][] unalignedIndices) {
 		this.names = names;
 		unalignedSequences = sequences;
 		this.unalignedIndices = unalignedIndices;
@@ -109,7 +111,7 @@ public class Document extends SwingSaver
 
 	public void clear() {
 		names = new String[0];
-		unalignedSequences = new Sequence[0][];
+		unalignedSequences = new DNASequence[0][];
 		alignedSequences = new SequenceView[0][];
 		unalignedIndices = new int[0][];
 		comments.clear();
@@ -123,7 +125,7 @@ public class Document extends SwingSaver
 	
 	private void createArrays(int size) {
 		names = new String[size];
-		unalignedSequences = new Sequence[2][size];
+		unalignedSequences = new DNASequence[2][size];
 		alignedSequences = new SequenceView[2][size];
 	}
 	
@@ -133,17 +135,17 @@ public class Document extends SwingSaver
 	}
 	
 	
-	public Sequence<NucleotideCompound>[] getSingleAlignment(int index) {
+	public DNASequence[] getSingleAlignment(int index) {
 		return unalignedSequences[index];
 	}
 	
 	
-	public Sequence<NucleotideCompound> getAlignedSequence(int alignmentIndex, int sequenceIndex) {
+	public Sequence getAlignedSequence(int alignmentIndex, int sequenceIndex) {
 		return alignedSequences[alignmentIndex][sequenceIndex];
 	}
 	
 	
-	public Sequence<NucleotideCompound> getUnalignedSequence(int alignmentIndex, int sequenceIndex) {
+	public DNASequence getUnalignedSequence(int alignmentIndex, int sequenceIndex) {
 		return unalignedSequences[alignmentIndex][sequenceIndex];
 	}
 	

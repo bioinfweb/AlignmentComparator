@@ -77,19 +77,26 @@ public class CompareAlignmentsAction extends DocumentAction {
 	}
 	
 	
-	private Map<String, Sequence<NucleotideCompound>> readAlignment(File file) throws IOException {
-	//private Map<String, DNASequence> readAlignment(File file) throws IOException {
-    FastaReader<Sequence<NucleotideCompound>, NucleotideCompound> fastaReader = 
-    	  new FastaReader<Sequence<NucleotideCompound>, NucleotideCompound>(
+	private Map<String, DNASequence> readAlignment(File file) throws IOException {
+  	FastaReader<DNASequence, NucleotideCompound> fastaReader = 
+  	    new FastaReader<DNASequence, NucleotideCompound>(
     	  		new BufferedInputStream(new FileInputStream(file)),
-    	  		//new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
-    	  		new FastaHeaderParserInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
-    	  			public void parseHeader(String header, Sequence<NucleotideCompound> sequence) {}
-						},
+    	  		new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
             new DNASequenceCreator(new AlignmentAmbiguityNucleotideCompoundSet()));  //TODO Was würde DNASequenceCreator anders machen? 
-    
 		return fastaReader.process();
-		//return (Map)FastaReaderHelper.readFastaDNASequence(file);
+
+		//private Map<String, DNASequence> readAlignment(File file) throws IOException {
+//    FastaReader<Sequence<NucleotideCompound>, NucleotideCompound> fastaReader = 
+//    	  new FastaReader<Sequence<NucleotideCompound>, NucleotideCompound>(
+//    	  		new BufferedInputStream(new FileInputStream(file)),
+//    	  		//new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
+//    	  		new FastaHeaderParserInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
+//    	  			public void parseHeader(String header, Sequence<NucleotideCompound> sequence) {}
+//						},
+//            new DNASequenceCreator(new AlignmentAmbiguityNucleotideCompoundSet()));  //TODO Was würde DNASequenceCreator anders machen? 
+//    
+//		return fastaReader.process();
+		//return FastaReaderHelper.readFastaDNASequence(file);
 	}
 
 

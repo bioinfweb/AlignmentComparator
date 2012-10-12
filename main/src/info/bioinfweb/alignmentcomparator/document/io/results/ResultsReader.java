@@ -48,11 +48,11 @@ import org.biojava3.core.sequence.template.Sequence;
 public class ResultsReader implements ResultsXMLConstants {
   private XMLEventReader reader;
   
-  private List<Sequence<NucleotideCompound>[]> unalignedSequences = new LinkedList<Sequence<NucleotideCompound>[]>();
+  private List<DNASequence[]> unalignedSequences = new LinkedList<DNASequence[]>();
   private List<int[]> unalignedIndicesList = new LinkedList<int[]>();
   
   
-  private Sequence<NucleotideCompound>[] readAlignment() throws XMLStreamException {
+  private DNASequence[] readAlignment() throws XMLStreamException {
   	List<Sequence<NucleotideCompound>> result = new LinkedList<Sequence<NucleotideCompound>>();
     XMLEvent event = reader.nextEvent();
     while (event.getEventType() != XMLStreamConstants.END_ELEMENT) {
@@ -68,7 +68,7 @@ public class ResultsReader implements ResultsXMLConstants {
       }
       event = reader.nextEvent();
     }
-    return result.toArray(new Sequence[result.size()]);
+    return result.toArray(new DNASequence[result.size()]);
   }
   
   
@@ -209,7 +209,7 @@ public class ResultsReader implements ResultsXMLConstants {
     }
     
     alignments.setAlignedData(names, 
-    		unalignedSequences.toArray(new Sequence[unalignedSequences.size()][]), 
+    		unalignedSequences.toArray(new DNASequence[unalignedSequences.size()][]), 
     		unalignedIndicesList.toArray(new int[unalignedIndicesList.size()][]));
   }
 
