@@ -21,84 +21,75 @@ package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
+import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.swing.JFileChooser;
+import javax.swing.Action;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.io.DNASequenceCreator;
 import org.biojava3.core.sequence.io.FastaReader;
+import org.biojava3.core.sequence.io.FastaReaderHelper;
+import org.biojava3.core.sequence.io.GenericFastaHeaderParser;
 import org.biojava3.core.sequence.io.template.FastaHeaderParserInterface;
 import org.biojava3.core.sequence.template.Sequence;
 
 
 
 public class CompareAlignmentsAction extends DocumentAction {
-  private JFileChooser fileChooser = null;
+  private StartComparisonDialog dialog = null;
   
   
   public CompareAlignmentsAction(MainFrame mainFrame) {
 		super(mainFrame);
+		dialog = new StartComparisonDialog(getMainFrame());
+		putValue(Action.NAME, "Compare alignments"); 
+	  putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
+		putValue(Action.SHORT_DESCRIPTION, "Compare alignments");
+		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
+	  loadSymbols("Open");
 	}
-
-
-	private JFileChooser getFileChooser() {
-  	if (fileChooser == null) {
-  		fileChooser = new JFileChooser();
-  		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("FASTA alignment", "fasta", "fas"));
-  	}
-  	return fileChooser;
-  }
 
   
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		getFileChooser().setDialogTitle("First alignment");
-		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
-			File firstAlignment = getFileChooser().getSelectedFile();
-			getFileChooser().setDialogTitle("Second alignment");		
-			if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
-				File secondAlignment = getFileChooser().getSelectedFile();
-				//TODO load Alignments
-				//TODO align Alignments
-				//TODO store Alignments in class Alignments
+		if (dialog.execute()) {
+			try {
+				getDocument().setUnalignedData(readAlignment(new File(dialog.getFirstPath())), 
+						readAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}
-		}		
-	}
-	
-	
-	private void processAlignments(File firstFile, File secondFile) {
-		try {
-			Map<String, Sequence<NucleotideCompound>> firstAlignment = readAlignment(firstFile);
-			Map<String, Sequence<NucleotideCompound>> secondAlignment = readAlignment(secondFile);
-			
-		}
-		catch (IOException e) {
-			JOptionPane.showMessageDialog(getMainFrame(), "Error", "An IO error occurred while loading the files.", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
+			catch (IOException ex) {
+				JOptionPane.showMessageDialog(getMainFrame(), "Error", "An IO error occurred while loading the files.", 
+						JOptionPane.ERROR_MESSAGE);
+				ex.printStackTrace();
+			}
 		}
 	}
 	
 	
 	private Map<String, Sequence<NucleotideCompound>> readAlignment(File file) throws IOException {
+	//private Map<String, DNASequence> readAlignment(File file) throws IOException {
     FastaReader<Sequence<NucleotideCompound>, NucleotideCompound> fastaReader = 
     	  new FastaReader<Sequence<NucleotideCompound>, NucleotideCompound>(
     	  		new BufferedInputStream(new FileInputStream(file)),
+    	  		//new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
     	  		new FastaHeaderParserInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
     	  			public void parseHeader(String header, Sequence<NucleotideCompound> sequence) {}
 						},
             new DNASequenceCreator(new AlignmentAmbiguityNucleotideCompoundSet()));  //TODO Was würde DNASequenceCreator anders machen? 
     
 		return fastaReader.process();
+		//return (Map)FastaReaderHelper.readFastaDNASequence(file);
 	}
 
 

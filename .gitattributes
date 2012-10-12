@@ -4,20 +4,6 @@ main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/lib/biojava3-alignment-3.0.4.jar -text
 main/lib/biojava3-core-3.0.4.jar -text
-main/resources/symbols/Delete16.png -text
-main/resources/symbols/Delete22.png -text
-main/resources/symbols/NewComment16.png -text
-main/resources/symbols/NewComment22.png -text
-main/resources/symbols/Open16.png -text
-main/resources/symbols/Open22.png -text
-main/resources/symbols/Redo16.png -text
-main/resources/symbols/Redo22.png -text
-main/resources/symbols/Save16.png -text
-main/resources/symbols/Save22.png -text
-main/resources/symbols/SaveAs16.png -text
-main/resources/symbols/SaveAs22.png -text
-main/resources/symbols/Undo16.png -text
-main/resources/symbols/Undo22.png -text
 main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignmentCompoundSet.java -text svneol=unset#text/plain
@@ -68,6 +54,20 @@ main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/StartComparisonDialog.ja
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanelFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/ConsensusNeedlemanWunschPanel.java -text svneol=unset#text/plain
+main/src/resources/symbols/Delete16.png -text
+main/src/resources/symbols/Delete22.png -text
+main/src/resources/symbols/NewComment16.png -text
+main/src/resources/symbols/NewComment22.png -text
+main/src/resources/symbols/Open16.png -text
+main/src/resources/symbols/Open22.png -text
+main/src/resources/symbols/Redo16.png -text
+main/src/resources/symbols/Redo22.png -text
+main/src/resources/symbols/Save16.png -text
+main/src/resources/symbols/Save22.png -text
+main/src/resources/symbols/SaveAs16.png -text
+main/src/resources/symbols/SaveAs22.png -text
+main/src/resources/symbols/Undo16.png -text
+main/src/resources/symbols/Undo22.png -text
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain

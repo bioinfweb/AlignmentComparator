@@ -55,11 +55,11 @@ public class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
 	
   
 	@Override
-	public void performAlignment(Document alignments) {
+	public void performAlignment(Document document) {
 		//TODO restliche Parameter für Aligner setzen
-		aligner.setQuery(consensusSequence(alignments, 0));
-		aligner.setTarget(consensusSequence(alignments, 1));
+		aligner.setQuery(consensusSequence(document, 0));
+		aligner.setTarget(consensusSequence(document, 1));
 		//TODO Muss Alignierung noch durch speziellen Befehl durchgeführt werden?
-		addSuperGaps(aligner.getProfile(), alignments);
+		addSuperGaps(aligner.getProfile(), document);
 	}
 }

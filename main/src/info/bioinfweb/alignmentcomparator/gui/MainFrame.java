@@ -31,9 +31,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
@@ -80,7 +77,7 @@ public class MainFrame extends JFrame {
 		this.setSize(400, 300);
 		this.setJMenuBar(getMainMenu());
 		this.setContentPane(getJContentPane());
-		this.setTitle("JFrame");
+		this.setTitle("AlignmentComparator");
 	}
 
 	

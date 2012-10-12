@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.gui.dialogs;
 
 
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.CompareAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanel;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
 import info.webinsel.util.swing.OkCancelApplyDialog;
@@ -41,6 +42,8 @@ import javax.swing.JButton;
 import java.awt.Component;
 import javax.swing.JComboBox;
 import java.awt.Insets;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 
@@ -56,7 +59,7 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	private AlgorithmPreferencesPanel preferencesPanel = null;
 	private JFileChooser fileChooser = null;
 	private JPanel algorithmPanel;
-	private JComboBox algorithmComboBox;
+	private JComboBox<CompareAlgorithm> algorithmComboBox;
 	private JPanel outerPreferencesPanel;
 
 	
@@ -65,30 +68,45 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	 */
 	public StartComparisonDialog(Frame owner) {
 		super(owner);
+		setModal(true);
 		initialize();
 	}
 
 	
 	@Override
 	protected boolean apply() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
-
-
+	
+	
+	public String getFirstPath() {
+		return getFirstPathTextField().getText();
+	}
+	
+	
+	public String getSecondPath() {
+		return getSecondPathTextField().getText();
+	}
+	
+	
+	public SuperAlignmentAlgorithm getAlgorithm() {
+		return getPreferencesPanel().getAlgorithm();
+	}
+	
+	
 	/**
 	 * This method initializes this
 	 * 
 	 * @return void
 	 */
 	private void initialize() {
+		setTitle("Compare alignments");
 		//this.setSize(300, 200);
-		this.setContentPane(getJContentPane());
+		setContentPane(getJContentPane());
 		getApplyButton().setVisible(false);
 		pack();
 	}
 
-	
 	
 	private JFileChooser getFileChooser() {
   	if (fileChooser == null) {
@@ -114,7 +132,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 		}
 		return jContentPane;
 	}
-
 
 
 	/**
@@ -153,7 +170,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	}
 
 
-
 	/**
 	 * This method initializes firstPathTextField	
 	 * 	
@@ -190,7 +206,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	}
 
 
-
 	/**
 	 * This method initializes secondPathTextField	
 	 * 	
@@ -202,7 +217,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 		}
 		return secondPathTextField;
 	}
-
 
 
 	/**
@@ -228,6 +242,10 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 
 
 	private void setPereferencesPanel(CompareAlgorithm algorithm) {
+		if (preferencesPanel != null) {
+			getAlgorithmPanel().remove((Component)preferencesPanel);
+		}
+		
 		preferencesPanel = null;
 		if (algorithm != null) {
 			preferencesPanel = AlgorithmPreferencesPanelFactory.getInstance().getPanel(algorithm);
@@ -276,9 +294,18 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	}
 	
 	
-	private JComboBox getAlgorithmComboBox() {
+	private JComboBox<CompareAlgorithm> getAlgorithmComboBox() {
 		if (algorithmComboBox == null) {
-			algorithmComboBox = new JComboBox();
+			algorithmComboBox = new JComboBox<CompareAlgorithm>();
+			algorithmComboBox.addPropertyChangeListener(new PropertyChangeListener() {
+						public void propertyChange(PropertyChangeEvent e) {
+							setPereferencesPanel((CompareAlgorithm)getAlgorithmComboBox().getSelectedItem());
+						}
+					});
+			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
+			for (int i = 0; i < algorithms.length; i++) {
+		    algorithmComboBox.addItem(algorithms[i]);
+		  }
 		}
 		return algorithmComboBox;
 	}
@@ -289,5 +316,10 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 			outerPreferencesPanel = new JPanel();
 		}
 		return outerPreferencesPanel;
+	}
+
+
+	public AlgorithmPreferencesPanel getPreferencesPanel() {
+		return preferencesPanel;
 	}
 }
