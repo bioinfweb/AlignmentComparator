@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.webinsel.util.Math2;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.TreeMap;
 public class CommentList {
 	private TreeMap<CommentPosition, Comment> map = new TreeMap<CommentPosition, Comment>(new CommentPositionComparator());
 	private Map<Class<? extends CommentPositioner>, Object> gloabelPositionerData = 
-			new TreeMap<Class<? extends CommentPositioner>, Object>();
+			new HashMap<Class<? extends CommentPositioner>, Object>();
 
   
 	public CommentPositionComparator comparator() {

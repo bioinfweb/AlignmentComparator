@@ -41,6 +41,6 @@ public abstract class DocumentEdit extends AbstractDocumentEdit {
 	
 	@Override
 	public void registerDocumentChange() {
-		//TODO Implement
+		document.registerChange();
 	}
 }

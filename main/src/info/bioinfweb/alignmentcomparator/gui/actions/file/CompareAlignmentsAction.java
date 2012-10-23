@@ -39,10 +39,7 @@ import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.io.DNASequenceCreator;
 import org.biojava3.core.sequence.io.FastaReader;
-import org.biojava3.core.sequence.io.FastaReaderHelper;
 import org.biojava3.core.sequence.io.GenericFastaHeaderParser;
-import org.biojava3.core.sequence.io.template.FastaHeaderParserInterface;
-import org.biojava3.core.sequence.template.Sequence;
 
 
 
@@ -84,19 +81,6 @@ public class CompareAlignmentsAction extends DocumentAction {
     	  		new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
             new DNASequenceCreator(new AlignmentAmbiguityNucleotideCompoundSet()));  //TODO Was würde DNASequenceCreator anders machen? 
 		return fastaReader.process();
-
-		//private Map<String, DNASequence> readAlignment(File file) throws IOException {
-//    FastaReader<Sequence<NucleotideCompound>, NucleotideCompound> fastaReader = 
-//    	  new FastaReader<Sequence<NucleotideCompound>, NucleotideCompound>(
-//    	  		new BufferedInputStream(new FileInputStream(file)),
-//    	  		//new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
-//    	  		new FastaHeaderParserInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
-//    	  			public void parseHeader(String header, Sequence<NucleotideCompound> sequence) {}
-//						},
-//            new DNASequenceCreator(new AlignmentAmbiguityNucleotideCompoundSet()));  //TODO Was würde DNASequenceCreator anders machen? 
-//    
-//		return fastaReader.process();
-		//return FastaReaderHelper.readFastaDNASequence(file);
 	}
 
 

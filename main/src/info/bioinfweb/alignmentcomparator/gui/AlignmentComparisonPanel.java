@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.SingleLineCommentPositioner;
 import info.webinsel.util.Math2;
@@ -48,7 +49,7 @@ import org.biojava3.core.sequence.template.Sequence;
 
 
 
-public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
+public class AlignmentComparisonPanel extends JPanel implements DocumentListener {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String DEFAULT_BG_COLOR_ID = "DEFAULT";
@@ -147,10 +148,10 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
 
 
 	@Override
-  public void stateChanged(ChangeEvent e) {
+	public void changeHappened() {
 		assignPaintSize();
 		repaint();
-  }
+	}
 
 
 	private void assignPaintSize() {
@@ -218,20 +219,21 @@ public class AlignmentComparisonPanel extends JPanel implements ChangeListener {
   	Set<NucleotideCompound> consituents = compound.getConsituents();
   	final float height = getCompoundHeight() / (float)consituents.size();
   	Iterator<NucleotideCompound> iterator = consituents.iterator();
-  	while (iterator.hasNext()) {
-  		Color color = getColorMap().get(iterator.next().getBase());
+  	float bgY = y;
+  	while (iterator.hasNext()) {  // Fill the compound rectangle with differently colored zones, if ambiguity codes are used.
+  		Color color = getColorMap().get(iterator.next().getUpperedBase());
   		if (color == null) {
   			color = getColorMap().get(DEFAULT_BG_COLOR_ID);
   		}
-    	g.setBackground(color);
-    	g.fill(new Rectangle2D.Float(x, y, getCompoundWidth(), height));
-    	x += height;
+  		g.setColor(color);
+    	g.fill(new Rectangle2D.Float(x, bgY, getCompoundWidth(), height));
+    	bgY += height;
   	}
   	
   	g.setColor(getColorMap().get(FONT_COLOR_ID));
   	g.setFont(getFont());
-		FontMetrics fm = g.getFontMetrics(); 
-  	g.drawString(compound.getBase(), x + fm.getAscent() + fm.getHeight(), y);
+		FontMetrics fm = g.getFontMetrics();
+  	g.drawString(compound.getBase(), x + 0.5f * (getCompoundWidth() - fm.charWidth(compound.getBase().charAt(0))), y + fm.getAscent());
   }
   
   

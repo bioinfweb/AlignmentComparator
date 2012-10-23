@@ -6,6 +6,7 @@ main/lib/biojava3-alignment-3.0.4.jar -text
 main/lib/biojava3-core-3.0.4.jar -text
 main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/DocumentListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignmentCompoundSet.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignmentSequenceView.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/comments/Comment.java -text svneol=unset#text/plain
@@ -47,6 +48,7 @@ main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/OpenResultsAction.j
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/SaveAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/SaveAsAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentPositioner.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentPositionerFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositionData.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositioner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineGlobalCommentPositionerData.java -text svneol=unset#text/plain

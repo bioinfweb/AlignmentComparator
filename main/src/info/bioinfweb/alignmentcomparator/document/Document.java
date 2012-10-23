@@ -23,6 +23,8 @@ import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsWriter;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
+import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
+import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
 import info.webinsel.util.ChangeMonitorable;
 import info.webinsel.util.io.Savable;
 import info.webinsel.util.swing.AccessibleUndoManager;
@@ -33,13 +35,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
 
 import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.NucleotideCompound;
-import org.biojava3.core.sequence.template.Compound;
 import org.biojava3.core.sequence.template.Sequence;
 import org.biojava3.core.sequence.template.SequenceView;
 
@@ -49,6 +51,7 @@ public class Document extends SwingSaver
     implements ChangeMonitorable, Savable, SwingSavable {
 	
 	public static final int GAP_INDEX = -1;
+	public static final String DEFAULT_DOCUMENT_NAME = "New";
 	
 	
 	private String[] names;
@@ -58,10 +61,11 @@ public class Document extends SwingSaver
 	private CommentList comments = new CommentList();
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
 	private ResultsWriter writer = new ResultsWriter();
-	
+  private List<DocumentListener> views = new LinkedList<DocumentListener>();
+
 	
 	public Document() {
-		super();
+		super(DEFAULT_DOCUMENT_NAME);
 		clear();
 	}
 	
@@ -81,6 +85,7 @@ public class Document extends SwingSaver
 		}
 		
 		algorithm.performAlignment(this);
+		registerChange();
 	}
 	
 	
@@ -94,6 +99,7 @@ public class Document extends SwingSaver
 				alignedSequences[alignmentIndex][sequenceIndex] = new SuperAlignmentSequenceView(this, alignmentIndex, sequenceIndex);
 			}
 		}
+		performChange();  // Hier nicht registerChange(), da Dokument am Anfang nicht als ungespeichert angezeigt werden soll.
 	}
 
 	
@@ -127,6 +133,7 @@ public class Document extends SwingSaver
 		names = new String[size];
 		unalignedSequences = new DNASequence[2][size];
 		alignedSequences = new SequenceView[2][size];
+		unalignedIndices = new int[2][0];
 	}
 	
 	
@@ -199,4 +206,45 @@ public class Document extends SwingSaver
     }
     edit.redo();  // for real this time
   }
+
+
+	public boolean addDocumentListener(DocumentListener listener) {
+		return views.add(listener);
+	}
+	
+	
+	public boolean removeDocumentListener(DocumentListener listener) {
+		return views.remove(listener);
+	}
+	
+	
+  /** Alerts all registered views to display made changes. */
+  private void fireChangeHappened() {
+	  Iterator<DocumentListener> iterator = views.iterator();
+	  while (iterator.hasNext()) {
+	  	iterator.next().changeHappened();
+	  }
+  }
+
+  
+  /** Alerts all comment positioners to reposition the comments because of made changes. */
+  private void alertPositioners() {
+  	Iterator<CommentPositioner> iterator = CommentPositionerFactory.getInstance().getAllPositioners().iterator();
+  	while (iterator.hasNext()) {
+  		iterator.next().position(getComments());
+  	}
+  }
+
+  
+  private void performChange() {
+		alertPositioners();  // Positioners must be alerted first
+		fireChangeHappened();
+  }
+  
+
+  @Override
+	public void registerChange() {
+		super.registerChange();
+		performChange();
+	}
 }

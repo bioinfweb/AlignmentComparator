@@ -74,10 +74,11 @@ public class MainFrame extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
+		this.setTitle("AlignmentComparator");
 		this.setSize(400, 300);
 		this.setJMenuBar(getMainMenu());
 		this.setContentPane(getJContentPane());
-		this.setTitle("AlignmentComparator");
+		getDocument().addDocumentListener(getComparisonPanel());
 	}
 
 	

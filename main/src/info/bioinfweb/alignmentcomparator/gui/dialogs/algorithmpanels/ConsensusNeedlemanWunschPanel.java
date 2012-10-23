@@ -21,7 +21,6 @@ package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.ConsensusPairwiseAligner;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
-import info.webinsel.util.Math2;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
