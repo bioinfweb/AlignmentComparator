@@ -42,7 +42,6 @@ import java.util.TreeMap;
 
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
@@ -205,6 +204,7 @@ public class AlignmentComparisonPanel extends JPanel implements DocumentListener
 	private void paintSequence(Graphics2D g, Sequence<NucleotideCompound> sequence, float x, float y) {
 		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinX() - x) / getCompoundWidth()) - 1);
 		int lastIndex = Math.min(sequence.getLength() - 1, (int)Math.round((getVisibleRect().getMaxX() - x) / getCompoundWidth()));
+  	x += firstIndex * getCompoundWidth();
 		for (int i = firstIndex; i <= lastIndex; i++) {
 	    paintCompound(g, sequence.getCompoundAt(i), x, y);
 	    x += getCompoundWidth();

@@ -56,16 +56,24 @@ public class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
 				  globalAlignment.getAlignedSequence(i);
 		  int[] indexList = new int[sequence.getLength()];
 		  
+//		  System.out.println(i + ": ");
 		  int unalignedPos = 1;  // biojava indices start at 1 [...]
 		  for (int seqPos = 0; seqPos < indexList.length; seqPos++) {  // biojava indices start at 1 [...]
+		  	System.out.print(sequence.getCompoundAt(seqPos + 1).getBase());
 				if (sequence.getCompoundAt(seqPos + 1).getBase().equals("-")) {  //TODO Gap Zeichen besser aus entsprechenden BioJava Klassen bestimmen
+//					System.out.print("-");
 					indexList[seqPos] = -1;
 				}
 				else {
+//					System.out.print("B");
 					indexList[seqPos] = unalignedPos;
 					unalignedPos++;
 				}
+				if (seqPos % 100 == 0) {
+					System.out.println();
+				}
 			}
+//		  System.out.println();
 		  alignments.setUnalignedIndexList(i - 1, indexList);  
 		}
 	}
@@ -73,11 +81,8 @@ public class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
   
 	@Override
 	public void performAlignment(Document document) {
-		//TODO restliche Parameter für Aligner setzen
 		aligner.setQuery(consensusSequence(document, 0));
 		aligner.setTarget(consensusSequence(document, 1));
-		
-		//TODO Muss Alignierung noch durch speziellen Befehl durchgeführt werden?
 		addSuperGaps(aligner.getProfile(), document);
 	}
 }
