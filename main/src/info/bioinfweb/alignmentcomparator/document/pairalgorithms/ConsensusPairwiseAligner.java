@@ -19,70 +19,37 @@
 package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 
-import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.util.ConsensusSequenceCreator;
-
-import org.biojava3.alignment.template.AbstractPairwiseSequenceAligner;
-import org.biojava3.alignment.template.AlignedSequence;
-import org.biojava3.alignment.template.Profile;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
 
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment.SuperAlignment;
+import info.bioinfweb.util.ConsensusSequenceCreator;
 
 
-public class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
-	private AbstractPairwiseSequenceAligner<Sequence<NucleotideCompound>, NucleotideCompound> aligner = null;
-	
-	
-  public ConsensusPairwiseAligner(
-			AbstractPairwiseSequenceAligner<Sequence<NucleotideCompound>, NucleotideCompound> aligner) {
-  	
-		super();
-		this.aligner = aligner;
-	}
 
-
-	private Sequence<NucleotideCompound> consensusSequence(Document alignments, int alignmentIndex) {
-		return ConsensusSequenceCreator.getInstance().majorityRuleConsensus(
-				alignments.getSingleAlignment(alignmentIndex));
-  }
-
-	
-	private void addSuperGaps(Profile<Sequence<NucleotideCompound>, NucleotideCompound> globalAlignment, 
-			Document alignments) {
-		
-		for (int i = 1; i <= globalAlignment.getSize(); i++) {  // biojava indices start at 1 [...]
-			AlignedSequence<Sequence<NucleotideCompound>, NucleotideCompound> sequence = 
-				  globalAlignment.getAlignedSequence(i);
-		  int[] indexList = new int[sequence.getLength()];
+public abstract class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
+	protected void addSuperGaps(SuperAlignment globalAlignment,	Document alignments) {
+		for (int i = 0; i < globalAlignment.sequenceCount(); i++) {
+		  int[] indexList = new int[globalAlignment.sequenceLength(i)];
 		  
-//		  System.out.println(i + ": ");
 		  int unalignedPos = 1;  // biojava indices start at 1 [...]
-		  for (int seqPos = 0; seqPos < indexList.length; seqPos++) {  // biojava indices start at 1 [...]
-		  	System.out.print(sequence.getCompoundAt(seqPos + 1).getBase());
-				if (sequence.getCompoundAt(seqPos + 1).getBase().equals("-")) {  //TODO Gap Zeichen besser aus entsprechenden BioJava Klassen bestimmen
-//					System.out.print("-");
+		  for (int seqPos = 0; seqPos < indexList.length; seqPos++) {
+				if (globalAlignment.containsGap(i, seqPos)) {
 					indexList[seqPos] = -1;
 				}
 				else {
-//					System.out.print("B");
 					indexList[seqPos] = unalignedPos;
 					unalignedPos++;
 				}
-				if (seqPos % 100 == 0) {
-					System.out.println();
-				}
 			}
-//		  System.out.println();
-		  alignments.setUnalignedIndexList(i - 1, indexList);  
+		  alignments.setUnalignedIndexList(i, indexList);  
 		}
 	}
 	
-  
-	@Override
-	public void performAlignment(Document document) {
-		aligner.setQuery(consensusSequence(document, 0));
-		aligner.setTarget(consensusSequence(document, 1));
-		addSuperGaps(aligner.getProfile(), document);
-	}
+	
+	protected Sequence<NucleotideCompound> consensusSequence(Document alignments, int alignmentIndex) {
+		return ConsensusSequenceCreator.getInstance().majorityRuleConsensus(
+				alignments.getSingleAlignment(alignmentIndex));
+  }
 }

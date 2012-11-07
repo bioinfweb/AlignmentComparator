@@ -47,7 +47,8 @@ public class AlgorithmPreferencesPanelFactory {
 
   
   private void fillList() {
-  	panels.put(CompareAlgorithm.CONSENSUS_NEEDLEMAN_WUNSCH, new ConsensusNeedlemanWunschPanel());
+  	panels.put(CompareAlgorithm.CONSENSUS_BIOJAVA_NEEDLEMAN_WUNSCH, new ConsensusNeedlemanWunschPanel());
+  	panels.put(CompareAlgorithm.CONSENSUS_BIW_NEEDLEMAN_WUNSCH, new ConsensusBIWNeedlemanWunschPanel());
   }
   
 

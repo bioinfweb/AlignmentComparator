@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.ConsensusPairwiseAligner;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.BioJavaConsensusPairwiseAligner;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 import info.bioinfweb.biojava3.core.sequence.compound.NucleotideCompoundSet;
 
@@ -72,7 +72,7 @@ public class ConsensusNeedlemanWunschPanel extends JPanel implements AlgorithmPr
 			  new NeedlemanWunsch<Sequence<NucleotideCompound>, NucleotideCompound>();
 		needlemanWunsch.setGapPenalty(gapPenalty);
 		needlemanWunsch.setSubstitutionMatrix(substitutionMatrix);
-		return new ConsensusPairwiseAligner(needlemanWunsch);
+		return new BioJavaConsensusPairwiseAligner(needlemanWunsch);
 	}
 
 

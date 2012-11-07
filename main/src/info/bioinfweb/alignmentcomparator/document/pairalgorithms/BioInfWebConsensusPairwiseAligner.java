@@ -19,8 +19,25 @@
 package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment.CharSequenceSuperAlignment;
+import info.bioinfweb.util.alignment.pairwise.PairwiseAligner;
 
-public enum CompareAlgorithm {
-  CONSENSUS_BIOJAVA_NEEDLEMAN_WUNSCH,
-  CONSENSUS_BIW_NEEDLEMAN_WUNSCH;
+
+
+public class BioInfWebConsensusPairwiseAligner extends ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
+  private PairwiseAligner aligner;
+  
+  
+  public BioInfWebConsensusPairwiseAligner(PairwiseAligner aligner) {
+		super();
+		this.aligner = aligner;
+	}
+
+
+	@Override
+	public void performAlignment(Document alignments) {
+		addSuperGaps(new CharSequenceSuperAlignment(aligner.align(consensusSequence(alignments, 0).getSequenceAsString(), 
+				consensusSequence(alignments, 1).getSequenceAsString())), alignments);
+	}	
 }
