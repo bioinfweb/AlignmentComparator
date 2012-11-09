@@ -40,6 +40,7 @@ main/src/info/bioinfweb/alignmentcomparator/document/undo/InsertGapEdit.java -te
 main/src/info/bioinfweb/alignmentcomparator/document/undo/InsertRemoveGapEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/MoveCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/RemoveCommentEdit.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/undo/RemoveGapEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelSelection.java -text svneol=unset#text/plain

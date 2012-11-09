@@ -19,15 +19,15 @@
 package info.bioinfweb.alignmentcomparator.document.undo;
 
 
+import info.bioinfweb.alignmentcomparator.document.Document;
+
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import info.bioinfweb.alignmentcomparator.document.Document;
 
 
-
-public class InsertGapEdit extends InsertRemoveGapEdit {
-	public InsertGapEdit(Document document, boolean inFirstAlignment,
+public class RemoveGapEdit extends InsertRemoveGapEdit {
+	public RemoveGapEdit(Document document, boolean inFirstAlignment,
 			int startPos, int endPos) {
 
 		super(document, inFirstAlignment, startPos, endPos);
@@ -36,20 +36,20 @@ public class InsertGapEdit extends InsertRemoveGapEdit {
 
 	@Override
 	public void redo() throws CannotRedoException {
-		insert();
+		remove();
 		super.redo();
 	}
 
 	
 	@Override
 	public void undo() throws CannotUndoException {
-		remove();
+		insert();
 		super.undo();
 	}
 
 	
 	@Override
 	public String getPresentationName() {
-		return "Insert gap(s) at " + getStartPos() + " in alignment " + getActiveAlignment();
+		return "Remove gap(s) at " + getStartPos() + " in alignment " + getActiveAlignment();
 	}
 }

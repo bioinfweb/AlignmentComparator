@@ -168,6 +168,43 @@ public class Document extends SwingSaver
 	}
 	
 	
+	public void insertSuperGap(int alignmentIndex, int pos) {
+		unalignedIndices[alignmentIndex].add(pos, SuperAlignmentSequenceView.GAP_INDEX);
+		if (alignmentIndex == 0) {
+			unalignedIndices[1].add(SuperAlignmentSequenceView.GAP_INDEX);
+		}
+		else {
+			unalignedIndices[0].add(SuperAlignmentSequenceView.GAP_INDEX);
+		}
+	}
+	
+	
+	public void removeSuperGap(int alignmentIndex, int pos) {
+		if (unalignedIndices[alignmentIndex].get(pos).equals(SuperAlignmentSequenceView.GAP_INDEX)) {
+			unalignedIndices[alignmentIndex].remove(pos);
+			unalignedIndices[alignmentIndex].add(SuperAlignmentSequenceView.GAP_INDEX);
+		}
+		else {
+			throw new IllegalArgumentException("There is no gap at position " + pos + " in alignment " + alignmentIndex + ".");
+		}
+	}
+	
+	
+	/**
+	 * Removes trailing super alignment gaps present in both alignments.
+	 */
+	public void removeTrailingGaps() {
+		int lastIndex = unalignedIndices[0].size() - 1;
+		while ((lastIndex >= 0) && unalignedIndices[0].get(lastIndex).equals(SuperAlignmentSequenceView.GAP_INDEX) &&
+				unalignedIndices[1].get(lastIndex).equals(SuperAlignmentSequenceView.GAP_INDEX)) {
+			
+			unalignedIndices[0].remove(lastIndex);
+			unalignedIndices[1].remove(lastIndex);
+			lastIndex--;
+		}
+	}
+	
+	
 	public void setUnalignedIndexList(int alignmentIndex, List<Integer> list) {
 		if (list instanceof ArrayList<?>) {
 			unalignedIndices[alignmentIndex] = (ArrayList<Integer>)list;

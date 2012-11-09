@@ -27,7 +27,7 @@ public abstract class InsertRemoveGapEdit extends DocumentEdit {
 	private int activeAlignment;
 	private int passiveAlignment;
   private int startPos;
-  private int endPos;
+  private int length;
   
   
 	public InsertRemoveGapEdit(Document document, boolean inFirstAlignment,
@@ -43,7 +43,21 @@ public abstract class InsertRemoveGapEdit extends DocumentEdit {
 			passiveAlignment = 0;
 		}
 		this.startPos = startPos;
-		this.endPos = endPos;
+		length = endPos - startPos + 1; 
+	}
+	
+	
+	protected void insert() {
+		for (int pos = getStartPos(); pos <= getStartPos() + getLength() - 1; pos++) {
+			getDocument().insertSuperGap(getActiveAlignment(), pos);
+		}
+	}
+	
+	
+	protected void remove() {
+		for (int pos = getStartPos(); pos <= getStartPos() + getLength() - 1; pos++) {
+			getDocument().removeSuperGap(getActiveAlignment(), getStartPos());
+		}
 	}
 
 
@@ -62,7 +76,7 @@ public abstract class InsertRemoveGapEdit extends DocumentEdit {
 	}
 
 
-	public int getEndPos() {
-		return endPos;
+	public int getLength() {
+		return length;
 	}
 }
