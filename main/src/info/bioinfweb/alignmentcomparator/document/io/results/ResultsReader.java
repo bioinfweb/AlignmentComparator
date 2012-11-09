@@ -28,6 +28,7 @@ import info.webinsel.util.io.XMLUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class ResultsReader implements ResultsXMLConstants {
   private XMLEventReader reader;
   
   private List<DNASequence[]> unalignedSequences = new LinkedList<DNASequence[]>();
-  private List<int[]> unalignedIndicesList = new LinkedList<int[]>();
+  private List<ArrayList<Integer>> unalignedIndicesList = new LinkedList<ArrayList<Integer>>();
   
   
   private DNASequence[] readAlignment() throws XMLStreamException {
@@ -72,15 +73,15 @@ public class ResultsReader implements ResultsXMLConstants {
   }
   
   
-  public static int[] decodeGapPattern(String gapPattern) {
+  public static ArrayList<Integer> decodeGapPattern(String gapPattern) {
   	int unalignedPos = 0;
-  	int[] result = new int[gapPattern.length()];
+  	ArrayList<Integer> result = new ArrayList<Integer>((int)(gapPattern.length() * Document.ARRAY_LIST_SIZE_FACTOR));
   	for (int alignedPos = 0; alignedPos < gapPattern.length(); alignedPos++) {
 			if (gapPattern.charAt(alignedPos) == TOKEN_GAP) {
-				result[alignedPos] = SuperAlignmentSequenceView.GAP_INDEX;
+				result.add(SuperAlignmentSequenceView.GAP_INDEX);
 			}
 			else {
-				result[alignedPos] = unalignedPos;
+				result.add(unalignedPos);
 				unalignedPos++;
 			}
 		}
@@ -210,7 +211,7 @@ public class ResultsReader implements ResultsXMLConstants {
     
     alignments.setAlignedData(names, 
     		unalignedSequences.toArray(new DNASequence[unalignedSequences.size()][]), 
-    		unalignedIndicesList.toArray(new int[unalignedIndicesList.size()][]));
+    		unalignedIndicesList.toArray(new ArrayList[unalignedIndicesList.size()]));
   }
 
   

@@ -19,10 +19,13 @@
 package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 
+import java.util.ArrayList;
+
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment.SuperAlignment;
 import info.bioinfweb.util.ConsensusSequenceCreator;
 
@@ -31,15 +34,15 @@ import info.bioinfweb.util.ConsensusSequenceCreator;
 public abstract class ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
 	protected void addSuperGaps(SuperAlignment globalAlignment,	Document alignments) {
 		for (int i = 0; i < globalAlignment.sequenceCount(); i++) {
-		  int[] indexList = new int[globalAlignment.sequenceLength(i)];
+			ArrayList<Integer> indexList = new ArrayList<Integer>(globalAlignment.sequenceLength(i));
 		  
 		  int unalignedPos = 1;  // biojava indices start at 1 [...]
-		  for (int seqPos = 0; seqPos < indexList.length; seqPos++) {
+		  for (int seqPos = 0; seqPos < globalAlignment.sequenceLength(i); seqPos++) {
 				if (globalAlignment.containsGap(i, seqPos)) {
-					indexList[seqPos] = -1;
+					indexList.add(SuperAlignmentSequenceView.GAP_INDEX);
 				}
 				else {
-					indexList[seqPos] = unalignedPos;
+					indexList.add(unalignedPos);
 					unalignedPos++;
 				}
 			}

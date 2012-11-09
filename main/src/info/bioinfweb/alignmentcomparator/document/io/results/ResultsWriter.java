@@ -57,10 +57,10 @@ public class ResultsWriter implements ResultsXMLConstants {
 	}
 	
 	
-	public static String encodeGapPattern(int[] indices) {
-		StringBuffer pattern = new StringBuffer(indices.length);
-		for (int pos = 0; pos < indices.length; pos++) {  
-			if (indices[pos] == SuperAlignmentSequenceView.GAP_INDEX) {
+	public static String encodeGapPattern(Document document, int alignmentIndex) {
+		StringBuffer pattern = new StringBuffer(document.getAlignedLength());
+		for (int pos = 0; pos < document.getAlignedLength(); pos++) {  
+			if (document.getUnalignedIndex(alignmentIndex, pos) == SuperAlignmentSequenceView.GAP_INDEX) {
 				pattern.append(TOKEN_GAP);
 			}
 			else {
@@ -73,7 +73,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 	
 	private void writeGapPattern(Document alignments, int alignmentIndex) throws XMLStreamException {
 		writer.writeStartElement(TAG_GAP_PATTERN.getLocalPart());
-		writer.writeCharacters(encodeGapPattern(alignments.getUnalignedIndices(alignmentIndex)));
+		writer.writeCharacters(encodeGapPattern(alignments, alignmentIndex));
 		writer.writeEndElement();
 	}
 	

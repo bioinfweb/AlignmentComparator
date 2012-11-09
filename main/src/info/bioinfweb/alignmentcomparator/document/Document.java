@@ -34,6 +34,7 @@ import info.webinsel.util.swing.SwingSaver;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,12 +53,13 @@ public class Document extends SwingSaver
 	
 	public static final int GAP_INDEX = -1;
 	public static final String DEFAULT_DOCUMENT_NAME = "New";
+	public static final double ARRAY_LIST_SIZE_FACTOR = 1.3;
 	
 	
 	private String[] names;
 	private DNASequence[][] unalignedSequences;
 	private SequenceView[][] alignedSequences;
-	private int[][] unalignedIndices; 
+	private ArrayList<Integer>[] unalignedIndices; 
 	private CommentList comments = new CommentList();
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
 	private ResultsWriter writer = new ResultsWriter();
@@ -89,11 +91,12 @@ public class Document extends SwingSaver
 	}
 	
 	
-	public void setAlignedData(String[] names, DNASequence[][] sequences, int[][] unalignedIndices) {
+	public void setAlignedData(String[] names, DNASequence[][] sequences, List<Integer>[] unalignedIndices) {
 		this.names = names;
 		unalignedSequences = sequences;
-		this.unalignedIndices = unalignedIndices;
-		//TODO alignedSequences array erzeugen
+		for (int i = 0; i < 2; i++) {
+			setUnalignedIndexList(i, unalignedIndices[i]);
+		}
 		for (int alignmentIndex = 0; alignmentIndex < unalignedSequences.length; alignmentIndex++) {
 			for (int sequenceIndex = 0; sequenceIndex < unalignedSequences[alignmentIndex].length; sequenceIndex++) {
 				alignedSequences[alignmentIndex][sequenceIndex] = new SuperAlignmentSequenceView(this, alignmentIndex, sequenceIndex);
@@ -119,7 +122,7 @@ public class Document extends SwingSaver
 		names = new String[0];
 		unalignedSequences = new DNASequence[0][];
 		alignedSequences = new SequenceView[0][];
-		unalignedIndices = new int[0][];
+		unalignedIndices = new ArrayList[0];
 		comments.clear();
 	}
 	
@@ -133,7 +136,10 @@ public class Document extends SwingSaver
 		names = new String[size];
 		unalignedSequences = new DNASequence[2][size];
 		alignedSequences = new SequenceView[2][size];
-		unalignedIndices = new int[2][0];
+		unalignedIndices = new ArrayList[2];
+		for (int i = 0; i < 2; i++) {
+			unalignedIndices[i] = new ArrayList<Integer>();
+		}
 	}
 	
 	
@@ -158,17 +164,18 @@ public class Document extends SwingSaver
 	
 	
 	public int getUnalignedIndex(int alignmentIndex, int pos) {
-		return unalignedIndices[alignmentIndex][pos];
+		return unalignedIndices[alignmentIndex].get(pos);
 	}
 	
 	
-	public int[] getUnalignedIndices(int alignmentIndex) {
-		return unalignedIndices[alignmentIndex];
-	}
-	
-	
-	public void setUnalignedIndexList(int alignmentIndex, int[] value) {
-		unalignedIndices[alignmentIndex] = value;
+	public void setUnalignedIndexList(int alignmentIndex, List<Integer> list) {
+		if (list instanceof ArrayList<?>) {
+			unalignedIndices[alignmentIndex] = (ArrayList<Integer>)list;
+		}
+		else {
+			unalignedIndices[alignmentIndex] = new ArrayList<Integer>((int)(list.size() * ARRAY_LIST_SIZE_FACTOR));
+			unalignedIndices[alignmentIndex].addAll(list);
+		}
 	}
 	
 	
@@ -185,7 +192,7 @@ public class Document extends SwingSaver
 			return 0;
 		}
 		else {
-			return unalignedIndices[0].length;
+			return unalignedIndices[0].size();
 		}
 	}
 
