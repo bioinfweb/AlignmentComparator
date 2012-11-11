@@ -26,6 +26,7 @@ main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/BioInfWebCon
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/BioJavaConsensusPairwiseAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/CompareAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/ConsensusPairwiseAligner.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/ExternalProgramAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/MuscleProfileAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/pairalgorithms/superalignment/CharSequenceSuperAlignment.java -text svneol=unset#text/plain

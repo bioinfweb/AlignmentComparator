@@ -43,6 +43,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import org.biojava3.core.sequence.DNASequence;
+import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
 import org.biojava3.core.sequence.template.SequenceView;
 
@@ -57,7 +58,7 @@ public class Document extends SwingSaver
 	
 	
 	private String[] names;
-	private DNASequence[][] unalignedSequences;
+	private ArrayList<DNASequence>[] unalignedSequences;
 	private SequenceView[][] alignedSequences;
 	private ArrayList<Integer>[] unalignedIndices; 
 	private CommentList comments = new CommentList();
@@ -73,16 +74,16 @@ public class Document extends SwingSaver
 	
 	
 	public void setUnalignedData(Map<String, DNASequence> firstAlignment, Map<String, DNASequence> secondAlignment, 
-			SuperAlignmentAlgorithm algorithm) {
+			SuperAlignmentAlgorithm algorithm) throws Exception {
 		
 		clear();
 		createArrays(firstAlignment.size());
 		Iterator<String> iterator = firstAlignment.keySet().iterator();
 		for (int i = 0; i < firstAlignment.size(); i++) {
 			names[i] = iterator.next();
-			unalignedSequences[0][i] = firstAlignment.get(names[i]);
+			unalignedSequences[0].add(firstAlignment.get(names[i]));
 			alignedSequences[0][i] = new SuperAlignmentSequenceView(this, 0, i);
-			unalignedSequences[1][i] = secondAlignment.get(names[i]);
+			unalignedSequences[1].add(secondAlignment.get(names[i]));
 			alignedSequences[1][i] = new SuperAlignmentSequenceView(this, 1, i);
 		}
 		
@@ -91,14 +92,14 @@ public class Document extends SwingSaver
 	}
 	
 	
-	public void setAlignedData(String[] names, DNASequence[][] sequences, List<Integer>[] unalignedIndices) {
+	public void setAlignedData(String[] names, List<DNASequence>[] sequences, List<Integer>[] unalignedIndices) {
 		this.names = names;
-		unalignedSequences = sequences;
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < unalignedIndices.length; i++) {
 			setUnalignedIndexList(i, unalignedIndices[i]);
+			setUnalignedSequences(i, sequences[i]);
 		}
 		for (int alignmentIndex = 0; alignmentIndex < unalignedSequences.length; alignmentIndex++) {
-			for (int sequenceIndex = 0; sequenceIndex < unalignedSequences[alignmentIndex].length; sequenceIndex++) {
+			for (int sequenceIndex = 0; sequenceIndex < unalignedSequences[alignmentIndex].size(); sequenceIndex++) {
 				alignedSequences[alignmentIndex][sequenceIndex] = new SuperAlignmentSequenceView(this, alignmentIndex, sequenceIndex);
 			}
 		}
@@ -120,7 +121,7 @@ public class Document extends SwingSaver
 
 	public void clear() {
 		names = new String[0];
-		unalignedSequences = new DNASequence[0][];
+		unalignedSequences = new ArrayList[0];
 		alignedSequences = new SequenceView[0][];
 		unalignedIndices = new ArrayList[0];
 		comments.clear();
@@ -134,10 +135,11 @@ public class Document extends SwingSaver
 	
 	private void createArrays(int size) {
 		names = new String[size];
-		unalignedSequences = new DNASequence[2][size];
+		unalignedSequences = new ArrayList[2];
 		alignedSequences = new SequenceView[2][size];
 		unalignedIndices = new ArrayList[2];
 		for (int i = 0; i < 2; i++) {
+			unalignedSequences[i] = new ArrayList<DNASequence>();
 			unalignedIndices[i] = new ArrayList<Integer>();
 		}
 	}
@@ -148,7 +150,7 @@ public class Document extends SwingSaver
 	}
 	
 	
-	public DNASequence[] getSingleAlignment(int index) {
+	public List<DNASequence> getSingleAlignment(int index) {
 		return unalignedSequences[index];
 	}
 	
@@ -159,7 +161,12 @@ public class Document extends SwingSaver
 	
 	
 	public DNASequence getUnalignedSequence(int alignmentIndex, int sequenceIndex) {
-		return unalignedSequences[alignmentIndex][sequenceIndex];
+		return unalignedSequences[alignmentIndex].get(sequenceIndex);
+	}
+	
+	
+	public ArrayList<DNASequence> getUnalignedSequences(int alignmentIndex) {
+		return unalignedSequences[alignmentIndex];
 	}
 	
 	
@@ -212,6 +219,17 @@ public class Document extends SwingSaver
 		else {
 			unalignedIndices[alignmentIndex] = new ArrayList<Integer>((int)(list.size() * ARRAY_LIST_SIZE_FACTOR));
 			unalignedIndices[alignmentIndex].addAll(list);
+		}
+	}
+	
+	
+	public void setUnalignedSequences(int alignmentIndex, List<DNASequence> list) {
+		if (list instanceof ArrayList<?>) {
+			unalignedSequences[alignmentIndex] = (ArrayList<DNASequence>)list;
+		}
+		else {
+			unalignedSequences[alignmentIndex] = new ArrayList<DNASequence>((int)(list.size() * ARRAY_LIST_SIZE_FACTOR));
+			unalignedSequences[alignmentIndex].addAll(list);
 		}
 	}
 	

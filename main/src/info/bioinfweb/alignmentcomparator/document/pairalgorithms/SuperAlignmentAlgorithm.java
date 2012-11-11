@@ -24,5 +24,5 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 
 
 public interface SuperAlignmentAlgorithm {
-  public void performAlignment(Document alignments);
+  public void performAlignment(Document alignments) throws Exception;
 }

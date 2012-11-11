@@ -35,7 +35,7 @@ public class SuperAlignmentSequenceView extends SequenceProxyView<NucleotideComp
 	
 
 	public SuperAlignmentSequenceView(Document parent, int alignmentIndex, int sequenceIndex) {
-		super(parent.getSingleAlignment(alignmentIndex)[sequenceIndex]);
+		super(parent.getSingleAlignment(alignmentIndex).get(sequenceIndex));
 		this.alignmentIndex = alignmentIndex;
 		this.parent = parent;
 	}

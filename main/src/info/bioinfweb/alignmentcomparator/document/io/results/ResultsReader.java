@@ -210,7 +210,7 @@ public class ResultsReader implements ResultsXMLConstants {
     }
     
     alignments.setAlignedData(names, 
-    		unalignedSequences.toArray(new DNASequence[unalignedSequences.size()][]), 
+    		unalignedSequences.toArray(new ArrayList[unalignedSequences.size()]), 
     		unalignedIndicesList.toArray(new ArrayList[unalignedIndicesList.size()]));
   }
 

@@ -65,7 +65,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 				getDocument().setUnalignedData(readAlignment(new File(dialog.getFirstPath())), 
 						readAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}
-			catch (IOException ex) {
+			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "Error", "An IO error occurred while loading the files.", 
 						JOptionPane.ERROR_MESSAGE);
 				ex.printStackTrace();
