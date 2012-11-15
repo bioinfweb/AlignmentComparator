@@ -24,12 +24,15 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.biojava3.core.sequence.DNASequence;
@@ -123,8 +126,9 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			Iterator<DNASequence> iterator = superAlignment.iterator();
 			boolean gap = true;
 			while (iterator.hasNext()) {
-				if (!iterator.next().getCompoundAt(i).getBase().equals(AlignmentAmbiguityNucleotideCompoundSet.GAP_CHARACTER)) {
-					System.out.println("no gap");
+				String base = iterator.next().getCompoundAt(i).getBase(); 
+				if (!base.equals("" + AlignmentAmbiguityNucleotideCompoundSet.GAP_CHARACTER)) {
+					System.out.println("no gap " + base + " " + i);
 					gap = false;
 					break;
 				}
@@ -135,6 +139,37 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 				document.insertSuperGap(alignmentIndex, i);
 			}
 		}
+	}
+	
+	
+	private Thread runMuscle(Document paramDocument, InputStream stream) throws IOException {
+		final BufferedInputStream fastaStream = new BufferedInputStream(stream);
+		final Document document = paramDocument;
+		
+		Thread result = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							try {
+								Map<String, DNASequence> resultMap = FastaReaderTools.readAlignment(fastaStream);
+								for (int i = 0; i < 2; i++) {
+									addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
+								}
+							}
+							finally {
+								fastaStream.close();
+							}
+						}
+						catch (IOException e) {
+							JOptionPane.showMessageDialog(ConsoleOutputDialog.getInstance(),  
+									"An IO error occurred while trying to read the muscle output." + SystemUtils.LINE_SEPARATOR + 
+									e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+							e.printStackTrace();
+						}
+					}
+				});
+		result.start();
+		return result;
 	}
 	
 	
@@ -150,31 +185,18 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			pb.directory(new File(cmdFolder()));
 			Process process = pb.start();
 			
+			Thread muscleThread = runMuscle(document, process.getInputStream());
+			
 			ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
 			dialog.showEmpty();
 			dialog.addStream(process.getErrorStream());
 
-			//TODO in separaten Thread auslagern!
-			BufferedInputStream fastaStream = new BufferedInputStream(process.getInputStream());
-      //BufferedReader bre = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-      //String line;
-			try {
-				Map<String, DNASequence> resultMap = FastaReaderTools.readAlignment(fastaStream);
-				System.out.println("Map: " + resultMap.size());
-				for (int i = 0; i < 2; i++) {
-					addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
-				}
-				
-//				Iterator<String> iterator = resultMap.keySet().iterator();
-//				System.out.println("Map: " + resultMap.size());
-//				while (iterator.hasNext()) {
-//					System.out.println(resultMap.get(iterator.next()).getOriginalHeader());
-//				}
-			}
-			finally {
-				fastaStream.close();
-			}
+//			if (muscleThread.isAlive()) {
+//				muscleThread.wait();  // In principle not additionally needed, if process.waitFor() is called too. 
+//			}
+			dialog.addLine("");
 			dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
+			dialog.setAllowClose(true);
 		}
 		finally {
 			first.delete();

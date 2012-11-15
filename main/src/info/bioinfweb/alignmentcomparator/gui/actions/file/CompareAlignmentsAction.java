@@ -67,7 +67,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 						FastaReaderTools.readAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}
 			catch (Exception ex) {
-				JOptionPane.showMessageDialog(getMainFrame(), "Error", "An IO error occurred while loading the files.", 
+				JOptionPane.showMessageDialog(getMainFrame(), "An IO error occurred while loading the files.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				ex.printStackTrace();
 			}

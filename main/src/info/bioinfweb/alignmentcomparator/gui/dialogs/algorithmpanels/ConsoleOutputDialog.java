@@ -34,9 +34,12 @@ import java.io.InputStreamReader;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.SystemUtils;
+import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+import javax.swing.Action;
+import java.awt.event.ActionListener;
 
 
 
@@ -63,8 +66,9 @@ public class ConsoleOutputDialog extends JDialog {
 	 */
 	private ConsoleOutputDialog(Frame owner) {
 		super(owner, false);
-		setSize(300, 200);
+		setSize(500, 400);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setTitle("Console output");
 		
 		JScrollPane scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -76,6 +80,11 @@ public class ConsoleOutputDialog extends JDialog {
 		getContentPane().add(panel, BorderLayout.SOUTH);
 		
 		closeButton = new JButton("Close");
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+			}
+		});
 		panel.add(closeButton);
 	}
 
@@ -93,7 +102,7 @@ public class ConsoleOutputDialog extends JDialog {
 	public void showEmpty() {
 		setVisible(true);
 	  clearOutput();
-	  allowClose(false);
+	  setAllowClose(false);
 	}
 	
 	
@@ -107,46 +116,29 @@ public class ConsoleOutputDialog extends JDialog {
 	}
 	
 	
-	public void addLineOutsideSwing(String text) {
-		final String currentLine = text;
-		SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						addLine(currentLine);
-					}
-				});
-	}
-	
-	
-	public Thread addStream(InputStream stream) {
+	public void addStream(InputStream stream) throws IOException {
 		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		Thread result = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						String line;
-						try {
-							try {
-								while ((line = reader.readLine()) != null) {
-									addLineOutsideSwing(line);
-						    }
-							}
-							finally {
-								reader.close();
-							}
-						}
-						catch (IOException e) {
-							getTextArea().append("ERROR: An error occurred when reading from the specified stream. (" + 
-						      e.getMessage() + ")");
-							e.printStackTrace();
-						}
-					}
-				});
-		result.start();
-		return result;
+		String line;
+		try {
+			while ((line = reader.readLine()) != null) {
+				addLine(line);
+	    }
+		}
+		finally {
+			reader.close();
+		}
 	}
 	
 	
-	public void allowClose(boolean flag) {
+	public void setAllowClose(boolean flag) {
 		getCloseButton().setEnabled(flag);
+	}
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
 	}
 }
