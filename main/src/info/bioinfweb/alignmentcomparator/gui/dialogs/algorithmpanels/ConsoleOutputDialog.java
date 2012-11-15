@@ -38,7 +38,6 @@ import javax.swing.JPanel;
 import org.apache.commons.lang3.SystemUtils;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
-import javax.swing.Action;
 import java.awt.event.ActionListener;
 
 

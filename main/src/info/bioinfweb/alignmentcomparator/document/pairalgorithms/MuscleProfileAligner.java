@@ -21,12 +21,10 @@ package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +39,7 @@ import org.biojava3.core.sequence.io.FastaWriter;
 import org.biojava3.core.sequence.io.template.FastaHeaderFormatInterface;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.io.FastaReaderTools;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.ConsoleOutputDialog;
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
@@ -122,23 +121,29 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	private void addSuperGaps(Document document, List<DNASequence> superAlignment, int alignmentIndex) {
 		// Es reicht nicht nur eine Sequenz mit dem Original zu verleichen, da dann Superlücken innerhalb vorher bestehender Lücken nicht genau bestimmt werden können.
-		for (int i = 1; i <= superAlignment.get(0).getLength(); i++) {
+		int superalignedLength = superAlignment.get(0).getLength();
+		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
+		int unalignedPos = 1;
+		for (int i = 1; i <= superalignedLength; i++) {
 			Iterator<DNASequence> iterator = superAlignment.iterator();
 			boolean gap = true;
 			while (iterator.hasNext()) {
 				String base = iterator.next().getCompoundAt(i).getBase(); 
 				if (!base.equals("" + AlignmentAmbiguityNucleotideCompoundSet.GAP_CHARACTER)) {
-					System.out.println("no gap " + base + " " + i);
 					gap = false;
 					break;
 				}
 			}
 			
 			if (gap) {
-				System.out.println("gap");
-				document.insertSuperGap(alignmentIndex, i);
+			  indexList.add(SuperAlignmentSequenceView.GAP_INDEX);
+			}
+			else {
+			  indexList.add(unalignedPos);
+				unalignedPos++;
 			}
 		}
+		document.setUnalignedIndexList(alignmentIndex, indexList);
 	}
 	
 	
@@ -180,20 +185,16 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 		try {
 			ProcessBuilder pb = new ProcessBuilder(cmdFolder() + getApplicationName(), 
 					"-in1",	first.getAbsolutePath(),
-					"-in2",  second.getAbsolutePath(), 
+					"-in2", second.getAbsolutePath(), 
 					"-profile");
 			pb.directory(new File(cmdFolder()));
 			Process process = pb.start();
 			
-			Thread muscleThread = runMuscle(document, process.getInputStream());
-			
 			ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
 			dialog.showEmpty();
-			dialog.addStream(process.getErrorStream());
 
-//			if (muscleThread.isAlive()) {
-//				muscleThread.wait();  // In principle not additionally needed, if process.waitFor() is called too. 
-//			}
+			runMuscle(document, process.getInputStream());
+			dialog.addStream(process.getErrorStream());
 			dialog.addLine("");
 			dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
 			dialog.setAllowClose(true);
