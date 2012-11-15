@@ -36,7 +36,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.SystemUtils;
-import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -131,13 +130,5 @@ public class ConsoleOutputDialog extends JDialog {
 	
 	public void setAllowClose(boolean flag) {
 		getCloseButton().setEnabled(flag);
-	}
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-		}
 	}
 }
