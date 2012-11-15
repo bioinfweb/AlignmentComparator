@@ -101,3 +101,4 @@ test/src/info/bioinfweb/alignmentcomparator/alignmenttests/NeedlemanWunsch.java 
 test/src/info/bioinfweb/alignmentcomparator/alignmenttests/NeedlemanWunschTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/document/io/results/FastaReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/document/io/results/ResultsReaderWriterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/alignmentcomparator/runtimetests/Exec.java -text svneol=unset#text/plain
