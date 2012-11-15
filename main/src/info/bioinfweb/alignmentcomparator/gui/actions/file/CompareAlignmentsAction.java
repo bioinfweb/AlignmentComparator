@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
+import info.bioinfweb.alignmentcomparator.document.io.FastaReaderTools;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
@@ -62,8 +63,8 @@ public class CompareAlignmentsAction extends DocumentAction {
 	public void actionPerformed(ActionEvent e) {
 		if (dialog.execute()) {
 			try {
-				getDocument().setUnalignedData(readAlignment(new File(dialog.getFirstPath())), 
-						readAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
+				getDocument().setUnalignedData(FastaReaderTools.readAlignment(new File(dialog.getFirstPath())), 
+						FastaReaderTools.readAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}
 			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "Error", "An IO error occurred while loading the files.", 
@@ -74,16 +75,6 @@ public class CompareAlignmentsAction extends DocumentAction {
 	}
 	
 	
-	private Map<String, DNASequence> readAlignment(File file) throws IOException {
-  	FastaReader<DNASequence, NucleotideCompound> fastaReader = 
-  	    new FastaReader<DNASequence, NucleotideCompound>(
-    	  		new BufferedInputStream(new FileInputStream(file)),
-    	  		new GenericFastaHeaderParser<DNASequence, NucleotideCompound>(),
-            new DNASequenceCreator(new AlignmentAmbiguityNucleotideCompoundSet()));  //TODO Was würde DNASequenceCreator anders machen? 
-		return fastaReader.process();
-	}
-
-
 	@Override
 	public void setEnabled() {}  // nothing to do (opening new files is always possible)
 }

@@ -22,5 +22,6 @@ package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
 
 public enum CompareAlgorithm {
   CONSENSUS_BIOJAVA_NEEDLEMAN_WUNSCH,
-  CONSENSUS_BIW_NEEDLEMAN_WUNSCH;
+  CONSENSUS_BIW_NEEDLEMAN_WUNSCH,
+  MUSCLE_PROFILE;
 }

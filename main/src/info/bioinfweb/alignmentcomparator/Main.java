@@ -66,6 +66,11 @@ public class Main extends ProgramMainClass {
 	}
 
 
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
+
+
 	private void startUI() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -78,7 +83,6 @@ public class Main extends ProgramMainClass {
 		SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						//TODO Load alignments or results
 						mainFrame = new MainFrame();
 						mainFrame.setVisible(true); 
 					}

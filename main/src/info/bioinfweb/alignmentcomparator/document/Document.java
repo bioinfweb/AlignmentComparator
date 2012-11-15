@@ -150,6 +150,16 @@ public class Document extends SwingSaver
 	}
 	
 	
+	public int getIndexByName(String name) {
+		for (int i = 0; i < names.length; i++) {
+			if (names[i].equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	
 	public List<DNASequence> getSingleAlignment(int index) {
 		return unalignedSequences[index];
 	}
