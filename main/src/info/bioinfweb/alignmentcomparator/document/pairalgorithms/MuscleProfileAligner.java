@@ -38,9 +38,11 @@ import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.io.FastaWriter;
 import org.biojava3.core.sequence.io.template.FastaHeaderFormatInterface;
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.io.FastaReaderTools;
+import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.ConsoleOutputDialog;
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 
@@ -180,28 +182,36 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	@Override
 	public void performAlignment(Document document) throws Exception {
-		File first = writeInputFile(document, 0);
-		File second = writeInputFile(document, 1);
-		try {
-			ProcessBuilder pb = new ProcessBuilder(cmdFolder() + getApplicationName(), 
-					"-in1",	first.getAbsolutePath(),
-					"-in2", second.getAbsolutePath(), 
-					"-profile");
-			pb.directory(new File(cmdFolder()));
-			Process process = pb.start();
-			
-			ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
-			dialog.showEmpty();
-
-			runMuscle(document, process.getInputStream());
-			dialog.addStream(process.getErrorStream());
-			dialog.addLine("");
-			dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
-			dialog.setAllowClose(true);
+		String applicationName = getApplicationName();
+		if (applicationName != null) {
+			File first = writeInputFile(document, 0);
+			File second = writeInputFile(document, 1);
+			try {
+				ProcessBuilder pb = new ProcessBuilder(cmdFolder() + getApplicationName(), 
+						"-in1",	first.getAbsolutePath(),
+						"-in2", second.getAbsolutePath(), 
+						"-profile");
+				pb.directory(new File(cmdFolder()));
+				Process process = pb.start();
+				
+				ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
+				dialog.showEmpty();
+	
+				runMuscle(document, process.getInputStream());
+				dialog.addStream(process.getErrorStream());
+				dialog.addLine("");
+				dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
+				dialog.setAllowClose(true);
+			}
+			finally {
+				first.delete();
+				second.delete();
+			}
 		}
-		finally {
-			first.delete();
-			second.delete();
+		else {
+			JOptionPane.showMessageDialog(Main.getInstance().getMainFrame(), 
+					"This operation is not supported on your operating system (" + System.getProperty("os.name") + ").", 
+          "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

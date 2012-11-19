@@ -43,7 +43,6 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
 import org.biojava3.core.sequence.template.SequenceView;
 
@@ -93,6 +92,7 @@ public class Document extends SwingSaver
 	
 	
 	public void setAlignedData(String[] names, List<DNASequence>[] sequences, List<Integer>[] unalignedIndices) {
+		createArrays(names.length);
 		this.names = names;
 		for (int i = 0; i < unalignedIndices.length; i++) {
 			setUnalignedIndexList(i, unalignedIndices[i]);

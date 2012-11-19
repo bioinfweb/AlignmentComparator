@@ -73,9 +73,9 @@ public class OpenResultsAction extends DocumentAction {
 				//TODO Inform Model
 			}
 			catch (Exception ex) {
-				JOptionPane.showMessageDialog(getMainFrame(), "Error", "The error \"" + ex.getMessage() + 
+				JOptionPane.showMessageDialog(getMainFrame(), "The error \"" + ex.getMessage() + 
 						"\" occured, while trying to read from the file \"" + getFileChooser().getSelectedFile() + "\".", 
-						JOptionPane.ERROR_MESSAGE);
+						"Error", JOptionPane.ERROR_MESSAGE);
 				ex.printStackTrace();
 			}
 		}

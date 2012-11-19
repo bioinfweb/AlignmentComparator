@@ -79,10 +79,10 @@ public class ConsoleOutputDialog extends JDialog {
 		
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-			}
-		});
+					public void actionPerformed(ActionEvent e) {
+						setVisible(false);
+					}
+				});
 		panel.add(closeButton);
 	}
 

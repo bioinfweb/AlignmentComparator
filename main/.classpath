@@ -3,9 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="/_Lib/bin" sourcepath="/_Lib/src"/>
-	<classpathentry kind="lib" path="lib/biojava3-alignment-3.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/biojava3-core-3.0.4.jar"/>
-	<classpathentry kind="lib" path="/_Lib/lib/BrowserLauncher2-1_3.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="include/lib/biojava3-alignment-3.0.4.jar"/>
+	<classpathentry kind="lib" path="include/lib/biojava3-core-3.0.4.jar"/>
+	<classpathentry kind="lib" path="include/lib/BrowserLauncher2-1_3.jar"/>
+	<classpathentry kind="lib" path="include/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="include/lib/org.jdesktop.swingx.scrollpaneselector.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 import info.webinsel.util.appversion.AppVersionXMLConstants;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
 import info.webinsel.util.io.XMLUtils;
@@ -41,26 +42,25 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.NucleotideCompound;
-import org.biojava3.core.sequence.template.Sequence;
 
 
 
 public class ResultsReader implements ResultsXMLConstants {
   private XMLEventReader reader;
   
-  private List<DNASequence[]> unalignedSequences = new LinkedList<DNASequence[]>();
+  private List<List<DNASequence>> unalignedSequences = new LinkedList<List<DNASequence>>();
   private List<ArrayList<Integer>> unalignedIndicesList = new LinkedList<ArrayList<Integer>>();
   
   
-  private DNASequence[] readAlignment() throws XMLStreamException {
-  	List<Sequence<NucleotideCompound>> result = new LinkedList<Sequence<NucleotideCompound>>();
+  private List<DNASequence> readAlignment() throws XMLStreamException {
+  	List<DNASequence> result = new LinkedList<DNASequence>();
     XMLEvent event = reader.nextEvent();
     while (event.getEventType() != XMLStreamConstants.END_ELEMENT) {
       if (event.getEventType() == XMLStreamConstants.START_ELEMENT) {
       	StartElement element = event.asStartElement();
         if (element.getName().equals(TAG_SEQUENCE)) {
-        	result.add(new DNASequence(XMLUtils.readCharactersAsString(reader)));
+        	result.add(new DNASequence(XMLUtils.readCharactersAsString(reader), 
+        			AlignmentAmbiguityNucleotideCompoundSet.getAlignmentAmbiguityNucleotideCompoundSet()));
         	XMLUtils.reachElementEnd(reader);
         }
         else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
@@ -69,12 +69,12 @@ public class ResultsReader implements ResultsXMLConstants {
       }
       event = reader.nextEvent();
     }
-    return result.toArray(new DNASequence[result.size()]);
+    return result;
   }
   
   
   public static ArrayList<Integer> decodeGapPattern(String gapPattern) {
-  	int unalignedPos = 0;
+  	int unalignedPos = 1;  // BioJava indes starts with 1
   	ArrayList<Integer> result = new ArrayList<Integer>((int)(gapPattern.length() * Document.ARRAY_LIST_SIZE_FACTOR));
   	for (int alignedPos = 0; alignedPos < gapPattern.length(); alignedPos++) {
 			if (gapPattern.charAt(alignedPos) == TOKEN_GAP) {
@@ -210,7 +210,8 @@ public class ResultsReader implements ResultsXMLConstants {
     }
     
     alignments.setAlignedData(names, 
-    		unalignedSequences.toArray(new ArrayList[unalignedSequences.size()]), 
+    		//TODO Fehler nicht hier beheben, sonder Document-Datenstruktur noch mal sinnvoll überarbeiten und auf merkwürdige Array-Konstrukte verzichten.
+    		unalignedSequences.toArray(new LinkedList[unalignedSequences.size()]), 
     		unalignedIndicesList.toArray(new ArrayList[unalignedIndicesList.size()]));
   }
 

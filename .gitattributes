@@ -2,9 +2,19 @@
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
-main/lib/biojava3-alignment-3.0.4.jar -text
-main/lib/biojava3-core-3.0.4.jar -text
-main/lib/commons-lang3-3.1.jar -text
+main/MANIFEST.MF -text svneol=unset#text/plain
+main/include/lib/BIWBioJava.jar -text
+main/include/lib/BrowserLauncher2-1_3.jar -text
+main/include/lib/biojava3-alignment-3.0.4.jar -text
+main/include/lib/biojava3-core-3.0.4.jar -text
+main/include/lib/commons-lang3-3.1.jar -text
+main/include/lib/info.bioinfweb.util.jar -text
+main/include/lib/info.webinsel.util.appver.jar -text
+main/include/lib/info.webinsel.util.io.jar -text
+main/include/lib/info.webinsel.util.jar -text
+main/include/lib/info.webinsel.util.swing.jar -text
+main/include/lib/info.webinsel.wikihelp.client.jar -text
+main/include/lib/org.jdesktop.swingx.scrollpaneselector.jar -text
 main/src/cmd/muscle3.8.31_i86darwin32 -text
 main/src/cmd/muscle3.8.31_i86darwin64 -text
 main/src/cmd/muscle3.8.31_i86linux32 -text
