@@ -64,6 +64,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public static final float COMPOUND_HEIGHT = 14f;
 	public static final float ALIGNMENT_DISTANCE = 7f;
 	public static final float COMMENTS_DISTANCE = 7f;
+	public static final int SCROLL_BLOCK_LENGTH = 10;
 	
 	
 	private Map<String, Color> colorMap = createColorMap();
@@ -126,10 +127,10 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 
 
 	@Override
-	public int getScrollableBlockIncrement(Rectangle visibleRect,
-			int orientation, int direction) {
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation,
+			int direction) {
 		
-		if (orientation == SwingConstants.VERTICAL) {
+		if (orientation == SwingConstants.HORIZONTAL) {
 			return Math.round(getCompoundWidth());
 		}
 		else {
@@ -139,24 +140,22 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 
 
 	@Override
+	public int getScrollableBlockIncrement(Rectangle visibleRect,
+			int orientation, int direction) {
+
+		return SCROLL_BLOCK_LENGTH * getScrollableUnitIncrement(visibleRect, orientation, direction);
+	}
+
+
+	@Override
 	public boolean getScrollableTracksViewportHeight() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 
 	@Override
 	public boolean getScrollableTracksViewportWidth() {
-		// TODO Auto-generated method stub
 		return false;
-	}
-
-
-	@Override
-	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation,
-			int direction) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 
