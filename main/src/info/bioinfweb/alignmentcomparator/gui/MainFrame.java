@@ -57,7 +57,7 @@ public class MainFrame extends JFrame {
 	private JMenu undoMenu;
 	private JMenu redoMenu;
 	private AlignmentPositionPanel positionPanel;
-	private JPanel namesPanel;
+	private SequenceNamesPanel namesPanel;
 
 	
 	/**
@@ -94,7 +94,7 @@ public class MainFrame extends JFrame {
 	
 					@Override
 					public void windowClosing(WindowEvent arg0) {
-						if (document.askToSave()) {
+						if (getDocument().askToSave()) {
 							//CurrentDirectoryModel.getInstance().removeFileChooser(getDocument().getFileChooser());
 							//ExtendedScrollPaneSelector.uninstallScrollPaneSelector(getTreeScrollPane());
 							setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -263,9 +263,9 @@ public class MainFrame extends JFrame {
 	}
 
 	
-	private JPanel getNamesPanel() {
+	private SequenceNamesPanel getNamesPanel() {
 		if (namesPanel == null) {
-			namesPanel = new JPanel();
+			namesPanel = new SequenceNamesPanel(getComparisonPanel(), getDocument());
 		}
 		return namesPanel;
 	}

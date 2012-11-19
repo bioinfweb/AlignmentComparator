@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
@@ -41,6 +42,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.JPanel;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
@@ -48,7 +51,7 @@ import org.biojava3.core.sequence.template.Sequence;
 
 
 
-public class AlignmentComparisonPanel extends JPanel implements DocumentListener {
+public class AlignmentComparisonPanel extends JPanel implements Scrollable, DocumentListener {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String DEFAULT_BG_COLOR_ID = "DEFAULT";
@@ -116,6 +119,47 @@ public class AlignmentComparisonPanel extends JPanel implements DocumentListener
 	}  //TODO Future versions might also need a setter.
 
 
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return getPreferredSize();
+	}
+
+
+	@Override
+	public int getScrollableBlockIncrement(Rectangle visibleRect,
+			int orientation, int direction) {
+		
+		if (orientation == SwingConstants.VERTICAL) {
+			return Math.round(getCompoundWidth());
+		}
+		else {
+			return Math.round(getCompoundHeight());
+		}
+	}
+
+
+	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean getScrollableTracksViewportWidth() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation,
+			int direction) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 	public float getZoom() {
 		return zoom;
 	}
@@ -141,7 +185,7 @@ public class AlignmentComparisonPanel extends JPanel implements DocumentListener
 	}
 	
 	
-	public Font getFont() {
+	public Font getCompoundFont() {
 		return font;
 	}
 
@@ -151,6 +195,10 @@ public class AlignmentComparisonPanel extends JPanel implements DocumentListener
 		assignPaintSize();
 		repaint();
 	}
+
+
+	@Override
+	public void namesChanged() {}
 
 
 	private void assignPaintSize() {
@@ -195,18 +243,18 @@ public class AlignmentComparisonPanel extends JPanel implements DocumentListener
 		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinY() - y) / getCompoundHeight()) - 1);
 		int lastIndex = Math.min(document.getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
 		for (int i = firstIndex; i <= lastIndex; i++) {
-			paintSequence(g, document.getAlignedSequence(alignmentIndex, i), lastIndex, y);
+			paintSequence(g, document.getAlignedSequence(alignmentIndex, i), x, y);  //lastIndex
 	    y += getCompoundHeight();
     }
 	}
 	
 	
 	private void paintSequence(Graphics2D g, Sequence<NucleotideCompound> sequence, float x, float y) {
-		int firstIndex = Math.max(1, (int)Math.round((getVisibleRect().getMinX() - x) / getCompoundWidth()) - 1);  // BioJava index starts with 1
+		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinX() - x) / getCompoundWidth()) - 1);
 		int lastIndex = Math.min(sequence.getLength() - 1, (int)Math.round((getVisibleRect().getMaxX() - x) / getCompoundWidth()));
   	x += firstIndex * getCompoundWidth();
 		for (int i = firstIndex; i <= lastIndex; i++) {
-	    paintCompound(g, sequence.getCompoundAt(i), x, y);
+    	paintCompound(g, sequence.getCompoundAt(i + 1), x, y);  // BioJava index starts with 1
 	    x += getCompoundWidth();
     }
 	}
@@ -231,7 +279,7 @@ public class AlignmentComparisonPanel extends JPanel implements DocumentListener
   	}
   	
   	g.setColor(getColorMap().get(FONT_COLOR_ID));
-  	g.setFont(getFont());
+  	g.setFont(getCompoundFont());
 		FontMetrics fm = g.getFontMetrics();
   	g.drawString(compound.getBase(), x + 0.5f * (getCompoundWidth() - fm.charWidth(compound.getBase().charAt(0))), y + fm.getAscent());
   }

@@ -19,6 +19,8 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.event.ChangeEvent;
@@ -37,7 +39,6 @@ public abstract class AlignmentComparisonHeaderPanel extends JPanel
 		super();
 		this.alignmentComparisonPanel = alignmentComparisonPanel;
     alignmentComparisonPanel.addListener(this);
-    sizeChanged(new ChangeEvent(this));
 	}
 
 
@@ -46,6 +47,23 @@ public abstract class AlignmentComparisonHeaderPanel extends JPanel
 	}
 
 
+  public Dimension getPreferredScrollableViewportSize() {
+    return getPreferredSize();
+  }
+  
+  
+	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		return false;
+	}
+
+	
+	@Override
+	public boolean getScrollableTracksViewportWidth() {
+		return false;
+	}
+  
+	
 	@Override
 	public void zoomChanged(ChangeEvent e) {
     repaint();

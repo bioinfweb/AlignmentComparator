@@ -74,11 +74,7 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   
   public AlignmentPositionPanel(AlignmentComparisonPanel alignmentComparisonPanel) {
     super(alignmentComparisonPanel);
-  }
-  
-  
-  public Dimension getPreferredScrollableViewportSize() {
-    return getPreferredSize();
+    sizeChanged(new ChangeEvent(this));
   }
   
   
@@ -87,17 +83,7 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   }
   
   
-  public boolean getScrollableTracksViewportHeight() {
-    return false;
-  }
-  
-  
-  public boolean getScrollableTracksViewportWidth() {
-    return false;
-  }
-  
-  
-  public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2) {
+  public int getScrollableUnitIncrement(Rectangle rect, int arg1, int arg2) {
     return 20; //TODO Welcher Wert ist hier sinnvoll?
   }
   
@@ -152,7 +138,7 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
     			dashLength = LABELED_DASH_LENGTH;
     		}
     		
-      	// dash output
+      	// Dash output
     		g.setStroke(DASH_STROKE);
     		Path2D path = new  Path2D.Float();
     		path.moveTo(x - 0.5, HEIGHT);

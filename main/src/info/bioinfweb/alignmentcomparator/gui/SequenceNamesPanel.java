@@ -21,11 +21,18 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.DocumentListener;
+import info.webinsel.util.Math2;
+import info.webinsel.util.graphics.FontCalculator;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.SystemColor;
+import java.awt.geom.Line2D;
 
 import javax.swing.Scrollable;
 import javax.swing.event.ChangeEvent;
@@ -39,7 +46,7 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 	public static final float LABEL_DISTANCE = 2f;
 
 	
-	private Document document = null;
+	private Document document;
 	
 	
   public SequenceNamesPanel(AlignmentComparisonPanel alignmentComparisonPanel,
@@ -48,6 +55,7 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
   	super(alignmentComparisonPanel);
 		this.document = document;
 		document.addDocumentListener(this);
+    sizeChanged(new ChangeEvent(this));  // Can't be moved to AlignmentComparisonHeaderPanel, because document is still null than.
 	}
 
 
@@ -56,11 +64,14 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 	}
 
 
-	private float calculateWidth(Graphics2D  g) {
-		FontMetrics fm = g.getFontMetrics();
+	/**
+	 * Calculates the necessary with of the component depending on the maximal label length.
+	 */
+	private float calculateWidth() {
+		Font font = getAlignmentComparisonPanel().getFont();
 		float maxLength = 0;
 		for (int i = 0; i < getDocument().getSequenceCount(); i++) {
-			maxLength = Math.max(maxLength, fm.stringWidth(getDocument().getName(i))); 
+			maxLength = Math.max(maxLength, FontCalculator.getInstance().getWidth(font, getDocument().getName(i))); 
 		}
   	return maxLength + 2 * LABEL_DISTANCE;
   }
@@ -68,43 +79,63 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 
 	public void sizeChanged(ChangeEvent e) {
     Dimension d = getAlignmentComparisonPanel().getPreferredSize();
-    //TODO Breite entsprechend des länsten Namens setzen
+    d.width = Math2.roundUp(calculateWidth());
     setSize(d);
     setPreferredSize(d);
 	}
 
 	
 	@Override
-	public Dimension getPreferredScrollableViewportSize() {
-		// TODO Auto-generated method stub
-		return null;
+	public void changeHappened() {}
+
+
+	@Override
+	public void namesChanged() {
+		sizeChanged(new ChangeEvent(getDocument()));
 	}
 
-	
+
 	@Override
 	public int getScrollableBlockIncrement(Rectangle arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	
-	@Override
-	public boolean getScrollableTracksViewportHeight() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
-	@Override
-	public boolean getScrollableTracksViewportWidth() {
-		// TODO Auto-generated method stub
-		return false;
+		return Math.round(getAlignmentComparisonPanel().getCompoundHeight());  //TODO
 	}
 
 	
 	@Override
 	public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-		return 0;
+		return Math.round(getAlignmentComparisonPanel().getCompoundHeight());
+	}
+
+
+	@Override
+	protected void paintComponent(Graphics g2) {
+  	super.paintComponent(g2);
+  	Graphics2D g = ((Graphics2D)g2); 
+  	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+  			RenderingHints.VALUE_ANTIALIAS_ON);
+
+    Rectangle visibleRect = getVisibleRect();
+		g.setColor(SystemColor.menu);
+		g.fill(visibleRect);
+		
+		g.setColor(SystemColor.menuText);
+  	g.setFont(getAlignmentComparisonPanel().getCompoundFont());
+		float y = paintNames(0, g);
+		paintNames(y + AlignmentComparisonPanel.ALIGNMENT_DISTANCE, g);
+	}
+	
+	
+	private float paintNames(float startY, Graphics2D g) {
+		float y = startY;
+		FontMetrics fm = g.getFontMetrics();
+		for (int i = 0; i < getDocument().getSequenceCount(); i++) {
+			g.setStroke(AlignmentPositionPanel.DASH_STROKE);
+			g.draw(new Line2D.Float(0, y, getWidth(), y));
+
+  		g.drawString(getDocument().getName(i), LABEL_DISTANCE, y + fm.getAscent());
+	  	y += getAlignmentComparisonPanel().getCompoundHeight();
+		}
+		g.draw(new Line2D.Float(0, y, getWidth(), y));
+		return y;
 	}
 }
