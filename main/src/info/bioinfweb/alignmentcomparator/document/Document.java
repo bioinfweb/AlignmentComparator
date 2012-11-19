@@ -88,6 +88,7 @@ public class Document extends SwingSaver
 		
 		algorithm.performAlignment(this);
 		registerChange();
+		fireNamesChanged();
 	}
 	
 	
@@ -104,6 +105,7 @@ public class Document extends SwingSaver
 			}
 		}
 		performChange();  // Hier nicht registerChange(), da Dokument am Anfang nicht als ungespeichert angezeigt werden soll.
+		fireNamesChanged();
 	}
 
 	
@@ -295,6 +297,15 @@ public class Document extends SwingSaver
 	  Iterator<DocumentListener> iterator = views.iterator();
 	  while (iterator.hasNext()) {
 	  	iterator.next().changeHappened();
+	  }
+  }
+
+  
+  /** Alerts all registered views to display changed sequences names. */
+  private void fireNamesChanged() {
+	  Iterator<DocumentListener> iterator = views.iterator();
+	  while (iterator.hasNext()) {
+	  	iterator.next().namesChanged();
 	  }
   }
 

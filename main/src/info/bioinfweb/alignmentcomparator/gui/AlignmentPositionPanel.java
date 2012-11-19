@@ -29,20 +29,20 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.SystemColor;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 
-import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.event.ChangeEvent;
 
 
 
-public class AlignmentPositionPanel extends JPanel 
+public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel 
 		implements Scrollable, AlignmentComparisonPanelListener {
   	
 	/** The height of this panel in pixels */
-	public static final int HEIGHT = 20;
+	public static final int HEIGHT = 16;
 	
 	/** The distance on x to the left border of the component */
 	public static final int X_OFFSET = 0;
@@ -53,27 +53,27 @@ public class AlignmentPositionPanel extends JPanel
 	/** The stroke used to paint the dashes */
 	public static final Stroke DASH_STROKE = new BasicStroke(0, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 	
-  /** The maximal length of a dash */
-  public static final float DASH_LENGTH = 10;
+  /** The length of a dash */
+  public static final float DASH_LENGTH = 5;
+  
+  /** The length of a dash with a label */
+  public static final float LABELED_DASH_LENGTH = HEIGHT;
   
 	/** The distance of the labels to the border of the component */
-	public static final float LABEL_DISTANCE = -2.2f;
+	public static final float LABEL_TOP_DISTANCE = 9f;
+
+	/** The distance of the labels to their dash  */
+	public static final float LABEL_LEFT_DISTANCE = 2f;
 
 	/** 
   * This string is used to test if the interval between two main dashes is smaller than 
   * the usual label text. 
   */
-  public static final String LABEL_LENGTH_STANDARD = "0000";
-  
-  
-  private AlignmentComparisonPanel alignmentComparisonPanel = null;
+  public static final String LABEL_LENGTH_STANDARD = "00000";
   
   
   public AlignmentPositionPanel(AlignmentComparisonPanel alignmentComparisonPanel) {
-    super();
-    this.alignmentComparisonPanel = alignmentComparisonPanel;
-    alignmentComparisonPanel.addListener(this);
-    sizeChanged(new ChangeEvent(this));
+    super(alignmentComparisonPanel);
   }
   
   
@@ -82,7 +82,7 @@ public class AlignmentPositionPanel extends JPanel
   }
   
   
-  public int getScrollableBlockIncrement(Rectangle arg0, int arg1, int arg2) {
+  public int getScrollableBlockIncrement(Rectangle rect, int arg1, int arg2) {
     return 20; //TODO Welcher Wert ist hier sinnvoll?
   }
   
@@ -108,7 +108,7 @@ public class AlignmentPositionPanel extends JPanel
   
   
   public void sizeChanged(ChangeEvent e) {
-    Dimension d = alignmentComparisonPanel.getPreferredSize();
+    Dimension d = getAlignmentComparisonPanel().getPreferredSize();
    	d.height = HEIGHT;
     setSize(d);
     setPreferredSize(d);
@@ -128,34 +128,41 @@ public class AlignmentPositionPanel extends JPanel
     		RenderingHints.VALUE_ANTIALIAS_ON);
   
     Rectangle visibleRect = getVisibleRect();
-    float compoundWidth = alignmentComparisonPanel.getCompoundWidth();
+		g.setColor(SystemColor.menu);
+		g.fill(visibleRect);
+		
+    float compoundWidth = getAlignmentComparisonPanel().getCompoundWidth();
+		g.setColor(SystemColor.menuText);
     g.draw(new Line2D.Float(visibleRect.x, HEIGHT - 1, visibleRect.x + visibleRect.width, HEIGHT - 1));  // base line
     
     // Text data:
     g.setFont(FONT);
-    int labelInterval = Math2.roundUp(g.getFontMetrics().stringWidth(LABEL_LENGTH_STANDARD) / compoundWidth);
+    int labelInterval = Math2.roundUp(
+    		(g.getFontMetrics().stringWidth(LABEL_LENGTH_STANDARD) + 2 * LABEL_LEFT_DISTANCE) / compoundWidth);
     float x = Math.max(X_OFFSET + compoundWidth / 2f,  
     		X_OFFSET % compoundWidth + visibleRect.x - visibleRect.x % compoundWidth - compoundWidth / 2f);
     Stroke stroke = g.getStroke();
     try {
       while (x <= visibleRect.x + visibleRect.width) {
+    		// Text output
+    		float dashLength = DASH_LENGTH;
+    		int compoundIndex = Math.round((x - X_OFFSET) / compoundWidth); 
+    		if (compoundIndex % labelInterval == 0) {
+    			g.drawString("" + compoundIndex, x + LABEL_LEFT_DISTANCE, LABEL_TOP_DISTANCE);
+    			dashLength = LABELED_DASH_LENGTH;
+    		}
+    		
       	// dash output
     		g.setStroke(DASH_STROKE);
     		Path2D path = new  Path2D.Float();
     		path.moveTo(x - 0.5, HEIGHT);
     		path.lineTo(x + 0.5, HEIGHT);
-    		path.lineTo(x + 0.5, HEIGHT - DASH_LENGTH);
-    		path.lineTo(x - 0.5, HEIGHT - DASH_LENGTH);
+    		path.lineTo(x + 0.5, HEIGHT - dashLength);
+    		path.lineTo(x - 0.5, HEIGHT - dashLength);
     		path.closePath();
     		g.fill(path);
-    		
-    		// Text output
-    		int compoundIndex = Math.round((x - X_OFFSET) / compoundWidth); 
-    		if (compoundIndex % labelInterval == 0) {
-    			g.drawString("" + compoundIndex, x, LABEL_DISTANCE);
-    		}
-    		
-      	x += compoundWidth;
+
+    		x += compoundWidth;
       }
     }
     finally {

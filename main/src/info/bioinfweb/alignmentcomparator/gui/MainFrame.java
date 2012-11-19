@@ -56,6 +56,8 @@ public class MainFrame extends JFrame {
 	private AlignmentComparisonPanel comparisonPanel = null;
 	private JMenu undoMenu;
 	private JMenu redoMenu;
+	private AlignmentPositionPanel positionPanel;
+	private JPanel namesPanel;
 
 	
 	/**
@@ -228,6 +230,8 @@ public class MainFrame extends JFrame {
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
+			scrollPane.setColumnHeaderView(getPositionPanel());
+			scrollPane.setRowHeaderView(getNamesPanel());
 			scrollPane.setViewportView(getComparisonPanel());
 		}
 		return scrollPane;
@@ -242,8 +246,27 @@ public class MainFrame extends JFrame {
 	private AlignmentComparisonPanel getComparisonPanel() {
 		if (comparisonPanel == null) {
 			comparisonPanel = new AlignmentComparisonPanel(getDocument());
-			comparisonPanel.setLayout(new GridBagLayout());
+			GridBagLayout gbl_comparisonPanel = new GridBagLayout();
+			gbl_comparisonPanel.rowWeights = new double[]{};
+			gbl_comparisonPanel.columnWeights = new double[]{};
+			comparisonPanel.setLayout(gbl_comparisonPanel);
 		}
 		return comparisonPanel;
+	}
+	
+	
+	private AlignmentPositionPanel getPositionPanel() {
+		if (positionPanel == null) {
+			positionPanel = new AlignmentPositionPanel(getComparisonPanel());
+		}
+		return positionPanel;
+	}
+
+	
+	private JPanel getNamesPanel() {
+		if (namesPanel == null) {
+			namesPanel = new JPanel();
+		}
+		return namesPanel;
 	}
 }

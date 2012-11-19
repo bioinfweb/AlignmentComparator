@@ -16,23 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document;
+package info.bioinfweb.alignmentcomparator.gui;
+
+
+import javax.swing.JPanel;
+import javax.swing.Scrollable;
+import javax.swing.event.ChangeEvent;
 
 
 
-/**
- * Classes implementing this interface can listen to changes made in a TreeGraph 2 document.
- * 
- * @author Ben St&ouml;ver
- */
-public interface DocumentListener {
-  /** Called every time changes were made to the document. */
-  public void changeHappened();
-  
-  
-  /** 
-   * Called every time changes were made to the sequence names. 
-   * ({@link #changeHappened()} is called additionally in that case.)
-   */
-  public void namesChanged();
+public abstract class AlignmentComparisonHeaderPanel extends JPanel 
+    implements Scrollable, AlignmentComparisonPanelListener {
+
+	private AlignmentComparisonPanel alignmentComparisonPanel = null;
+
+	
+	public AlignmentComparisonHeaderPanel(
+			AlignmentComparisonPanel alignmentComparisonPanel) {
+
+		super();
+		this.alignmentComparisonPanel = alignmentComparisonPanel;
+    alignmentComparisonPanel.addListener(this);
+    sizeChanged(new ChangeEvent(this));
+	}
+
+
+	protected AlignmentComparisonPanel getAlignmentComparisonPanel() {
+		return alignmentComparisonPanel;
+	}
+
+
+	@Override
+	public void zoomChanged(ChangeEvent e) {
+    repaint();
+  }
 }
