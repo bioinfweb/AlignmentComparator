@@ -79,9 +79,11 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	
 
 	private static Map<String, Color> createColorMap() {
+		Color colorTU = new Color(230, 90, 90);
 		Map<String, Color> result = new TreeMap<String, Color>();
 		result.put("A", new Color(90, 228, 93));
-		result.put("T", new Color(230, 90, 90));
+		result.put("T", colorTU);
+		result.put("U", colorTU);
 		result.put("C", new Color(90, 90, 230));
 		result.put("G", new Color(226, 230, 90));
 		result.put("-", Color.GRAY);

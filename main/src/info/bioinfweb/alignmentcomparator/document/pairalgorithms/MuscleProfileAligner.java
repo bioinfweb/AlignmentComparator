@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +38,17 @@ import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.io.FastaWriter;
 import org.biojava3.core.sequence.io.template.FastaHeaderFormatInterface;
+import org.biojava3.core.sequence.template.Sequence;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.io.FastaReaderTools;
-import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.ConsoleOutputDialog;
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
+import info.bioinfweb.biojava3.core.sequence.compound.AmbiguityNoGapNucleotideCompoundSet;
+import info.bioinfweb.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
+import info.bioinfweb.biojava3.core.sequence.views.ReplaceNucleotideSequenceView;
 
 
 
@@ -52,21 +56,41 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	public static final int HEADER_PREFIX_LENGTH = 2;
 	
 	
-	public static final FastaHeaderFormatInterface<DNASequence, NucleotideCompound> FIRST_HEADER_FORMAT = 
-			new FastaHeaderFormatInterface<DNASequence, NucleotideCompound>() {
-				public String getHeader(DNASequence sequence) {
-					return "0 " + sequence.getOriginalHeader();  
+	public static final FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> FIRST_HEADER_FORMAT = 
+			new FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
+				public String getHeader(Sequence<NucleotideCompound> sequence) {
+					return "0 " + ((ReplaceAbstractSequenceView)sequence).getOriginalHeader();  
 				}
 			};
 	
 	
-	public static final FastaHeaderFormatInterface<DNASequence, NucleotideCompound> SECOND_HEADER_FORMAT = 
-			new FastaHeaderFormatInterface<DNASequence, NucleotideCompound>() {
-				public String getHeader(DNASequence sequence) {
-					return "1 " + sequence.getOriginalHeader();
+	public static final FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> SECOND_HEADER_FORMAT = 
+			new FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
+				public String getHeader(Sequence<NucleotideCompound> sequence) {
+					return "1 " + ((ReplaceAbstractSequenceView)sequence).getOriginalHeader();  
 				}
 			};
 	
+			
+	private static final Map<NucleotideCompound, NucleotideCompound> REPLACEMENT_MAP = createReplacementMap(); 
+			
+			
+	private static Map<NucleotideCompound, NucleotideCompound> createReplacementMap() {
+		Map<NucleotideCompound, NucleotideCompound> result = new HashMap<NucleotideCompound, NucleotideCompound>();
+		AmbiguityNoGapNucleotideCompoundSet cs = AmbiguityNoGapNucleotideCompoundSet.getAmbiguityNoGapNucleotideCompoundSet(); 
+		result.put(cs.getCompoundForString("U"), cs.getCompoundForString("T"));
+		result.put(cs.getCompoundForString("M"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("W"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("S"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("K"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("V"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("H"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("D"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("B"), cs.getCompoundForString("N"));
+		result.put(cs.getCompoundForString("X"), cs.getCompoundForString("N"));
+		return result;
+	}
+
 			
 	@Override
 	public String getApplicationName() {
@@ -88,20 +112,30 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			return null;
 		}
 	}
-
+	
+	
+	private List<Sequence<NucleotideCompound>> createReplacedList(Document document, int alignmentIndex) {
+		ArrayList<Sequence<NucleotideCompound>> result = new ArrayList<Sequence<NucleotideCompound>>(document.getSequenceCount());
+		for (int i = 0; i < document.getSequenceCount(); i++) {
+			result.add(new ReplaceAbstractSequenceView(document.getUnalignedSequence(alignmentIndex, i), REPLACEMENT_MAP));
+		}
+		return result;
+	}
+	
 	
 	private File writeInputFile(Document document, int alignmentIndex) throws Exception {
 		String prefix = "First_";
-		FastaHeaderFormatInterface<DNASequence, NucleotideCompound> headerFormat = FIRST_HEADER_FORMAT;
+		FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> headerFormat = FIRST_HEADER_FORMAT;
 		if (alignmentIndex == 1) {
 			prefix = "Second_";
 			headerFormat = SECOND_HEADER_FORMAT;
 		}
 		File result = createTempFile(prefix, "fasta");
 		BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(result)); 
-		FastaWriter<DNASequence, NucleotideCompound> fastaWriter = new FastaWriter<DNASequence, NucleotideCompound>(
-		    stream, document.getUnalignedSequences(alignmentIndex),
-    		headerFormat);
+		FastaWriter<Sequence<NucleotideCompound>, NucleotideCompound> fastaWriter = 
+				new FastaWriter<Sequence<NucleotideCompound>, NucleotideCompound>(
+				    stream, createReplacedList(document, alignmentIndex),
+		    		headerFormat);
 		fastaWriter.process();
 		stream.close();
 		return result;
