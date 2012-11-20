@@ -241,6 +241,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	private void paintAlignment(Graphics2D g, int alignmentIndex, float x, float y) {
 		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinY() - y) / getCompoundHeight()) - 1);
 		int lastIndex = Math.min(document.getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
+		y += firstIndex * getCompoundHeight();
 		for (int i = firstIndex; i <= lastIndex; i++) {
 			paintSequence(g, document.getAlignedSequence(alignmentIndex, i), x, y);  //lastIndex
 	    y += getCompoundHeight();

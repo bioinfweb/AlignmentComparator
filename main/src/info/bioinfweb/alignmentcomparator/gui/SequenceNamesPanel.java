@@ -120,12 +120,12 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 		
 		g.setColor(SystemColor.menuText);
   	g.setFont(getAlignmentComparisonPanel().getCompoundFont());
-		float y = paintNames(0, g);
-		paintNames(y + AlignmentComparisonPanel.ALIGNMENT_DISTANCE, g);
+		float y = paintNames(g, 0);
+		paintNames(g, y + AlignmentComparisonPanel.ALIGNMENT_DISTANCE * getAlignmentComparisonPanel().getZoom());
 	}
 	
 	
-	private float paintNames(float startY, Graphics2D g) {
+	private float paintNames(Graphics2D g, float startY) {
 		float y = startY;
 		FontMetrics fm = g.getFontMetrics();
 		for (int i = 0; i < getDocument().getSequenceCount(); i++) {
