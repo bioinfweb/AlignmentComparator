@@ -85,9 +85,10 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	@Override
 	public void mousePressed(MouseEvent e) {
 		//TODO y Bereich prüfen
-		
-		startColumn = getOwner().columnByPaintX(e.getX());
-		getOwner().getSelection().setNewSelection(startColumn, startColumn);
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			startColumn = getOwner().columnByPaintX(e.getX());
+			getOwner().getSelection().setNewSelection(startColumn, startColumn);
+		}
 	}
 
 	
@@ -115,6 +116,9 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 		if (isSelectingColumn()) {
 			extendSelection(e.getX());
 			stopSelectingColumn();
+		}
+		else if (e.getButton() == MouseEvent.BUTTON3) {
+			getOwner().getSelection().clear();
 		}
 	}
 
