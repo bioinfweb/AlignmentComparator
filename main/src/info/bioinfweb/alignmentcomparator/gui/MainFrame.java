@@ -32,7 +32,6 @@ import javax.swing.JMenu;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
-import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -88,12 +87,12 @@ public class MainFrame extends JFrame {
 		if (windowListener == null) {
 			windowListener = new WindowAdapter() {
 					@Override
-					public void windowActivated(WindowEvent arg0) {
+					public void windowActivated(WindowEvent e) {
 						getComparisonPanel().requestFocus();
 					}
 	
 					@Override
-					public void windowClosing(WindowEvent arg0) {
+					public void windowClosing(WindowEvent e) {
 						if (getDocument().askToSave()) {
 							//CurrentDirectoryModel.getInstance().removeFileChooser(getDocument().getFileChooser());
 							//ExtendedScrollPaneSelector.uninstallScrollPaneSelector(getTreeScrollPane());
@@ -246,10 +245,10 @@ public class MainFrame extends JFrame {
 	private AlignmentComparisonPanel getComparisonPanel() {
 		if (comparisonPanel == null) {
 			comparisonPanel = new AlignmentComparisonPanel(getDocument());
-			GridBagLayout gbl_comparisonPanel = new GridBagLayout();
-			gbl_comparisonPanel.rowWeights = new double[]{};
-			gbl_comparisonPanel.columnWeights = new double[]{};
-			comparisonPanel.setLayout(gbl_comparisonPanel);
+			AlignmentComparisonInputListener inputListener = new AlignmentComparisonInputListener(comparisonPanel);
+			comparisonPanel.addKeyListener(inputListener);
+			comparisonPanel.addMouseListener(inputListener);
+			comparisonPanel.addMouseWheelListener(inputListener);
 		}
 		return comparisonPanel;
 	}

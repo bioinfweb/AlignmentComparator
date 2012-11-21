@@ -24,6 +24,7 @@ import info.bioinfweb.alignmentcomparator.document.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.SingleLineCommentPositioner;
 import info.webinsel.util.Math2;
+import info.webinsel.util.graphics.GraphicsUtils;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,6 +34,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.SystemColor;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -59,6 +61,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public static final String FONT_COLOR_ID = "FONT";
 	public static final String COMMENT_BORDER_COLOR_ID = "COMMENT_BORDER";
 	public static final String COMMENT_OVERLAPPING_BORDER_COLOR_ID = "COMMENT_BORDER_2";
+	public static final String SELECTION_COLOR_ID = "SELECTION";
 	
 	public static final float COMPOUND_WIDTH = 10f;
 	public static final float COMPOUND_HEIGHT = 14f;
@@ -73,7 +76,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	private float compoundHeight = COMPOUND_HEIGHT;
 	private Font font = new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(COMPOUND_HEIGHT * 0.7f));
 	private Document document = null;
-	private AlignmentComparisonPanelSelection selection = new AlignmentComparisonPanelSelection();
+	private AlignmentComparisonPanelSelection selection = new AlignmentComparisonPanelSelection(this);
 	private List<AlignmentComparisonPanelListener> listeners = new LinkedList<AlignmentComparisonPanelListener>();
 	private CommentPositioner commentPositioner = new SingleLineCommentPositioner();  // Default strategy as long as there is no factory
 	
@@ -93,6 +96,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		result.put(FONT_COLOR_ID, Color.BLACK);
 		result.put(COMMENT_BORDER_COLOR_ID, Color.BLUE.brighter());
 		result.put(COMMENT_OVERLAPPING_BORDER_COLOR_ID, Color.GRAY);
+		result.put(SELECTION_COLOR_ID, SystemColor.textHighlight);
 		return result;
 		// Bei Bedarf können alternative Farbsätze später aus einer Datei gelesen werden.
 	}
@@ -107,6 +111,11 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	}
 
 	
+	public Document getDocument() {
+		return document;
+	}
+
+
 	public Map<String, Color> getColorMap() {
 		return colorMap;
 	}
@@ -213,12 +222,12 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	
 	
   @Override
-	protected void paintComponent(Graphics g) {
-  	super.paintComponent(g);
-  	((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-  			RenderingHints.VALUE_ANTIALIAS_ON);
-  	paintAlignments((Graphics2D)g);
-  	paintComments((Graphics2D)g);
+	protected void paintComponent(Graphics g2) {
+  	super.paintComponent(g2);
+  	Graphics2D g = (Graphics2D)g2;
+  	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
+  	paintAlignments(g);
+  	paintComments(g);
 	}
 
 
@@ -256,13 +265,25 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		int lastIndex = Math.min(sequence.getLength() - 1, (int)Math.round((getVisibleRect().getMaxX() - x) / getCompoundWidth()));
   	x += firstIndex * getCompoundWidth();
 		for (int i = firstIndex; i <= lastIndex; i++) {
-    	paintCompound(g, sequence.getCompoundAt(i + 1), x, y);  // BioJava index starts with 1
+    	paintCompound(g, sequence.getCompoundAt(i + 1), x, y, getSelection().isColumnSelected(i + 1));  // BioJava index starts with 1
 	    x += getCompoundWidth();
     }
 	}
+	
+	
+	private Color getBGColor(String base, boolean selected) {
+		Color color = getColorMap().get(base);
+		if (color == null) {
+			color = getColorMap().get(DEFAULT_BG_COLOR_ID);
+		}
+		if (selected) {
+			color = GraphicsUtils.blend(color, getColorMap().get(SELECTION_COLOR_ID));
+		}
+		return color;
+	}
 
 
-  private void paintCompound(Graphics2D g, NucleotideCompound compound, float x, float y) {
+  private void paintCompound(Graphics2D g, NucleotideCompound compound, float x, float y, boolean selected) {
   	g.setColor(getColorMap().get(COMPOUND_BORDER_COLOR_ID));
   	g.draw(new Rectangle2D.Float(x, y, getCompoundWidth(), getCompoundHeight()));
   	
@@ -271,11 +292,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
   	Iterator<NucleotideCompound> iterator = consituents.iterator();
   	float bgY = y;
   	while (iterator.hasNext()) {  // Fill the compound rectangle with differently colored zones, if ambiguity codes are used.
-  		Color color = getColorMap().get(iterator.next().getUpperedBase());
-  		if (color == null) {
-  			color = getColorMap().get(DEFAULT_BG_COLOR_ID);
-  		}
-  		g.setColor(color);
+  		g.setColor(getBGColor(iterator.next().getUpperedBase(), selected));
     	g.fill(new Rectangle2D.Float(x, bgY, getCompoundWidth(), height));
     	bgY += height;
   	}
@@ -285,9 +302,9 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		FontMetrics fm = g.getFontMetrics();
   	g.drawString(compound.getBase(), x + 0.5f * (getCompoundWidth() - fm.charWidth(compound.getBase().charAt(0))), y + fm.getAscent());
   }
+	
   
-  
-  public void paintComments(Graphics2D g) {
+  private void paintComments(Graphics2D g) {
   	//TODO Make sure that positioning was done
   	getCommentPositioner().paint(document.getComments(), this, document.getAlignedLength(), g, 0, 
   			2 * document.getSequenceCount() * getCompoundHeight() +	getZoom() * (ALIGNMENT_DISTANCE + COMMENTS_DISTANCE));

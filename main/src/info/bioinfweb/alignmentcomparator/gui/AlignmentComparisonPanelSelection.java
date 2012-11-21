@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
+import info.webinsel.util.Math2;
 
 
 
@@ -33,21 +34,25 @@ public class AlignmentComparisonPanelSelection {
 	public static final int NO_SELECTION = -1;
 	
 	
+  private AlignmentComparisonPanel parent;
 	private int firstPos = NO_SELECTION;
 	private int lastPos = NO_SELECTION;
   private Comment comment = null;
   
   
+	public AlignmentComparisonPanelSelection(AlignmentComparisonPanel parent) {
+		super();
+		this.parent = parent;
+	}
+
+
+	public AlignmentComparisonPanel getParent() {
+		return parent;
+	}
+
+
 	public int getFirstPos() {
 		return firstPos;
-	}
-	
-	
-	public void setFirstPos(int firstPos) {
-		this.firstPos = firstPos;
-		if ((getLastPos() < firstPos) || (lastPos == NO_SELECTION)) {  // also true if lastPos == NO_SELECTION
-			setLastPos(firstPos);
-		}
 	}
 	
 	
@@ -56,13 +61,41 @@ public class AlignmentComparisonPanelSelection {
 	}
 	
 	
+  private void throwInvalidPositionException(int pos) {
+  	if (!Math2.isBetween(pos, 1, getParent().getDocument().getAlignedLength()) && (pos != NO_SELECTION)) {
+			throw new IllegalArgumentException("Invalid selection position " + pos + ". The selection borders " +
+					"have to be between 1 and the alignment length + (" + getParent().getDocument().getAlignedLength() + ").");
+  	}
+  }
+	
+	
+	public void setFirstPos(int firstPos) {
+		throwInvalidPositionException(firstPos);
+		
+		this.firstPos = firstPos;
+		if ((getLastPos() < firstPos) || (firstPos == NO_SELECTION)) {  // also true if lastPos == NO_SELECTION
+			lastPos = firstPos;
+		}
+	}
+	
+	
 	public void setLastPos(int lastPos) {
+		throwInvalidPositionException(lastPos);
+		
 		if (lastPos == NO_SELECTION) {
 			this.lastPos = getFirstPos();
 		}
 		else {
 			this.lastPos = lastPos;
+			if (getFirstPos() > lastPos) {
+				firstPos = lastPos;
+			}
 		}
+	}
+	
+	
+	public boolean isColumnSelected(int columnIndex) {
+		return Math2.isBetween(columnIndex, getFirstPos(), getLastPos());
 	}
 	
 	
