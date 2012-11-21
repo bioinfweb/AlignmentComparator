@@ -217,6 +217,11 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	}
 
 
+	public int paintXBycolumn(int column) {
+		return (int)((column - 1) * getCompoundWidth());
+	}
+
+
 	@Override
 	public void changeHappened() {
 		assignPaintSize();

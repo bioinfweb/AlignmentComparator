@@ -32,6 +32,7 @@ import java.awt.Stroke;
 import java.awt.SystemColor;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.Scrollable;
 import javax.swing.event.ChangeEvent;
@@ -43,9 +44,6 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   	
 	/** The height of this panel in pixels */
 	public static final int HEIGHT = 16;
-	
-	/** The distance on x to the left border of the component */
-	public static final int X_OFFSET = 0;
 	
 	/** The font used for the labels */
 	public static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 10);
@@ -102,13 +100,24 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   
   
   @Override
-	public void columnSelectionChanged(ChangeEvent e) {}
+	public void columnSelectionChanged(ChangeEvent e) {
+  	repaint();
+  }
 
 
 	@Override
   public Dimension getMinimumSize() {
     return new Dimension(0, HEIGHT);
   }
+	
+	
+	private void paintSelection(Graphics2D g) {
+		g.setColor(SystemColor.textHighlight);
+		AlignmentComparisonPanelSelection selection = getAlignmentComparisonPanel().getSelection();
+		int x = getAlignmentComparisonPanel().paintXBycolumn(selection.getFirstPos()); 
+		g.fill(new Rectangle2D.Float(x, 0, 
+				getAlignmentComparisonPanel().paintXBycolumn(selection.getLastPos() + 1) - 1 - x, HEIGHT));
+	}
   
   
   @Override
@@ -117,26 +126,29 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
     		RenderingHints.VALUE_ANTIALIAS_ON);
   
+    // Paint background:
     Rectangle visibleRect = getVisibleRect();
 		g.setColor(SystemColor.menu);
 		g.fill(visibleRect);
+		paintSelection(g);
 		
-    float compoundWidth = getAlignmentComparisonPanel().getCompoundWidth();
+    // Paint base line
+		float compoundWidth = getAlignmentComparisonPanel().getCompoundWidth();
 		g.setColor(SystemColor.menuText);
     g.draw(new Line2D.Float(visibleRect.x, HEIGHT - 1, visibleRect.x + visibleRect.width, HEIGHT - 1));  // base line
     
-    // Text data:
+    // Paint text data and dashed:
     g.setFont(FONT);
     int labelInterval = Math2.roundUp(
     		(g.getFontMetrics().stringWidth(LABEL_LENGTH_STANDARD) + 2 * LABEL_LEFT_DISTANCE) / compoundWidth);
-    float x = Math.max(X_OFFSET + compoundWidth / 2f,  
-    		X_OFFSET % compoundWidth + visibleRect.x - visibleRect.x % compoundWidth - compoundWidth / 2f);
+    float x = Math.max(compoundWidth / 2f,  
+    		visibleRect.x - visibleRect.x % compoundWidth - compoundWidth / 2f);
     Stroke stroke = g.getStroke();
     try {
       while (x <= visibleRect.x + visibleRect.width) {
     		// Text output
     		float dashLength = DASH_LENGTH;
-    		int compoundIndex = Math.round((x - X_OFFSET) / compoundWidth); 
+    		int compoundIndex = Math.round(x / compoundWidth); 
     		if (compoundIndex % labelInterval == 0) {
     			g.drawString("" + compoundIndex, x + LABEL_LEFT_DISTANCE, LABEL_TOP_DISTANCE);
     			dashLength = LABELED_DASH_LENGTH;
