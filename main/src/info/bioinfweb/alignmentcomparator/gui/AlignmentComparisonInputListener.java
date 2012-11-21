@@ -65,21 +65,32 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		switch (e.getKeyCode()) {
+		  case KeyEvent.VK_RIGHT: case KeyEvent.VK_NUMPAD6:
+		  	if (e.isShiftDown()) {
+		  		getOwner().getSelection().moveSelectingCursor(1);
+		  	}
+		  	else {
+		  		getOwner().getSelection().moveCursor(1);
+		  	}
+			  break;			
+		  case KeyEvent.VK_LEFT: case KeyEvent.VK_NUMPAD4:
+		  	if (e.isShiftDown()) {
+		  		getOwner().getSelection().moveSelectingCursor(-1);
+		  	}
+		  	else {
+  		  	getOwner().getSelection().moveCursor(-1);
+		  	}
+			  break;			
+		}
+		//System.out.println("keyPressed " + e.getKeyCode() + " " + e.getExtendedKeyCode() + " " + e.isShiftDown());
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyReleased(KeyEvent e) {}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	
 	@Override
