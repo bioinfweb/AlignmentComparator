@@ -198,6 +198,23 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public Font getCompoundFont() {
 		return font;
 	}
+	
+	
+	/**
+	 * Returns the column containing the specified x coordinate.
+	 *  
+	 * @param x the paint coordinate
+	 * @return the alignment column or <code>-1</code> id the coordinate is outside the alignment area.
+	 */
+	public int columnByPaintX(int x) {
+		int result = 1 + (int)(x / getCompoundWidth());
+		if (Math2.isBetween(result, 1, getDocument().getAlignedLength())) {  // BioJava index starts with 1
+			return result;
+		}
+		else {
+			return -1;
+		}
+	}
 
 
 	@Override
@@ -244,28 +261,32 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	
 	
 	private void paintAlignments(Graphics2D g) {
-		paintAlignment(g, 0, 0, 0);
-		paintAlignment(g, 1, 0, document.getSequenceCount() * getCompoundHeight() + ALIGNMENT_DISTANCE * getZoom());
+		paintAlignment(g, 0, 0);
+		paintAlignment(g, 1, getDocument().getSequenceCount() * getCompoundHeight() + ALIGNMENT_DISTANCE * getZoom());
 	}
 	
 
-	private void paintAlignment(Graphics2D g, int alignmentIndex, float x, float y) {
+	private void paintAlignment(Graphics2D g, int alignmentIndex, float y) {
 		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinY() - y) / getCompoundHeight()) - 1);
-		int lastIndex = Math.min(document.getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
+		int lastIndex = Math.min(getDocument().getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
 		y += firstIndex * getCompoundHeight();
 		for (int i = firstIndex; i <= lastIndex; i++) {
-			paintSequence(g, document.getAlignedSequence(alignmentIndex, i), x, y);  //lastIndex
+			paintSequence(g, getDocument().getAlignedSequence(alignmentIndex, i), y);  //lastIndex
 	    y += getCompoundHeight();
     }
 	}
 	
 	
-	private void paintSequence(Graphics2D g, Sequence<NucleotideCompound> sequence, float x, float y) {
-		int firstIndex = Math.max(0, (int)Math.round((getVisibleRect().getMinX() - x) / getCompoundWidth()) - 1);
-		int lastIndex = Math.min(sequence.getLength() - 1, (int)Math.round((getVisibleRect().getMaxX() - x) / getCompoundWidth()));
-  	x += firstIndex * getCompoundWidth();
+	private void paintSequence(Graphics2D g, Sequence<NucleotideCompound> sequence, float y) {
+		int firstIndex = Math.max(1, columnByPaintX((int)getVisibleRect().getMinX()));  // BioJava index starts with 1
+		int lastIndex = columnByPaintX((int)getVisibleRect().getMaxX());
+		if (lastIndex == -1) {
+			lastIndex = getDocument().getAlignedLength();
+		}
+		
+  	float x = (firstIndex - 1) * getCompoundWidth();  // BioJava index starts with 1
 		for (int i = firstIndex; i <= lastIndex; i++) {
-    	paintCompound(g, sequence.getCompoundAt(i + 1), x, y, getSelection().isColumnSelected(i + 1));  // BioJava index starts with 1
+    	paintCompound(g, sequence.getCompoundAt(i), x, y, getSelection().isColumnSelected(i));
 	    x += getCompoundWidth();
     }
 	}
@@ -334,5 +355,15 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		while (iterator.hasNext()) {
 			iterator.next().sizeChanged(new ChangeEvent(this));
 		}
+	}
+	
+	
+	public void fireColumnSelectionChanged() {
+		Iterator<AlignmentComparisonPanelListener> iterator = listeners.iterator();
+		while (iterator.hasNext()) {
+			iterator.next().columnSelectionChanged(new ChangeEvent(this));
+		}
+		
+		repaint();  // Called here directly because this class does not register itself as a listener.
 	}
 }

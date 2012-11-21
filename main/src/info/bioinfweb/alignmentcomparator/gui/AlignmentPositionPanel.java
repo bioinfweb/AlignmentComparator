@@ -102,6 +102,10 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   
   
   @Override
+	public void columnSelectionChanged(ChangeEvent e) {}
+
+
+	@Override
   public Dimension getMinimumSize() {
     return new Dimension(0, HEIGHT);
   }

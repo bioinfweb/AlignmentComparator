@@ -34,20 +34,20 @@ public class AlignmentComparisonPanelSelection {
 	public static final int NO_SELECTION = -1;
 	
 	
-  private AlignmentComparisonPanel parent;
+  private AlignmentComparisonPanel owner;
 	private int firstPos = NO_SELECTION;
 	private int lastPos = NO_SELECTION;
   private Comment comment = null;
   
   
-	public AlignmentComparisonPanelSelection(AlignmentComparisonPanel parent) {
+	public AlignmentComparisonPanelSelection(AlignmentComparisonPanel owner) {
 		super();
-		this.parent = parent;
+		this.owner = owner;
 	}
 
 
-	public AlignmentComparisonPanel getParent() {
-		return parent;
+	public AlignmentComparisonPanel getOwner() {
+		return owner;
 	}
 
 
@@ -62,12 +62,28 @@ public class AlignmentComparisonPanelSelection {
 	
 	
   private void throwInvalidPositionException(int pos) {
-  	if (!Math2.isBetween(pos, 1, getParent().getDocument().getAlignedLength()) && (pos != NO_SELECTION)) {
+  	if (!Math2.isBetween(pos, 1, getOwner().getDocument().getAlignedLength()) && (pos != NO_SELECTION)) {
 			throw new IllegalArgumentException("Invalid selection position " + pos + ". The selection borders " +
-					"have to be between 1 and the alignment length + (" + getParent().getDocument().getAlignedLength() + ").");
+					"have to be between 1 and the alignment length + (" + getOwner().getDocument().getAlignedLength() + ").");
   	}
   }
 	
+  
+  public void setNewSelection(int firstPos, int lastPos) {
+		throwInvalidPositionException(firstPos);
+		throwInvalidPositionException(lastPos);
+		
+  	if (firstPos > lastPos) {
+  		this.firstPos = lastPos;
+  		this.lastPos = firstPos;
+  	}
+  	else {
+  		this.firstPos = firstPos;
+  		this.lastPos = lastPos;
+  	}
+		getOwner().fireColumnSelectionChanged();
+  }
+  
 	
 	public void setFirstPos(int firstPos) {
 		throwInvalidPositionException(firstPos);
@@ -76,6 +92,7 @@ public class AlignmentComparisonPanelSelection {
 		if ((getLastPos() < firstPos) || (firstPos == NO_SELECTION)) {  // also true if lastPos == NO_SELECTION
 			lastPos = firstPos;
 		}
+		getOwner().fireColumnSelectionChanged();
 	}
 	
 	
@@ -86,11 +103,18 @@ public class AlignmentComparisonPanelSelection {
 			this.lastPos = getFirstPos();
 		}
 		else {
-			this.lastPos = lastPos;
 			if (getFirstPos() > lastPos) {
-				firstPos = lastPos;
+				this.lastPos = getFirstPos();
+				firstPos = lastPos; 
+			}
+			else {
+				if (getFirstPos() == NO_SELECTION) {
+					firstPos = lastPos;
+				}
+				this.lastPos = lastPos;
 			}
 		}
+		getOwner().fireColumnSelectionChanged();
 	}
 	
 	
@@ -106,6 +130,7 @@ public class AlignmentComparisonPanelSelection {
 	
 	public void clearSequenceSelection() {
 		setFirstPos(NO_SELECTION);  // lastPos will be set automatically
+		getOwner().fireColumnSelectionChanged();
 	}
 	
 	

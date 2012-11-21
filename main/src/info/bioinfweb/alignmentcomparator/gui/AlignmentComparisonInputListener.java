@@ -24,6 +24,7 @@ import info.bioinfweb.alignmentcomparator.Main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -35,9 +36,11 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 
 	
 	public static final float ZOOM_PER_CLICK = 0.1f;
+	public static final int NOT_SELECTING = -1;
 	
 	
-	protected AlignmentComparisonPanel owner = null;
+	private AlignmentComparisonPanel owner = null;
+	private int startColumn = NOT_SELECTING;
 	
 
 	public AlignmentComparisonInputListener(AlignmentComparisonPanel owner) {
@@ -45,6 +48,21 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	}
 	
 	
+	public AlignmentComparisonPanel getOwner() {
+		return owner;
+	}
+
+	
+	private boolean isSelectingColumn() {
+		return startColumn != NOT_SELECTING;
+	}
+	
+	
+	private void stopSelectingColumn() {
+		startColumn = NOT_SELECTING;
+	}
+	
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -64,6 +82,43 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	}
 
 	
+	@Override
+	public void mousePressed(MouseEvent e) {
+		//TODO y Bereich prüfen
+		
+		startColumn = getOwner().columnByPaintX(e.getX());
+		getOwner().getSelection().setNewSelection(startColumn, startColumn);
+	}
+
+	
+	private void extendSelection(int paintX) {
+		int column = getOwner().columnByPaintX(paintX);
+		if (column < startColumn) {
+			getOwner().getSelection().setFirstPos(column);
+		}
+		else {
+			getOwner().getSelection().setLastPos(column);  // Automatic mechanism in setLastPos() is not sufficient to replace this method, because first and last position are ordered after the first call of setLastPos().  
+		}
+	}
+	
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if (isSelectingColumn()) {
+			extendSelection(e.getX());
+		}
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if (isSelectingColumn()) {
+			extendSelection(e.getX());
+			stopSelectingColumn();
+		}
+	}
+
+
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if ((e.isMetaDown() && Main.IS_MAC) || (e.isControlDown()&&  !Main.IS_MAC)) {

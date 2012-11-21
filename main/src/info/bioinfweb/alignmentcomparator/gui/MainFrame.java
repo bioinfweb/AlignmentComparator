@@ -248,6 +248,7 @@ public class MainFrame extends JFrame {
 			AlignmentComparisonInputListener inputListener = new AlignmentComparisonInputListener(comparisonPanel);
 			comparisonPanel.addKeyListener(inputListener);
 			comparisonPanel.addMouseListener(inputListener);
+			comparisonPanel.addMouseMotionListener(inputListener);
 			comparisonPanel.addMouseWheelListener(inputListener);
 		}
 		return comparisonPanel;

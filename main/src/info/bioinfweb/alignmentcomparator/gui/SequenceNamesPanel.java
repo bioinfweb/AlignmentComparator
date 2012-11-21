@@ -86,6 +86,10 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 
 	
 	@Override
+	public void columnSelectionChanged(ChangeEvent e) {}
+
+
+	@Override
 	public void changeHappened() {}
 
 
