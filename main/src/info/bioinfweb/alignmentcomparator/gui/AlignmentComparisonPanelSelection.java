@@ -41,7 +41,9 @@ public class AlignmentComparisonPanelSelection {
   private AlignmentComparisonPanel owner;
 	private int firstPos = NO_SELECTION;
 	private int lastPos = NO_SELECTION;
-	private int cursorStart = NO_SELECTION;
+	
+	
+	private int startColumn = NO_SELECTION;
   private Comment comment = null;
   
   
@@ -74,22 +76,16 @@ public class AlignmentComparisonPanelSelection {
   }
 	
   
-  public void setNewSelection(int firstPos, int lastPos) {
-  	firstPos = secureValidPosition(firstPos);
-  	lastPos = secureValidPosition(lastPos);
+  public void setNewSelection(int pos) {
+  	pos = secureValidPosition(pos);
 
-  	if ((firstPos == NO_SELECTION) || (lastPos == NO_SELECTION)) {
+  	if (pos == NO_SELECTION) {
   		throw new IllegalArgumentException("This method cannot be called with the value NO_SELECTION.");
   	}
   	else {
-	  	if (firstPos > lastPos) {
-	  		this.firstPos = lastPos;
-	  		this.lastPos = firstPos;
-	  	}
-	  	else {
-	  		this.firstPos = firstPos;
-	  		this.lastPos = lastPos;
-	  	}
+  		firstPos = pos;
+  		lastPos = pos;
+  		startColumn = pos;
 			getOwner().fireColumnSelectionChanged();
   	}
   }
@@ -133,36 +129,48 @@ public class AlignmentComparisonPanelSelection {
 	}
 	
 	
-	public void moveCursor(int columnCount) {
+	public void moveSelectionStart(int columnCount) {
 		int pos = 1;
 		if (isSequenceSelected()) {
 			pos = getFirstPos();
-			if ((cursorStart != NO_SELECTION) && (cursorStart == getFirstPos())) {
+			if ((startColumn != NO_SELECTION) && (startColumn == getFirstPos())) {
 				pos = getLastPos();
 			}
 		}
-		cursorStart = pos;
+		startColumn = pos;
 		pos += columnCount;
-		setNewSelection(pos, pos);  // calls fireColumnSelectionChanged()
+		setNewSelection(pos);  // calls fireColumnSelectionChanged()
 	}
 		
 	
-	public void moveSelectingCursor(int columnCount) {
-		if (!isSequenceSelected()) {
-			setFirstPos(1);
-			setLastPos(columnCount);
-			cursorStart = 1;
+	public void extendSelectionTo(int column) {
+		if (startColumn < column) {
+			firstPos = startColumn;  // Not using the setter to avoid firing two events
+			setLastPos(column);
 		}
 		else {
-			if ((getLastPos() > cursorStart) || (getFirstPos() == cursorStart)) {  // second condition must not be checked, if first is true
+			firstPos = column;  // Not using the setter to avoid firing two events
+			setLastPos(startColumn);
+		}
+	}
+	
+
+	public void extendSelectionRelatively(int columnCount) {
+		if (!isSequenceSelected()) {
+			startColumn = 1;
+			firstPos = 1;  // setter not used to avoid firing a second event 
+			setLastPos(columnCount);  // calls fireColumnSelectionChanged()
+		}
+		else {
+			if ((getLastPos() > startColumn) || (getFirstPos() == startColumn)) {  // second condition must not be checked, if first is true
 				setLastPos(getLastPos() + columnCount);  // calls fireColumnSelectionChanged()
 			}
-			else if (getFirstPos() < cursorStart) {
+			else if (getFirstPos() < startColumn) {
 				setFirstPos(getFirstPos() + columnCount);  // calls fireColumnSelectionChanged()
 			}
 			else {
-				System.out.println("setNewSelection");
-				setNewSelection(cursorStart, cursorStart);  // calls fireColumnSelectionChanged()
+				System.out.println("3rd case");
+				setNewSelection(startColumn);  // calls fireColumnSelectionChanged()
 			}
 		}
 	}
@@ -174,7 +182,7 @@ public class AlignmentComparisonPanelSelection {
 	
 	
 	public void clearSequenceSelection() {
-		cursorStart = NO_SELECTION;
+		startColumn = NO_SELECTION;
 		setFirstPos(NO_SELECTION);  // lastPos will be set automatically
 		getOwner().fireColumnSelectionChanged();
 	}

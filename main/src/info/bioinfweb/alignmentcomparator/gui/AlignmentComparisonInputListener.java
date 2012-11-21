@@ -40,7 +40,7 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	
 	
 	private AlignmentComparisonPanel owner = null;
-	private int startColumn = NOT_SELECTING;
+	private boolean isSelectingColumn = false;
 	
 
 	public AlignmentComparisonInputListener(AlignmentComparisonPanel owner) {
@@ -53,33 +53,23 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	}
 
 	
-	private boolean isSelectingColumn() {
-		return startColumn != NOT_SELECTING;
-	}
-	
-	
-	private void stopSelectingColumn() {
-		startColumn = NOT_SELECTING;
-	}
-	
-
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		  case KeyEvent.VK_RIGHT: case KeyEvent.VK_NUMPAD6:
 		  	if (e.isShiftDown()) {
-		  		getOwner().getSelection().moveSelectingCursor(1);
+		  		getOwner().getSelection().extendSelectionRelatively(1);
 		  	}
 		  	else {
-		  		getOwner().getSelection().moveCursor(1);
+		  		getOwner().getSelection().moveSelectionStart(1);
 		  	}
 			  break;			
 		  case KeyEvent.VK_LEFT: case KeyEvent.VK_NUMPAD4:
 		  	if (e.isShiftDown()) {
-		  		getOwner().getSelection().moveSelectingCursor(-1);
+		  		getOwner().getSelection().extendSelectionRelatively(-1);
 		  	}
 		  	else {
-  		  	getOwner().getSelection().moveCursor(-1);
+  		  	getOwner().getSelection().moveSelectionStart(-1);
 		  	}
 			  break;			
 		}
@@ -97,26 +87,20 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	public void mousePressed(MouseEvent e) {
 		//TODO y Bereich prüfen
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			startColumn = getOwner().columnByPaintX(e.getX());
-			getOwner().getSelection().setNewSelection(startColumn, startColumn);
+			isSelectingColumn = true;
+			getOwner().getSelection().setNewSelection(getOwner().columnByPaintX(e.getX()));
 		}
 	}
 
 	
 	private void extendSelection(int paintX) {
-		int column = getOwner().columnByPaintX(paintX);
-		if (column < startColumn) {
-			getOwner().getSelection().setFirstPos(column);
-		}
-		else {
-			getOwner().getSelection().setLastPos(column);  // Automatic mechanism in setLastPos() is not sufficient to replace this method, because first and last position are ordered after the first call of setLastPos().  
-		}
+		getOwner().getSelection().extendSelectionTo(getOwner().columnByPaintX(paintX));
 	}
 	
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (isSelectingColumn()) {
+		if (isSelectingColumn) {
 			extendSelection(e.getX());
 		}
 	}
@@ -124,9 +108,9 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (isSelectingColumn()) {
+		if (isSelectingColumn) {
 			extendSelection(e.getX());
-			stopSelectingColumn();
+			isSelectingColumn = false;
 		}
 		else if (e.getButton() == MouseEvent.BUTTON3) {
 			getOwner().getSelection().clear();
