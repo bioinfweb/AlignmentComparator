@@ -24,7 +24,6 @@ import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 
 

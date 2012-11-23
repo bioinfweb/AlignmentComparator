@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
 
@@ -76,10 +77,11 @@ public class MainFrame extends JFrame {
 	 */
 	private void initialize() {
 		this.setTitle("AlignmentComparator");
-		this.setSize(400, 300);
+		this.setSize(640, 480);
 		this.setJMenuBar(getMainMenu());
 		this.setContentPane(getJContentPane());
 		getDocument().addDocumentListener(getComparisonPanel());
+		getActionManagement().refreshActionStatus();
 	}
 
 	

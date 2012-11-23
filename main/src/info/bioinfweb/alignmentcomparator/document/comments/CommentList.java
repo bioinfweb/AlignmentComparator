@@ -113,8 +113,8 @@ public class CommentList {
 	}
 
 	
-	public Comment remove(Object o) {
-		return map.remove(o);
+	public Comment remove(Comment comment) {
+		return map.remove(comment.getPosition());
 	}
 
 
