@@ -68,6 +68,9 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public static final float COMPOUND_HEIGHT = 14f;
 	public static final float ALIGNMENT_DISTANCE = 7f;
 	public static final float COMMENTS_DISTANCE = 7f;
+	public static final String FONT_NAME = Font.SANS_SERIF;
+	public static final int FONT_STYLE = Font.PLAIN;
+	public static final float FONT_SIZE_NO_ZOOM = COMPOUND_HEIGHT * 0.7f;
 	public static final int SCROLL_BLOCK_LENGTH = 10;
 	
 	
@@ -176,7 +179,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		this.zoom = zoom;
 		compoundWidth = COMPOUND_WIDTH * zoom;
 		compoundHeight = COMPOUND_HEIGHT * zoom;
-		font = new Font(Font.SANS_SERIF, Font.PLAIN, Math.round(zoom * COMPOUND_HEIGHT * 0.7f));
+		font = new Font(FONT_NAME, FONT_STYLE, Math.round(zoom * FONT_SIZE_NO_ZOOM));
 		assignPaintSize();
 		fireZoomChanged();
 	}

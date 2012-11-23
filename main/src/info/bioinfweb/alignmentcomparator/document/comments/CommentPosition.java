@@ -40,4 +40,9 @@ public class CommentPosition {
 	public int getLastPos() {
 		return lastPos;
 	}
+	
+	
+	public int sequenceLength() {
+		return getLastPos() - getFirstPos() + 1;
+	}
 }

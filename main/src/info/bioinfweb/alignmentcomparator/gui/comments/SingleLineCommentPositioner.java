@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
@@ -28,15 +29,23 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.crypto.Data;
+
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel;
 import info.webinsel.util.Math2;
+import info.webinsel.util.graphics.FontCalculator;
 
 
 
 public class SingleLineCommentPositioner implements CommentPositioner {
+	public static final float MARGIN = 1f;
+	public static final Font NO_ZOOM_FONT = new Font(AlignmentComparisonPanel.FONT_NAME, 
+			AlignmentComparisonPanel.FONT_STYLE, Math.round(AlignmentComparisonPanel.FONT_SIZE_NO_ZOOM));
+	
+	
 	private List<Comment> blockingComments;
 	private int maxLine;
 	
@@ -53,9 +62,9 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	 * @param blockingComments
 	 * @return
 	 */
-	private int calculateLine(int column, int length) {
+	private int calculateLine(Comment comment, int column, int length) {
 		// Prepare array:
-		boolean[] blockedLines = new boolean[maxLine];
+		boolean[] blockedLines = new boolean[maxLine + 1];
 		for (int i = 0; i < blockedLines.length; i++) {
 			blockedLines[i] = false;
 		}
@@ -63,14 +72,17 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		// Fill array, remove passed comments:
 		Iterator<Comment> iterator = blockingComments.iterator();
 		while (iterator.hasNext()) {
-			Comment comment = iterator.next();
-			int firstPos = comment.getPosition().getFirstPos();
-			SingleLineCommentPositionData data = getData(comment);
-			if (comment.getPosition().getLastPos() < column) {
-				iterator.remove();  // Remove elements that lie before the current column
-			}
-			else if (Math2.overlaps(column, column + length, firstPos, firstPos + data.getLength())) {				
-				blockedLines[data.getLine()] = true;
+			Comment currentComment = iterator.next();
+			if (!currentComment.equals(comment)) {
+				SingleLineCommentPositionData data = getData(currentComment);
+				int firstPos = currentComment.getPosition().getFirstPos();
+				int end = firstPos + data.getLength() - 1; 
+				if (end < column) {
+					iterator.remove();  // Remove elements that lie before the current column
+				}
+				else if (Math2.overlaps(column, column + length, firstPos, end)) {
+					blockedLines[data.getLine()] = true;
+				}
 			}
 		}
 		
@@ -84,21 +96,22 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	}
 	
 	
-	private int calculateLength(String text) {
-		return 0; //TODO implement
+	private int calculateLength(Comment comment) {
+		return Math.max(comment.getPosition().sequenceLength(),	Math2.roundUp((2 * MARGIN + 
+				FontCalculator.getInstance().getWidth(NO_ZOOM_FONT, comment.getText())) / AlignmentComparisonPanel.COMPOUND_WIDTH));
 	}
 	
 	
 	@Override
 	public void position(CommentList comments) {
 		blockingComments = new LinkedList<Comment>();
-		maxLine = 0;
+		maxLine = -1;
 		int maxColumn = 0;
 		Iterator<Comment> iterator = comments.commentIterator();
 		while (iterator.hasNext()) {
 			Comment comment = iterator.next();
-			int length = calculateLength(comment.getText());
-			int line = calculateLine(comment.getPosition().getFirstPos(), length); 
+			int length = calculateLength(comment);
+			int line = calculateLine(comment, comment.getPosition().getFirstPos(), length);
 			comment.setPositionData(SingleLineCommentPositioner.class, new SingleLineCommentPositionData(line, length));
 			blockingComments.add(comment);
 			maxLine = Math.max(maxLine, line);
@@ -112,26 +125,24 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	private void paintComment(AlignmentComparisonPanel panel, Graphics2D g, Comment comment, float x, float y) {
 		SingleLineCommentPositionData data = getData(comment);
 		CommentPosition pos = comment.getPosition();
-		int sequenceLength = pos.getLastPos() - pos.getFirstPos() + 1;
 		
-		g.setBackground(panel.getColorMap().get(AlignmentComparisonPanel.DEFAULT_BG_COLOR_ID));
-		g.setFont(panel.getFont());
+		g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.DEFAULT_BG_COLOR_ID));
+		g.setFont(panel.getCompoundFont());
 		
 		final float lineWidth = 1f;  //TODO Evtl. sinvolleren Wert (aus Stroke?)
-		float x1 = x + pos.getFirstPos() * panel.getCompoundWidth();
+		float x1 = x + (pos.getFirstPos() - 1) * panel.getCompoundWidth();  // BioJava indices start with 1
 		float y1 = y + data.getLine() * panel.getCompoundHeight();
-		float seqX2 = x + (pos.getLastPos() + 1) * panel.getCompoundWidth() - lineWidth;
-		float y2 = y + (data.getLine() + 1) * panel.getCompoundHeight() - lineWidth; 
-		if (sequenceLength <= data.getLength()) {
-			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_BORDER_COLOR_ID));
-			g.fill(new Rectangle2D.Float(x1, y1, seqX2, y2));
-		}
-		else {
+		float y2 = y1 + panel.getCompoundHeight() - lineWidth;
+
+		Rectangle2D.Float r = new Rectangle2D.Float(x1, y1, 
+				data.getLength() * panel.getCompoundWidth() - lineWidth, y2 - y1);  // BioJava indices start with 1
+		g.fill(r);
+		if (pos.sequenceLength() <= data.getLength()) {
 			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_OVERLAPPING_BORDER_COLOR_ID));
-			g.fill(new Rectangle2D.Float(x1, y1, 
-					x + (pos.getLastPos() + data.getLength()) * panel.getCompoundWidth() - lineWidth, y2));
+			g.draw(r);   
 			
 			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_BORDER_COLOR_ID));
+			float seqX2 = x + (pos.getLastPos()) * panel.getCompoundWidth() - lineWidth;  // BioJava indices start with 1
 			Path2D.Float path = new Path2D.Float();
 			path.moveTo(seqX2, y1);
 			path.lineTo(x1, y1);
@@ -139,8 +150,13 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			path.lineTo(seqX2, y2);
 			g.draw(path);
 		}
-		FontMetrics fm = g.getFontMetrics(); 
-		g.drawString(comment.getText(), x1 + fm.getAscent() + fm.getHeight(), y1);
+		else {
+			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_BORDER_COLOR_ID));
+			g.draw(r);
+		}
+		FontMetrics fm = g.getFontMetrics();
+		g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.FONT_COLOR_ID));
+		g.drawString(comment.getText(), x1 + MARGIN * panel.getZoom(), y1 + fm.getAscent());
 	}
 
 
@@ -160,8 +176,8 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	public Dimension getCommentDimension(CommentList comments, AlignmentComparisonPanel panel) {
 		SingleLineGlobalCommentPositionerData data = 
 				(SingleLineGlobalCommentPositionerData)comments.getGlobalPositionerData(SingleLineCommentPositioner.class);
-		return new Dimension(Math2.roundUp(data.getMaxColumn() * panel.getCompoundWidth()), 
-				Math2.roundUp(data.getMaxLine() + panel.getCompoundHeight()));
+		return new Dimension(Math2.roundUp(data.getMaxColumn() * panel.getCompoundWidth()),  // BioJava indices start with 1 
+				Math2.roundUp((data.getMaxLine() + 1) * panel.getCompoundHeight()));
 	}
 
 
