@@ -19,9 +19,9 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
+import info.webinsel.util.swing.scrollpaneselector.ExtendedScrollPaneSelector;
 
 import java.awt.BorderLayout;
 
@@ -41,6 +41,8 @@ import java.awt.event.WindowListener;
 
 
 public class MainFrame extends JFrame {
+	public static final String TITLE_PREFIX = "AlignmentComparator";
+	
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -70,13 +72,22 @@ public class MainFrame extends JFrame {
 	}
 
 	
+	public void updateTitle() {
+		String title = getDocument().getDefaultNameOrPath();
+		if (getDocument().hasChanged()) {
+			title = "*" + title;
+		}
+		setTitle(TITLE_PREFIX + " - " + title);
+	}
+	
+	
 	/**
 	 * This method initializes this
 	 * 
 	 * @return void
 	 */
 	private void initialize() {
-		this.setTitle("AlignmentComparator");
+		this.setTitle(TITLE_PREFIX);
 		this.setSize(640, 480);
 		this.setJMenuBar(getMainMenu());
 		this.setContentPane(getJContentPane());
@@ -97,7 +108,7 @@ public class MainFrame extends JFrame {
 					public void windowClosing(WindowEvent e) {
 						if (getDocument().askToSave()) {
 							//CurrentDirectoryModel.getInstance().removeFileChooser(getDocument().getFileChooser());
-							//ExtendedScrollPaneSelector.uninstallScrollPaneSelector(getTreeScrollPane());
+							ExtendedScrollPaneSelector.uninstallScrollPaneSelector(getScrollPane());
 							setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 						}
 						else {
@@ -234,6 +245,7 @@ public class MainFrame extends JFrame {
 			scrollPane.setColumnHeaderView(getPositionPanel());
 			scrollPane.setRowHeaderView(getNamesPanel());
 			scrollPane.setViewportView(getComparisonPanel());
+			ExtendedScrollPaneSelector.installScrollPaneSelector(scrollPane);
 		}
 		return scrollPane;
 	}

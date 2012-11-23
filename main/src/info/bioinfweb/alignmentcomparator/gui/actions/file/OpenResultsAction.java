@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
+import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsReader;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
@@ -33,7 +34,7 @@ import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 
 
 
@@ -58,7 +59,10 @@ public class OpenResultsAction extends DocumentAction {
   	if (fileChooser == null) {
   		fileChooser = new JFileChooser();
   		fileChooser.setDialogTitle("Open comparison results");
-  		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("XML file", "xml"));
+  		fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+  		fileChooser.addChoosableFileFilter(ResultsFileFilter.getInstance());
+  		fileChooser.addChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+  		//TODO zu DirModel hinzufügen
   	}
   	return fileChooser;
   }
@@ -66,11 +70,11 @@ public class OpenResultsAction extends DocumentAction {
   
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {  //TODO hier nicht MainFrame verwenden, falls Aktion auch vor Anzeige des MainFrames verfügbar sein soll
+		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
 			try {
 				reader.read(new BufferedInputStream(new FileInputStream(getFileChooser().getSelectedFile())), 
 						getMainFrame().getDocument());
-				//TODO Inform Model
+				getMainFrame().getDocument().setFile(getFileChooser().getSelectedFile());
 			}
 			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "The error \"" + ex.getMessage() + 

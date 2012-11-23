@@ -19,7 +19,9 @@
 package info.bioinfweb.alignmentcomparator.document;
 
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsWriter;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.template.Sequence;
@@ -68,6 +71,11 @@ public class Document extends SwingSaver
 	
 	public Document() {
 		super(DEFAULT_DOCUMENT_NAME);
+		getFileChooser().removeChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
+		getFileChooser().addChoosableFileFilter(ResultsFileFilter.getInstance());
+		getFileChooser().addChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
+  	//CurrentDirectoryModel.getInstance().addFileChooser(getFileChooser());  //TODO TG Klasse in Utils auslagern
+  	setDefaultExtension(ResultsFileFilter.EXTENSION);
 		clear();
 	}
 	
@@ -118,6 +126,27 @@ public class Document extends SwingSaver
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "The error \"" + e.getMessage() + "\" occured when writing to the file \"" + file.getAbsolutePath() + "\"", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+
+	@Override
+	public void setDefaultName(String path) {
+		super.setDefaultName(path);
+		//Main.getInstance().getMainFrame().updateTitle();
+	}
+
+
+	@Override
+	public void setFile(File file) {
+		super.setFile(file);
+		Main.getInstance().getMainFrame().updateTitle();
+	}
+
+
+	@Override
+	public void reset() {
+		super.reset();
+		Main.getInstance().getMainFrame().updateTitle();
 	}
 
 
@@ -329,5 +358,6 @@ public class Document extends SwingSaver
 	public void registerChange() {
 		super.registerChange();
 		performChange();
+		Main.getInstance().getMainFrame().updateTitle();
 	}
 }
