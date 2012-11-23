@@ -10,6 +10,7 @@ main/include/lib/biojava3-core-3.0.4.jar -text
 main/include/lib/commons-lang3-3.1.jar -text
 main/include/lib/info.bioinfweb.util.jar -text
 main/include/lib/info.webinsel.util.appver.jar -text
+main/include/lib/info.webinsel.util.graphics.jar -text
 main/include/lib/info.webinsel.util.io.jar -text
 main/include/lib/info.webinsel.util.jar -text
 main/include/lib/info.webinsel.util.swing.jar -text
