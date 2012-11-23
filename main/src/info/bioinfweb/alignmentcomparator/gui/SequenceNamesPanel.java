@@ -73,7 +73,7 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 		for (int i = 0; i < getDocument().getSequenceCount(); i++) {
 			maxLength = Math.max(maxLength, FontCalculator.getInstance().getWidth(font, getDocument().getName(i))); 
 		}
-  	return maxLength + 2 * LABEL_DISTANCE;
+  	return maxLength * getAlignmentComparisonPanel().getZoom() + 2 * LABEL_DISTANCE;
   }
   
 

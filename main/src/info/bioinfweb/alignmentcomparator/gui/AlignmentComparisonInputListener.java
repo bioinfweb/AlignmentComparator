@@ -73,12 +73,13 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 		  	}
 			  break;			
 		}
-		//System.out.println("keyPressed " + e.getKeyCode() + " " + e.getExtendedKeyCode() + " " + e.isShiftDown());
 	}
 
+	
 	@Override
 	public void keyReleased(KeyEvent e) {}
 
+	
 	@Override
 	public void keyTyped(KeyEvent e) {}
 
