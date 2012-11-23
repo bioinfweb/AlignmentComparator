@@ -76,16 +76,6 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   }
   
   
-  public int getScrollableBlockIncrement(Rectangle rect, int arg1, int arg2) {
-    return 20; //TODO Welcher Wert ist hier sinnvoll?
-  }
-  
-  
-  public int getScrollableUnitIncrement(Rectangle rect, int arg1, int arg2) {
-    return 20; //TODO Welcher Wert ist hier sinnvoll?
-  }
-  
-  
   public void zoomChanged(ChangeEvent e) {
     repaint();
   }

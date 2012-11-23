@@ -20,9 +20,11 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 
 
@@ -64,6 +66,18 @@ public abstract class AlignmentComparisonHeaderPanel extends JPanel
 	}
   
 	
+	@Override
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return getAlignmentComparisonPanel().getScrollableUnitIncrement(visibleRect, orientation, direction);
+	}
+
+
+	@Override
+	public int getScrollableBlockIncrement(Rectangle visibleRect,	int orientation, int direction) {
+		return getAlignmentComparisonPanel().getScrollableBlockIncrement(visibleRect, orientation, direction);
+	}
+
+
 	@Override
 	public void zoomChanged(ChangeEvent e) {
     repaint();

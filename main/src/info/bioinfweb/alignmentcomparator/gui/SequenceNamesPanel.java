@@ -100,18 +100,6 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 
 
 	@Override
-	public int getScrollableBlockIncrement(Rectangle arg0, int arg1, int arg2) {
-		return Math.round(getAlignmentComparisonPanel().getCompoundHeight());  //TODO
-	}
-
-	
-	@Override
-	public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2) {
-		return Math.round(getAlignmentComparisonPanel().getCompoundHeight());
-	}
-
-
-	@Override
 	protected void paintComponent(Graphics g2) {
   	super.paintComponent(g2);
   	Graphics2D g = ((Graphics2D)g2); 

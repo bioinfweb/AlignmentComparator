@@ -138,9 +138,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 
 
 	@Override
-	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation,
-			int direction) {
-		
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 		if (orientation == SwingConstants.HORIZONTAL) {
 			return Math.round(getCompoundWidth());
 		}
@@ -151,9 +149,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 
 
 	@Override
-	public int getScrollableBlockIncrement(Rectangle visibleRect,
-			int orientation, int direction) {
-
+	public int getScrollableBlockIncrement(Rectangle visibleRect,	int orientation, int direction) {
 		return SCROLL_BLOCK_LENGTH * getScrollableUnitIncrement(visibleRect, orientation, direction);
 	}
 
