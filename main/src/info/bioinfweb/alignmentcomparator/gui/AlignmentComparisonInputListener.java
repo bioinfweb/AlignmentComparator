@@ -23,6 +23,7 @@ import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.webinsel.util.Math2;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -99,6 +100,11 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 						getOwner().getDocument().getComments(), getOwner(),	
 						0, commentY + AlignmentComparisonPanel.COMMENTS_DISTANCE * getOwner().getZoom(), e.getX(), e.getY()));  
 				    // If null is returned the comment selection is cleared
+
+				if (e.getClickCount() > 1) {
+					Main.getInstance().getMainFrame().getActionManagement().get("edit.changeCommentText").actionPerformed(
+              new ActionEvent(this, 0, ""));
+				}
 			}
 		}
 	}
