@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -28,8 +29,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.xml.crypto.Data;
 
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
@@ -125,8 +124,16 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	private void paintComment(AlignmentComparisonPanel panel, Graphics2D g, Comment comment, float x, float y) {
 		SingleLineCommentPositionData data = getData(comment);
 		CommentPosition pos = comment.getPosition();
-		
-		g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.DEFAULT_BG_COLOR_ID));
+
+		Color fontColor;
+		if (comment.equals(panel.getSelection().getComment())) {
+			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.SELECTION_COLOR_ID));
+			fontColor = panel.getColorMap().get(AlignmentComparisonPanel.SELECTION_FONT_COLOR_ID);
+		}
+		else {
+			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.DEFAULT_BG_COLOR_ID));
+			fontColor = panel.getColorMap().get(AlignmentComparisonPanel.FONT_COLOR_ID);
+		}
 		g.setFont(panel.getCompoundFont());
 		
 		final float lineWidth = 1f;  //TODO Evtl. sinvolleren Wert (aus Stroke?)
@@ -155,7 +162,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			g.draw(r);
 		}
 		FontMetrics fm = g.getFontMetrics();
-		g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.FONT_COLOR_ID));
+		g.setColor(fontColor);
 		g.drawString(comment.getText(), x1 + MARGIN * panel.getZoom(), y1 + fm.getAscent());
 	}
 
@@ -196,7 +203,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 					return null;
 				}
 				else if (Math2.isBetween(mouseX, x1, 
-					  		x1 + Math.max(data.getLength(), pos.getLastPos() - pos.getFirstPos() - 1) * panel.getCompoundWidth()) &&
+					  		x1 + data.getLength() * panel.getCompoundWidth()) &&
 			  		Math2.isBetween(mouseY, paintY + data.getLine() * panel.getCompoundHeight(), 
 			  				paintY + (data.getLine() + 1) * panel.getCompoundHeight())) {
 			  	

@@ -90,7 +90,7 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
   
   
   @Override
-	public void columnSelectionChanged(ChangeEvent e) {
+	public void selectionChanged(ChangeEvent e) {
   	repaint();
   }
 

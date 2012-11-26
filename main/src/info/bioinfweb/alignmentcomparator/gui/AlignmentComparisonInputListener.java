@@ -20,6 +20,8 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.Main;
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+import info.webinsel.util.Math2;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -86,10 +88,18 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		//TODO y Bereich prüfen
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			isSelectingColumn = true;
-			getOwner().getSelection().setNewSelection(getOwner().columnByPaintX(e.getX()));
+			int commentY = Math2.roundUp(getOwner().sequenceBlockHeight());
+  		if (e.getY() <= commentY) {
+				isSelectingColumn = true;
+				getOwner().getSelection().setNewSelection(getOwner().columnByPaintX(e.getX()));
+			}
+			else {
+				getOwner().getSelection().setComment(getOwner().getCommentPositioner().getCommentByMousePosition(
+						getOwner().getDocument().getComments(), getOwner(),	
+						0, commentY + AlignmentComparisonPanel.COMMENTS_DISTANCE * getOwner().getZoom(), e.getX(), e.getY()));  
+				    // If null is returned the comment selection is cleared
+			}
 		}
 	}
 

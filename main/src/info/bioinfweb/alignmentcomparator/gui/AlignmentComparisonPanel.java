@@ -60,6 +60,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public static final String DEFAULT_BG_COLOR_ID = "DEFAULT";
 	public static final String COMPOUND_BORDER_COLOR_ID = "COMPOUND_BORDER";
 	public static final String FONT_COLOR_ID = "FONT";
+	public static final String SELECTION_FONT_COLOR_ID = "SELECTION_FONT";
 	public static final String COMMENT_BORDER_COLOR_ID = "COMMENT_BORDER";
 	public static final String COMMENT_OVERLAPPING_BORDER_COLOR_ID = "COMMENT_BORDER_2";
 	public static final String SELECTION_COLOR_ID = "SELECTION";
@@ -101,6 +102,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		result.put(COMMENT_BORDER_COLOR_ID, Color.BLUE.brighter());
 		result.put(COMMENT_OVERLAPPING_BORDER_COLOR_ID, Color.GRAY);
 		result.put(SELECTION_COLOR_ID, SystemColor.textHighlight);
+		result.put(SELECTION_FONT_COLOR_ID, SystemColor.textHighlightText);
 		return result;
 		// Bei Bedarf können alternative Farbsätze später aus einer Datei gelesen werden.
 	}
@@ -234,11 +236,20 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public void namesChanged() {}
 
 
+	public float sequenceBlockWidth() {
+		return document.getAlignedLength() * getCompoundWidth();
+	}
+	
+	
+	public float sequenceBlockHeight() {
+		return 2 * document.getSequenceCount() * getCompoundHeight() + getZoom() * ALIGNMENT_DISTANCE;
+	}
+	
+	
 	private void assignPaintSize() {
 		Dimension commentSize = getCommentPositioner().getCommentDimension(document.getComments(), this);
-		setSize(Math.max(Math2.roundUp(document.getAlignedLength() * getCompoundWidth()), commentSize.width), 
-				Math2.roundUp(2 * document.getSequenceCount() * getCompoundHeight() + 
-						getZoom() * (ALIGNMENT_DISTANCE + COMMENTS_DISTANCE) + commentSize.height));
+		setSize(Math.max(Math2.roundUp(sequenceBlockWidth()), commentSize.width), 
+				Math2.roundUp(sequenceBlockHeight() +	getZoom() * COMMENTS_DISTANCE + commentSize.height));
 		setPreferredSize(getSize());  // Show everything, if possible
 		fireSizeChanged();
 	}
@@ -367,7 +378,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	public void fireColumnSelectionChanged() {
 		Iterator<AlignmentComparisonPanelListener> iterator = listeners.iterator();
 		while (iterator.hasNext()) {
-			iterator.next().columnSelectionChanged(new ChangeEvent(this));
+			iterator.next().selectionChanged(new ChangeEvent(this));
 		}
 		
 		repaint();  // Called here directly because this class does not register itself as a listener.

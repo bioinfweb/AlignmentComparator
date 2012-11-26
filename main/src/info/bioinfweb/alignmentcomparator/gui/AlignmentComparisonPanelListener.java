@@ -30,5 +30,5 @@ public interface AlignmentComparisonPanelListener extends EventListener {
   
   public void sizeChanged(ChangeEvent e);
   
-  public void columnSelectionChanged(ChangeEvent e);
+  public void selectionChanged(ChangeEvent e);
 }

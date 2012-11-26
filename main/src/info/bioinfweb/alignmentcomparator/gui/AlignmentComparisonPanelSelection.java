@@ -30,10 +30,6 @@ import info.webinsel.util.Math2;
  * 
  * @author Ben St&ouml;ver
  */
-/**
- * @author BenStoever
- *
- */
 public class AlignmentComparisonPanelSelection {
 	public static final int NO_SELECTION = -1;
 	
@@ -200,6 +196,7 @@ public class AlignmentComparisonPanelSelection {
 	
 	public void setComment(Comment comment) {
 		this.comment = comment;
+		getOwner().fireColumnSelectionChanged();
 	}
 	
 	
@@ -214,7 +211,7 @@ public class AlignmentComparisonPanelSelection {
 	
 	
 	public void clear() {
+		comment  = null;  // avoid firing two events
 		clearSequenceSelection();
-		clearCommentSelection();
 	}
 }
