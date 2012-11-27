@@ -193,7 +193,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			float paintX, float paintY, int mouseX, int mouseY) {
 		
 		if ((mouseX >= paintX) && (mouseY >= paintY)) {
-			Iterator<Comment> iterator = comments.commentIterator();
+			Iterator<Comment> iterator = comments.commentIterator();  //TODO hier getOverlappingElements() benutzen
 			while (iterator.hasNext()) {
 				Comment comment = iterator.next();
 				CommentPosition pos = comment.getPosition();

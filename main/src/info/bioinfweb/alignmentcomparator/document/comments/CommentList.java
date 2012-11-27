@@ -20,28 +20,25 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 
 
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
-import info.webinsel.util.Math2;
+import info.webinsel.util.collections.MultiTreeMap;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 
 public class CommentList {
-	private TreeMap<CommentPosition, Comment> map = new TreeMap<CommentPosition, Comment>(new CommentPositionComparator());
+	private MultiTreeMap<Integer, Comment> firstMap = new MultiTreeMap<Integer, Comment>();
+	private MultiTreeMap<Integer, Comment> lastMap = new MultiTreeMap<Integer, Comment>();
+	
 	private Map<Class<? extends CommentPositioner>, Object> gloabelPositionerData = 
 			new HashMap<Class<? extends CommentPositioner>, Object>();
 
   
-	public CommentPositionComparator comparator() {
-		return (CommentPositionComparator)map.comparator();
-	}
-	
-	
 	public void add(int firstPos, int lastPos, String text) {
 		add(new CommentPosition(firstPos, lastPos), text);
 	}
@@ -53,78 +50,92 @@ public class CommentList {
 	
 	
 	public void add(Comment comment) {
-		map.put(comment.getPosition(), comment);
+		firstMap.put(comment.getPosition().getFirstPos(), comment);
+		lastMap.put(comment.getPosition().getLastPos(), comment);
 	}
 	
 	
-	public List<Comment> getOverlappingElements(int firstPos, int lastPos) {
-		List<Comment> result = new LinkedList<Comment>();
-		Iterator<CommentPosition> posIterator = map.keySet().iterator();
-		while (posIterator.hasNext()) {
-			CommentPosition pos = posIterator.next();
-			if (Math2.overlaps(firstPos, lastPos, pos.getFirstPos(), pos.getLastPos())) {
-				result.add(map.get(pos));
-			}
-			else if (pos.getFirstPos() > lastPos) {
-				break;
-			}
+	private void addMultiMapToSet(Map<Integer, ? extends Collection<Comment>> map, Set<Comment> set) {
+		Iterator<Integer> keyIterator = map.keySet().iterator();
+		while (keyIterator.hasNext()) {
+			set.addAll(map.get(keyIterator.next()));
 		}
-		return result;
 	}
 	
 	
-	public Iterator<CommentPosition> positionIterator() {
-		return map.keySet().iterator();
+	public Set<Comment> getOverlappingElements(int firstPos, int lastPos) {
+		TreeSet<Comment> result = new TreeSet<Comment>();
+		addMultiMapToSet(firstMap.subMap(0, lastPos), result);   
+		addMultiMapToSet(lastMap.subMap(firstPos, Integer.MAX_VALUE), result);
+  	//TODO So werden ohnehin immer alle Elemente geprüft => Keine Ersparnis
+		//TODO LastPos gibt das Sequenzende und nicht das tatsächliche Ende des Kommentars an, oder?
+		return result;
 	}
 	
 	
 	public Iterator<Comment> commentIterator() {
 		return new Iterator<Comment>() {
-			private Iterator<CommentPosition> positionIterator = positionIterator(); 
+			private Iterator<Integer> keyIterator = firstMap.keySet().iterator();
+			private Iterator<Comment> collectionIterator = null;
 			
 			
 			@Override
 			public boolean hasNext() {
-				return positionIterator.hasNext();
+				if ((collectionIterator != null) && collectionIterator.hasNext()) {
+					return true;
+				}
+				else {
+					return keyIterator.hasNext();
+				}
 			}
 			
 
 			@Override
 			public Comment next() {
-				return get(positionIterator.next());
+				if ((collectionIterator == null) || !collectionIterator.hasNext()) {
+					collectionIterator = firstMap.get(keyIterator.next()).iterator();
+				}
+				return collectionIterator.next();
 			}
 			
 
 			@Override
 			public void remove() {
-				positionIterator.remove();
+				throw new UnsupportedOperationException();
 			}
 		};
 	}
 
 	
-	public Comment get(CommentPosition pos) {
-		return map.get(pos);
+	public Collection<Comment> getByFirstPos(int firstPos) {
+		return firstMap.get(firstPos);
+	}
+
+
+	public Collection<Comment> getByLastPos(int lastPos) {
+		return lastMap.get(lastPos);
 	}
 
 
 	public void clear() {
-		map.clear();
+		firstMap.clear();
+		lastMap.clear();
 	}
 
 	
 	public Comment remove(Comment comment) {
-		return map.remove(comment.getPosition());
+		firstMap.remove(comment.getPosition().getFirstPos(), comment);
+		return lastMap.remove(comment.getPosition().getFirstPos(), comment);
 	}
 
 
 	public boolean isEmpty() {
-		return map.isEmpty();
+		return firstMap.isEmpty();
 	}
 
 	
 	public int size() {
-		return map.size();
+		return firstMap.totalSize();
 	}
 	
 	

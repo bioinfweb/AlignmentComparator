@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.webinsel.util.appversion.AppVersionXMLReadWrite;
@@ -103,13 +104,14 @@ public class ResultsWriter implements ResultsXMLConstants {
 
 	private void writeComments(CommentList list) throws XMLStreamException {
 		writer.writeStartElement(TAG_COMMENTS.getLocalPart());
-		Iterator<CommentPosition> iterator = list.positionIterator();
+		Iterator<Comment> iterator = list.commentIterator();
 		while (iterator.hasNext()) {
-			CommentPosition pos = iterator.next();
+			Comment comment = iterator.next();
+			CommentPosition pos = comment.getPosition();
 			writer.writeStartElement(TAG_COMMENT.getLocalPart());
 			writer.writeAttribute(ATTR_COMMENT_FIRST_POS.getLocalPart(), "" + pos.getFirstPos());
 			writer.writeAttribute(ATTR_COMMENT_LAST_POS.getLocalPart(), "" + pos.getLastPos());
-			writer.writeCharacters(list.get(pos).getText());
+			writer.writeCharacters(comment.getText());
 			writer.writeEndElement();
 		}
 		writer.writeEndElement();

@@ -3,6 +3,7 @@ Main-Class: info.bioinfweb.alignmentcomparator.Main
 Class-Path: lib/biojava3-alignment-3.0.4.jar
             lib/biojava3-core-3.0.4.jar
             lib/commons-lang3-3.1.jar
+            lib/commons-collections-3.2.1.jar
             lib/info.webinsel.util.jar
             lib/info.webinsel.util.appver.jar
             lib/info.webinsel.util.io.jar

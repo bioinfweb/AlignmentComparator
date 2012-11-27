@@ -7,6 +7,7 @@ main/include/lib/BIWBioJava.jar -text
 main/include/lib/BrowserLauncher2-1_3.jar -text
 main/include/lib/biojava3-alignment-3.0.4.jar -text
 main/include/lib/biojava3-core-3.0.4.jar -text
+main/include/lib/commons-collections-3.2.1.jar -text
 main/include/lib/commons-lang3-3.1.jar -text
 main/include/lib/info.bioinfweb.util.jar -text
 main/include/lib/info.webinsel.util.appver.jar -text

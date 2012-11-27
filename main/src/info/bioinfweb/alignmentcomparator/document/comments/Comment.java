@@ -63,6 +63,7 @@ public class Comment {
 	
 	public void setPosition(CommentPosition position) {
 		this.position = position;
+		//TODO Sicherstellen, dass Kommentar entsprechend der neue Position in CommentList neu eingeordnet wird
 	}
 
 

@@ -20,7 +20,6 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.Main;
-import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.webinsel.util.Math2;
 
 import java.awt.event.ActionEvent;
