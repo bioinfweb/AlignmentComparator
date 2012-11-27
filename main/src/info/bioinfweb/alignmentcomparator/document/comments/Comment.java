@@ -20,13 +20,14 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 
 
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
+import info.webinsel.util.collections.SequenceInterval;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
 
-public class Comment {
+public class Comment implements SequenceInterval {
   private CommentPosition position;
   private String text;
   private Map<Class<? extends CommentPositioner>, Object> positionData = new HashMap<Class<? extends CommentPositioner>, Object>();
@@ -74,5 +75,17 @@ public class Comment {
 	
 	public void setPositionData(Class<? extends CommentPositioner> type, Object data) {
 		positionData.put(type, data);
+	}
+
+
+	@Override
+	public int getFirstPos() {
+		return getPosition().getFirstPos();
+	}
+
+
+	@Override
+	public int getLastPos() {
+		return getPosition().getLastPos();
 	}
 }

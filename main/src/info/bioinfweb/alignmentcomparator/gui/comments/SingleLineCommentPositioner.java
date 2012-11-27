@@ -106,7 +106,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		blockingComments = new LinkedList<Comment>();
 		maxLine = -1;
 		int maxColumn = 0;
-		Iterator<Comment> iterator = comments.commentIterator();
+		Iterator<Comment> iterator = comments.iterator();
 		while (iterator.hasNext()) {
 			Comment comment = iterator.next();
 			int length = calculateLength(comment);
@@ -193,7 +193,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			float paintX, float paintY, int mouseX, int mouseY) {
 		
 		if ((mouseX >= paintX) && (mouseY >= paintY)) {
-			Iterator<Comment> iterator = comments.commentIterator();  //TODO hier getOverlappingElements() benutzen
+			Iterator<Comment> iterator = comments.iterator();  //TODO hier getOverlappingElements() benutzen
 			while (iterator.hasNext()) {
 				Comment comment = iterator.next();
 				CommentPosition pos = comment.getPosition();

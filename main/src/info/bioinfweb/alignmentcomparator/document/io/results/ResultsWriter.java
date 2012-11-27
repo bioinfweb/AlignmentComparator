@@ -104,7 +104,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 
 	private void writeComments(CommentList list) throws XMLStreamException {
 		writer.writeStartElement(TAG_COMMENTS.getLocalPart());
-		Iterator<Comment> iterator = list.commentIterator();
+		Iterator<Comment> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			Comment comment = iterator.next();
 			CommentPosition pos = comment.getPosition();
