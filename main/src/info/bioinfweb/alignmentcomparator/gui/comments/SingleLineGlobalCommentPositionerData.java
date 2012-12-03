@@ -19,15 +19,21 @@
 package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.webinsel.util.collections.SequenceIntervalList;
+
+
+
 public class SingleLineGlobalCommentPositionerData {
   private int maxColumn = 0;
   private int maxLine = 0;
+  private SequenceIntervalList<Comment> commentList;
   
   
-	public SingleLineGlobalCommentPositionerData(int maxColumn, int maxLine) {
+	public SingleLineGlobalCommentPositionerData(int sequenceLength) {
 		super();
-		this.maxColumn = maxColumn;
-		this.maxLine = maxLine;
+		commentList = new SequenceIntervalList<Comment>(new SingleLinePositionAdapter(), sequenceLength, CommentList.INTERVAL_LENGTH);
 	}
 
 
@@ -48,5 +54,10 @@ public class SingleLineGlobalCommentPositionerData {
   
 	public void setMaxColumn(int maxColumn) {
 		this.maxColumn = maxColumn;
+	}
+
+
+	public SequenceIntervalList<Comment> getCommentList() {
+		return commentList;
 	}
 }

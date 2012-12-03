@@ -22,8 +22,8 @@ package info.bioinfweb.alignmentcomparator.gui.comments;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
+import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel;
 
 
@@ -34,12 +34,23 @@ public interface CommentPositioner {
    * positions to determine the size if the {@link AlignmentComparisonPanel}.  
    * @param comments - the comment list containing the objects to be positioned
    */
-  public void position(CommentList comments);
+  public void position(Document document);
   
-  public void paint(CommentList comments, AlignmentComparisonPanel panel, int alignmentLength, Graphics2D g, float x, float y);
+  public void paint(Document document, AlignmentComparisonPanel panel, int alignmentLength, Graphics2D g, float x, float y);
   
-  public Dimension getCommentDimension(CommentList comments, AlignmentComparisonPanel panel);
+  public Dimension getCommentDimension(Document document, AlignmentComparisonPanel panel);
   
-  public Comment getCommentByMousePosition(CommentList comments, AlignmentComparisonPanel panel, 
+  /**
+   * Implementing classes should return the comment painted at the specified mouse position here.
+   * 
+   * @param document - the document containing the comments
+   * @param panel - the panel where the mouse click happened
+   * @param paintX - the x offset where the comment area is painted in the component where the mouse click happened
+   * @param paintY - the y offset where the comment area is painted in the component where the mouse click happened
+   * @param mouseX - the x position of the mouse click
+   * @param mouseY - the y position of the mouse click 
+   * @return the comment at the specified position or <code>null</code>, if no comment os present at that location.
+   */
+  public Comment getCommentByMousePosition(Document document, AlignmentComparisonPanel panel, 
   		float paintX, float paintY, int mouseX, int mouseY);
 }

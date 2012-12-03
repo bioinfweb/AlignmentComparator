@@ -248,7 +248,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	
 	
 	private void assignPaintSize() {
-		Dimension commentSize = getCommentPositioner().getCommentDimension(document.getComments(), this);
+		Dimension commentSize = getCommentPositioner().getCommentDimension(document, this);
 		setSize(Math.max(Math2.roundUp(sequenceBlockWidth()), commentSize.width), 
 				Math2.roundUp(sequenceBlockHeight() +	getZoom() * COMMENTS_DISTANCE + commentSize.height));
 		setPreferredSize(getSize());  // Show everything, if possible
@@ -344,8 +344,8 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 	
   
   private void paintComments(Graphics2D g) {
-  	//TODO Make sure that positioning was done
-  	getCommentPositioner().paint(document.getComments(), this, document.getAlignedLength(), g, 0, 
+  	// Positioning must have been done before calling this method.
+  	getCommentPositioner().paint(document, this, document.getAlignedLength(), g, 0, 
   			2 * document.getSequenceCount() * getCompoundHeight() +	getZoom() * (ALIGNMENT_DISTANCE + COMMENTS_DISTANCE));
   }
 

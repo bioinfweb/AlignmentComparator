@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.document;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.bioinfweb.alignmentcomparator.document.comments.SequencePositionAdapter;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
@@ -65,7 +66,7 @@ public class Document extends SwingSaver
 	private ArrayList<DNASequence>[] unalignedSequences;
 	private SequenceView[][] alignedSequences;
 	private ArrayList<Integer>[] unalignedIndices; 
-	private CommentList comments = new CommentList(new SingleLinePositionAdapter());  //TODO If several comment view modes would exist different positioners could be specified. In this case the sorting of the comments would depend on the view mode, which would violate the MVC paradigm. (That means that all views would have to use the same view mode at a time. Otherwse differently sorted lists would have to be present.)
+	private CommentList comments = new CommentList(new SequencePositionAdapter());
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
 	private ResultsWriter writer = new ResultsWriter();
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
@@ -347,7 +348,7 @@ public class Document extends SwingSaver
   private void alertPositioners() {
   	Iterator<CommentPositioner> iterator = CommentPositionerFactory.getInstance().getAllPositioners().iterator();
   	while (iterator.hasNext()) {
-  		iterator.next().position(getComments());
+  		iterator.next().position(this);
   	}
   }
 

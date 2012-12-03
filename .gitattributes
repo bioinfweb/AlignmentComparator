@@ -30,6 +30,7 @@ main/src/info/bioinfweb/alignmentcomparator/document/comments/Comment.java -text
 main/src/info/bioinfweb/alignmentcomparator/document/comments/CommentList.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/comments/CommentPosition.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/comments/CommentPositionComparator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/comments/SequencePositionAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/CommentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/CommentMovedEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentEvent.java -text svneol=unset#text/plain

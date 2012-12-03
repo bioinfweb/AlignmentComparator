@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
@@ -101,23 +102,40 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	}
 	
 	
+	private SingleLineGlobalCommentPositionerData getGlobalPositionerData(Document document) {
+		Object obj = document.getComments().getGlobalPositionerData(SingleLineCommentPositioner.class);
+		if (obj == null) {
+			document.getComments().setGlobalPositionerData(SingleLineCommentPositioner.class, 
+					new SingleLineGlobalCommentPositionerData(document.getAlignedLength()));
+		}
+		return (SingleLineGlobalCommentPositionerData)document.getComments().getGlobalPositionerData(
+				SingleLineCommentPositioner.class);
+	}
+	
+	
 	@Override
-	public void position(CommentList comments) {
+	public void position(Document document) {
+		SingleLineGlobalCommentPositionerData globalData = getGlobalPositionerData(document);
+		globalData.getCommentList().clear();
+		
 		blockingComments = new LinkedList<Comment>();
 		maxLine = -1;
 		int maxColumn = 0;
-		Iterator<Comment> iterator = comments.iterator();
+		Iterator<Comment> iterator = document.getComments().iterator();
 		while (iterator.hasNext()) {
 			Comment comment = iterator.next();
 			int length = calculateLength(comment);
 			int line = calculateLine(comment, comment.getPosition().getFirstPos(), length);
 			comment.setPositionData(SingleLineCommentPositioner.class, new SingleLineCommentPositionData(line, length));
+			globalData.getCommentList().add(comment);
+			
 			blockingComments.add(comment);
 			maxLine = Math.max(maxLine, line);
 			maxColumn = Math.max(maxColumn, comment.getPosition().getFirstPos() + length);
 		}
-		comments.setGlobalPositionerData(SingleLineCommentPositioner.class, 
-				new SingleLineGlobalCommentPositionerData(maxColumn, maxLine));
+		
+		globalData.setMaxColumn(maxColumn);
+		globalData.setMaxLine(maxLine);
 	}
 	
 	
@@ -168,8 +186,8 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 
 
 	@Override
-	public void paint(CommentList comments, AlignmentComparisonPanel panel, int alignmentLength, Graphics2D g, float x, float y) {
-		Iterator<Comment> iterator = comments.getOverlappingElements(
+	public void paint(Document document, AlignmentComparisonPanel panel, int alignmentLength, Graphics2D g, float x, float y) {
+		Iterator<Comment> iterator = getGlobalPositionerData(document).getCommentList().getOverlappingElements(
 				Math.max(0, (int)Math.round((panel.getVisibleRect().getMinX() - x) / panel.getCompoundWidth()) - 1), 
 				Math.min(alignmentLength - 1, 
 						(int)Math.round((panel.getVisibleRect().getMaxX() - x) / panel.getCompoundWidth()))).iterator();
@@ -180,32 +198,29 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 
 
 	@Override
-	public Dimension getCommentDimension(CommentList comments, AlignmentComparisonPanel panel) {
-		SingleLineGlobalCommentPositionerData data = 
-				(SingleLineGlobalCommentPositionerData)comments.getGlobalPositionerData(SingleLineCommentPositioner.class);
+	public Dimension getCommentDimension(Document document, AlignmentComparisonPanel panel) {
+		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(document);
 		return new Dimension(Math2.roundUp(data.getMaxColumn() * panel.getCompoundWidth()),  // BioJava indices start with 1 
 				Math2.roundUp((data.getMaxLine() + 1) * panel.getCompoundHeight()));
 	}
 
 
+	/* (non-Javadoc)
+	 * @see info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner#getCommentByMousePosition(info.bioinfweb.alignmentcomparator.document.Document, info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel, float, float, int, int)
+	 */
 	@Override
-	public Comment getCommentByMousePosition(CommentList comments, AlignmentComparisonPanel panel, 
+	public Comment getCommentByMousePosition(Document document, AlignmentComparisonPanel panel, 
 			float paintX, float paintY, int mouseX, int mouseY) {
 		
 		if ((mouseX >= paintX) && (mouseY >= paintY)) {
-			Iterator<Comment> iterator = comments.iterator();  //TODO hier getOverlappingElements() benutzen
+			int column = panel.columnByPaintX(Math.round(mouseX - paintX));
+			Iterator<Comment> iterator = 
+					getGlobalPositionerData(document).getCommentList().getOverlappingElements(column, column).iterator();  // Even if the mouse position should be behind the last column, an empty iterator will be returned here.
 			while (iterator.hasNext()) {
 				Comment comment = iterator.next();
-				CommentPosition pos = comment.getPosition();
 				SingleLineCommentPositionData data = getData(comment);
-				float x1 = paintX + pos.getFirstPos() * panel.getCompoundWidth();
-				if (x1 > panel.getVisibleRect().getMaxX()) {  // all visible comments were already checked
-					return null;
-				}
-				else if (Math2.isBetween(mouseX, x1, 
-					  		x1 + data.getLength() * panel.getCompoundWidth()) &&
-			  		Math2.isBetween(mouseY, paintY + data.getLine() * panel.getCompoundHeight(), 
-			  				paintY + (data.getLine() + 1) * panel.getCompoundHeight())) {
+				if (Math2.isBetween(mouseY, paintY + data.getLine() * panel.getCompoundHeight(), 
+			  		paintY + (data.getLine() + 1) * panel.getCompoundHeight())) {
 			  	
 			  	return comment;
 			  }
