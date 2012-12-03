@@ -19,8 +19,8 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.BioJavaConsensusPairwiseAligner;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.superalignment.BioJavaConsensusPairwiseAligner;
+import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.biojava3.core.sequence.compound.NucleotideCompoundSet;
 
 import java.awt.GridBagLayout;

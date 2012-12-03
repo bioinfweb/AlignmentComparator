@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
+package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import org.biojava3.core.sequence.template.Sequence;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment.SuperAlignment;
+import info.bioinfweb.alignmentcomparator.document.superalignment.data.SuperAlignment;
 import info.bioinfweb.util.ConsensusSequenceCreator;
 
 

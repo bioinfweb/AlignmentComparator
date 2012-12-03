@@ -26,7 +26,7 @@ import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsWriter;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;

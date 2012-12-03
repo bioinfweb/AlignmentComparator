@@ -21,8 +21,8 @@ package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 import javax.swing.JPanel;
 
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.BioInfWebConsensusPairwiseAligner;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.superalignment.BioInfWebConsensusPairwiseAligner;
+import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.util.alignment.pairwise.NeedlemanWunschAligner;
 
 

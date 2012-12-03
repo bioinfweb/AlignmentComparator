@@ -19,8 +19,8 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs;
 
 
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.CompareAlgorithm;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.superalignment.CompareAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanel;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
 import info.webinsel.util.swing.OkCancelApplyDialog;

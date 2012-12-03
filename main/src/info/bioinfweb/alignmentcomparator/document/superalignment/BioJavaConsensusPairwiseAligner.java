@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
+package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment.ProfileSuperAlignment;
+import info.bioinfweb.alignmentcomparator.document.superalignment.data.ProfileSuperAlignment;
 import info.bioinfweb.util.ConsensusSequenceCreator;
 
 import org.biojava3.alignment.template.AbstractPairwiseSequenceAligner;

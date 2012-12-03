@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment;
+package info.bioinfweb.alignmentcomparator.document.superalignment.data;
 
 
 import org.biojava3.alignment.template.Profile;

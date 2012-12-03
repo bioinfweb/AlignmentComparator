@@ -16,28 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document.pairalgorithms;
+package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.pairalgorithms.superalignment.CharSequenceSuperAlignment;
-import info.bioinfweb.util.alignment.pairwise.PairwiseAligner;
 
 
 
-public class BioInfWebConsensusPairwiseAligner extends ConsensusPairwiseAligner implements SuperAlignmentAlgorithm {
-  private PairwiseAligner aligner;
-  
-  
-  public BioInfWebConsensusPairwiseAligner(PairwiseAligner aligner) {
-		super();
-		this.aligner = aligner;
-	}
-
-
-	@Override
-	public void performAlignment(Document alignments) {
-		addSuperGaps(new CharSequenceSuperAlignment(aligner.align(consensusSequence(alignments, 0).getSequenceAsString(), 
-				consensusSequence(alignments, 1).getSequenceAsString())), alignments);
-	}	
+public interface SuperAlignmentAlgorithm {
+  public void performAlignment(Document alignments) throws Exception;
 }
