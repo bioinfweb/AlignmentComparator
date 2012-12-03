@@ -21,12 +21,15 @@ package info.bioinfweb.alignmentcomparator.document;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
+import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
+import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsWriter;
 import info.bioinfweb.alignmentcomparator.document.pairalgorithms.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
+import info.bioinfweb.alignmentcomparator.gui.comments.SingleLinePositionAdapter;
 import info.webinsel.util.ChangeMonitorable;
 import info.webinsel.util.io.Savable;
 import info.webinsel.util.swing.AccessibleUndoManager;
@@ -43,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
 import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.template.Sequence;
@@ -63,7 +65,7 @@ public class Document extends SwingSaver
 	private ArrayList<DNASequence>[] unalignedSequences;
 	private SequenceView[][] alignedSequences;
 	private ArrayList<Integer>[] unalignedIndices; 
-	private CommentList comments = new CommentList();
+	private CommentList comments = new CommentList(new SingleLinePositionAdapter());  //TODO If several comment view modes would exist different positioners could be specified. In this case the sorting of the comments would depend on the view mode, which would violate the MVC paradigm. (That means that all views would have to use the same view mode at a time. Otherwse differently sorted lists would have to be present.)
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
 	private ResultsWriter writer = new ResultsWriter();
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
@@ -323,18 +325,20 @@ public class Document extends SwingSaver
 	
   /** Alerts all registered views to display made changes. */
   private void fireChangeHappened() {
+  	DocumentEvent e = new DocumentEvent(this);
 	  Iterator<DocumentListener> iterator = views.iterator();
 	  while (iterator.hasNext()) {
-	  	iterator.next().changeHappened();
+	  	iterator.next().changeHappened(e);
 	  }
   }
 
   
   /** Alerts all registered views to display changed sequences names. */
   private void fireNamesChanged() {
+  	DocumentEvent e = new DocumentEvent(this);
 	  Iterator<DocumentListener> iterator = views.iterator();
 	  while (iterator.hasNext()) {
-	  	iterator.next().namesChanged();
+	  	iterator.next().namesChanged(e);
 	  }
   }
 

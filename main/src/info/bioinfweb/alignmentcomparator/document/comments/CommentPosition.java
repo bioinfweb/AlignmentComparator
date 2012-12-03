@@ -20,7 +20,7 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 
 
 
-public class CommentPosition {
+public class CommentPosition implements Comparable<CommentPosition> {
   private int firstPos;
   private int lastPos;
   
@@ -44,5 +44,32 @@ public class CommentPosition {
 	
 	public int sequenceLength() {
 		return getLastPos() - getFirstPos() + 1;
+	}
+
+
+	@Override
+	public int compareTo(CommentPosition other) {
+		int result = getFirstPos() - other.getFirstPos();
+		if (result == 0) {
+			result = getLastPos() - other.getLastPos();
+		}
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof CommentPosition) {
+			return compareTo((CommentPosition)other) == 0;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	@Override
+	public int hashCode() {
+		return (7 + getFirstPos()) * 59 + getLastPos(); 
 	}
 }

@@ -20,14 +20,13 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 
 
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
-import info.webinsel.util.collections.SequenceInterval;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
 
-public class Comment implements SequenceInterval {
+public class Comment implements Comparable<Comment> {
   private CommentPosition position;
   private String text;
   private Map<Class<? extends CommentPositioner>, Object> positionData = new HashMap<Class<? extends CommentPositioner>, Object>();
@@ -79,13 +78,28 @@ public class Comment implements SequenceInterval {
 
 
 	@Override
-	public int getFirstPos() {
-		return getPosition().getFirstPos();
+	public int compareTo(Comment other) {
+		int result = getPosition().compareTo(other.getPosition());
+		if (result == 0) {
+			result = getText().compareTo(getText());
+		}
+		return result;
 	}
 
 
 	@Override
-	public int getLastPos() {
-		return getPosition().getLastPos();
+	public boolean equals(Object other) {
+		boolean result = (other instanceof Comment);
+		if (result) {
+			Comment c = (Comment)other;
+			result = getPosition().equals(c.getPosition()) && getText().equals(c.getText());
+		}
+		return result;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return getPosition().hashCode() * 13 + getText().hashCode();
 	}
 }

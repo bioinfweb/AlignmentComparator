@@ -127,19 +127,19 @@ public class AlignmentPositionPanel extends AlignmentComparisonHeaderPanel
 		g.setColor(SystemColor.menuText);
     g.draw(new Line2D.Float(visibleRect.x, HEIGHT - 1, visibleRect.x + visibleRect.width, HEIGHT - 1));  // base line
     
-    // Paint text data and dashed:
+    // Paint text data and dashes:
     g.setFont(FONT);
     int labelInterval = Math2.roundUp(
     		(g.getFontMetrics().stringWidth(LABEL_LENGTH_STANDARD) + 2 * LABEL_LEFT_DISTANCE) / compoundWidth);
     float x = Math.max(compoundWidth / 2f,  
-    		visibleRect.x - visibleRect.x % compoundWidth - compoundWidth / 2f);
+    		visibleRect.x - visibleRect.x % compoundWidth - labelInterval - compoundWidth / 2f);  // labelInterval is subtracted because partly visible text should also be painted
     Stroke stroke = g.getStroke();
     try {
       while (x <= visibleRect.x + visibleRect.width) {
     		// Text output
     		float dashLength = DASH_LENGTH;
     		int compoundIndex = Math.round(x / compoundWidth); 
-    		if (compoundIndex % labelInterval == 0) {
+    		if ((compoundIndex - 1) % labelInterval == 0) {  // BioJava indices start with 1
     			g.drawString("" + compoundIndex, x + LABEL_LEFT_DISTANCE, LABEL_TOP_DISTANCE);
     			dashLength = LABELED_DASH_LENGTH;
     		}

@@ -20,7 +20,8 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.DocumentListener;
+import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
+import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.webinsel.util.Math2;
 import info.webinsel.util.graphics.FontCalculator;
 
@@ -90,11 +91,11 @@ public class SequenceNamesPanel extends AlignmentComparisonHeaderPanel
 
 
 	@Override
-	public void changeHappened() {}
+	public void changeHappened(DocumentEvent e) {}
 
 
 	@Override
-	public void namesChanged() {
+	public void namesChanged(DocumentEvent e) {
 		sizeChanged(new ChangeEvent(getDocument()));
 	}
 

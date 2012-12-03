@@ -16,23 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package info.bioinfweb.alignmentcomparator.document;
+package info.bioinfweb.alignmentcomparator.document.event;
+
+
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.comments.Comment;
+import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 
 
 
-/**
- * Classes implementing this interface can listen to changes made in a TreeGraph 2 document.
- * 
- * @author Ben St&ouml;ver
- */
-public interface DocumentListener {
-  /** Called every time changes were made to the document. */
-  public void changeHappened();
+public class CommentMovedEvent extends CommentEvent {
+  private CommentPosition oldPosition;
+  private CommentPosition newPosition;
+	
   
-  
-  /** 
-   * Called every time changes were made to the sequence names. 
-   * ({@link #changeHappened()} is called additionally in that case.)
-   */
-  public void namesChanged();
+  public CommentMovedEvent(Document source, Comment comment,
+			CommentPosition oldPosition, CommentPosition newPosition) {
+  	
+		super(source, comment);
+		this.oldPosition = oldPosition;
+		this.newPosition = newPosition;
+	}
+
+
+	public CommentPosition getOldPosition() {
+		return oldPosition;
+	}
+
+
+	public CommentPosition getNewPosition() {
+		return newPosition;
+	}
 }

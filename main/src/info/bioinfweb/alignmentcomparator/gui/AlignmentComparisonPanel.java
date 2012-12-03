@@ -21,7 +21,8 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.DocumentListener;
+import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
+import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.SingleLineCommentPositioner;
 import info.webinsel.util.Math2;
@@ -225,7 +226,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 
 
 	@Override
-	public void changeHappened() {
+	public void changeHappened(DocumentEvent e) {
 		assignPaintSize();
 		repaint();
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();
@@ -233,7 +234,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 
 
 	@Override
-	public void namesChanged() {}
+	public void namesChanged(DocumentEvent e) {}
 
 
 	public float sequenceBlockWidth() {
