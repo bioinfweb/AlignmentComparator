@@ -1,4 +1,4 @@
-package info.bioinfweb.alignmentcomparator.runtimetests;
+package info.bioinfweb.alignmentcomparator.externaltests.runtime;
 
 import java.io.*;
 

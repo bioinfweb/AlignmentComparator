@@ -1,4 +1,4 @@
-package info.bioinfweb.alignmentcomparator.alignmenttests;
+package info.bioinfweb.alignmentcomparator.externaltests.alignment;
 
 
 /**
