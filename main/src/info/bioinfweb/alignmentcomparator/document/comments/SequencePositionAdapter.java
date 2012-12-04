@@ -37,6 +37,18 @@ public class SequencePositionAdapter implements SequenceIntervalPositionAdapter<
 
 
 	@Override
+	public void setFirstPos(Comment comment, int newFirstPos) {
+		comment.getPosition().setFirstPos(newFirstPos);
+	}
+
+
+	@Override
+	public void setLastPos(Comment comment, int newLastPos) {
+		comment.getPosition().setLastPos(newLastPos);
+	}
+
+
+	@Override
 	public int compare(Comment c1, Comment c2) {
 		return c1.compareTo(c2);
 	}

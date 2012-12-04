@@ -42,14 +42,14 @@ public class MoveCommentEdit extends CommentEdit {
 	
 	@Override
 	public void redo() throws CannotRedoException {
-		getComment().setPosition(newPosition);
+		getDocument().getComments().move(getComment(), newPosition.getFirstPos(), newPosition.getLastPos());
 		super.redo();
 	}
 
 
 	@Override
 	public void undo() throws CannotUndoException {
-		getComment().setPosition(oldPosition);
+		getDocument().getComments().move(getComment(), oldPosition.getFirstPos(), oldPosition.getLastPos());
 		super.undo();
 	}
   

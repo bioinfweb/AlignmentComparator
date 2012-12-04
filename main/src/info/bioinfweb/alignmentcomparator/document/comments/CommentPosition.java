@@ -42,6 +42,16 @@ public class CommentPosition implements Comparable<CommentPosition> {
 	}
 	
 	
+	public void setFirstPos(int firstPos) {
+		this.firstPos = firstPos;
+	}
+
+
+	public void setLastPos(int lastPos) {
+		this.lastPos = lastPos;
+	}
+
+
 	public int sequenceLength() {
 		return getLastPos() - getFirstPos() + 1;
 	}

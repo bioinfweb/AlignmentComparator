@@ -39,6 +39,18 @@ public class SingleLinePositionAdapter implements SequenceIntervalPositionAdapte
 
 
 	@Override
+	public void setFirstPos(Comment o, int newFirstPos) {
+		throw new UnsupportedOperationException("SingleLinePositionAdapter does not support moving elements.");
+	} 
+
+
+	@Override
+	public void setLastPos(Comment o, int newLastPos) {
+		throw new UnsupportedOperationException("SingleLinePositionAdapter does not support moving elements.");
+	}
+
+
+	@Override
  	public int compare(Comment c1, Comment c2) {
 		return c1.compareTo(c2);
 	}
