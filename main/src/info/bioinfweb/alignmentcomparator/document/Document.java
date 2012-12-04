@@ -20,11 +20,8 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import info.bioinfweb.alignmentcomparator.Main;
-import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.bioinfweb.alignmentcomparator.document.comments.SequencePositionAdapter;
-import info.bioinfweb.alignmentcomparator.document.event.CommentMovedEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
@@ -33,7 +30,6 @@ import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignment
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
-import info.bioinfweb.alignmentcomparator.gui.comments.SingleLinePositionAdapter;
 import info.webinsel.util.ChangeMonitorable;
 import info.webinsel.util.io.Savable;
 import info.webinsel.util.swing.AccessibleUndoManager;
@@ -347,16 +343,6 @@ public class Document extends SwingSaver
   }
 
   
-//  /** Alerts all registered views to display changed sequences names. */
-//  private void fireCommentMoved(Comment comment, CommentPosition oldPosition, CommentPosition newPosition) {
-//  	CommentMovedEvent e = new CommentMovedEvent(this, comment, oldPosition, newPosition);
-//	  Iterator<DocumentListener> iterator = views.iterator();
-//	  while (iterator.hasNext()) {
-//	  	iterator.next().commentMoved(e);
-//	  }
-//  }
-
-  
   /** Alerts all comment positioners to reposition the comments because of made changes. */
   private void alertPositioners() {
   	Iterator<CommentPositioner> iterator = CommentPositionerFactory.getInstance().getAllPositioners().iterator();
@@ -378,12 +364,4 @@ public class Document extends SwingSaver
 		performChange();
 		Main.getInstance().getMainFrame().updateTitle();
 	}
-  
-  
-//  public void registerCommentMove(Comment comment, CommentPosition oldPosition, CommentPosition newPosition) {
-//  	if (getComments().remove(comment)) {
-//  		getComments().add(comment);  // Reinsert to secure correct position
-//  		fireCommentMoved(comment, oldPosition, newPosition);
-//  	}
-//  }
 }

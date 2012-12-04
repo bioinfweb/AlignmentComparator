@@ -34,10 +34,4 @@ public interface DocumentListener {
    * ({@link #changeHappened()} is called additionally in that case.)
    */
   public void namesChanged(DocumentEvent e);
-  
-  /** 
-   * Called every time a comment is moved to different position. 
-   * ({@link #changeHappened()} is called additionally in that case.)
-   */
-  //public void commentMoved(CommentMovedEvent e);
 }
