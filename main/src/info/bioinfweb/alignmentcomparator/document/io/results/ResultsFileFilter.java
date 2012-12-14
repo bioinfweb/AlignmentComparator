@@ -52,7 +52,7 @@ public class ResultsFileFilter extends FileFilter {
 	
 	@Override
 	public boolean accept(File file) {
-		return file.getAbsolutePath().toLowerCase().endsWith(EXTENSION);
+		return file.isDirectory() || file.getAbsolutePath().toLowerCase().endsWith(EXTENSION);
 		//TODO XML Namespace auslesen und nur entsprechende XML-Dateien zulassen
 	}
 }
