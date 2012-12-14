@@ -70,10 +70,17 @@ main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -t
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/DocumentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/AddCommentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/ChangeCommentTextAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/InsertGapAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/InsertGapFirstAlignmentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/InsertGapSecondAlignmentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/InsertRemoveGapAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/MoveCommentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RedoAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RedoToAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveCommentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveGapAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveGapFirstAlignmentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveGapSecondAlignmentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoRedoToAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoToAction.java -text svneol=unset#text/plain

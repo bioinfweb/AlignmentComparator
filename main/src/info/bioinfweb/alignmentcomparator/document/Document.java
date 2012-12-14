@@ -218,21 +218,82 @@ public class Document extends SwingSaver
 	}
 	
 	
+	/**
+	 * Returns <code>true</code>, if the specified alignment contains a supergap at the specified position.
+	 * @param alignmentIndex - the index of the alignment
+	 * @param pos - the position to be checked (BioJava indices start with 1)
+	 */
+	public boolean containsSuperGap(int alignmentIndex, int pos) {
+		return unalignedIndices[alignmentIndex].get(pos - 1).equals(SuperAlignmentSequenceView.GAP_INDEX);
+	}
+	
+	
+	/**
+	 * Returns <code>true</code> if the specified interval contains at least one supergap.
+	 * 
+	 * @param alignmentIndex - the index of the alignment
+	 * @param firstPos - the first position of the interval that is checked (BioJava indices start with 1)
+	 * @param lastPos - the last position of the interval that is checked (BioJava indices start with 1)
+	 * 
+	 * @see #isFilledWithSuperGaps(int, int, int)
+	 */
+	public boolean containsSuperGap(int alignmentIndex, int firstPos, int lastPos) {
+		for (int i = firstPos; i <= lastPos; i++) {
+			if (containsSuperGap(alignmentIndex, i)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Returns <code>true</code> if the specified interval contains a supergap a every position.
+	 * 
+	 * @param alignmentIndex - the index of the alignment
+	 * @param firstPos - the first position of the interval that is checked (BioJava indices start with 1)
+	 * @param lastPos - the last position of the interval that is checked (BioJava indices start with 1)
+	 * 
+	 * @see #containsSuperGap(int, int, int)
+	 */
+	public boolean isFilledWithSuperGaps(int alignmentIndex, int firstPos, int lastPos) {
+		for (int i = firstPos; i <= lastPos; i++) {
+			if (!containsSuperGap(alignmentIndex, i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * Inserts a supergap at the specified position.
+	 * @param alignmentIndex - the index of the alignment
+	 * @param pos - the position where the supergap should be inserted (BioJava indices start with 1)
+	 */
 	public void insertSuperGap(int alignmentIndex, int pos) {
-		unalignedIndices[alignmentIndex].add(pos, SuperAlignmentSequenceView.GAP_INDEX);
+		unalignedIndices[alignmentIndex].add(pos - 1, SuperAlignmentSequenceView.GAP_INDEX);
 		if (alignmentIndex == 0) {
 			unalignedIndices[1].add(SuperAlignmentSequenceView.GAP_INDEX);
 		}
 		else {
 			unalignedIndices[0].add(SuperAlignmentSequenceView.GAP_INDEX);
 		}
+		removeTrailingGaps();  //TODO Implementing this method for a whole interval instead of a single position would be more efficient because removeTrailingGaps() would have to be called only once. 
 	}
 	
 	
+	/**
+	 * Removes a supergap from the specified position.
+	 * @param alignmentIndex - the index of the alignment
+	 * @param pos - the position where the supergap should be removed (BioJava indices start with 1)
+	 * @throws IllegalArgumentException if there is no supergap present at the specified position
+	 */
 	public void removeSuperGap(int alignmentIndex, int pos) {
-		if (unalignedIndices[alignmentIndex].get(pos).equals(SuperAlignmentSequenceView.GAP_INDEX)) {
-			unalignedIndices[alignmentIndex].remove(pos);
+		if (containsSuperGap(alignmentIndex, pos)) {
+			unalignedIndices[alignmentIndex].remove(pos - 1);
 			unalignedIndices[alignmentIndex].add(SuperAlignmentSequenceView.GAP_INDEX);
+			removeTrailingGaps();  //TODO Implementing this method for a whole interval instead of a single position would be more efficient because removeTrailingGaps() would have to be called only once.
 		}
 		else {
 			throw new IllegalArgumentException("There is no gap at position " + pos + " in alignment " + alignmentIndex + ".");
@@ -245,13 +306,12 @@ public class Document extends SwingSaver
 	 */
 	public void removeTrailingGaps() {
 		int lastIndex = unalignedIndices[0].size() - 1;
-		while ((lastIndex >= 0) && unalignedIndices[0].get(lastIndex).equals(SuperAlignmentSequenceView.GAP_INDEX) &&
-				unalignedIndices[1].get(lastIndex).equals(SuperAlignmentSequenceView.GAP_INDEX)) {
-			
+		while ((lastIndex >= 0) && containsSuperGap(0, lastIndex + 1) &&	containsSuperGap(1, lastIndex + 1)) {
 			unalignedIndices[0].remove(lastIndex);
 			unalignedIndices[1].remove(lastIndex);
 			lastIndex--;
 		}
+		//TODO Können Kommentare in diesem Bereich liegen, die behandelt werden müssen?
 	}
 	
 	

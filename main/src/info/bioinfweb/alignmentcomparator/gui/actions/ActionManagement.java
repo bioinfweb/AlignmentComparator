@@ -28,10 +28,14 @@ import javax.swing.undo.UndoableEdit;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.AddCommentAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.ChangeCommentTextAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.InsertGapFirstAlignmentAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.InsertGapSecondAlignmentAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.MoveCommentAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.RedoAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.RedoToAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveCommentAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveGapFirstAlignmentAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveGapSecondAlignmentAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.UndoAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.edit.UndoToAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.file.CompareAlignmentsAction;
@@ -66,6 +70,10 @@ public class ActionManagement extends AbstractUndoActionManagement {
 		
 		put("edit.undo", new UndoAction(mainFrame));
 		put("edit.redo", new RedoAction(mainFrame));
+		put("edit.insertGapFirst", new InsertGapFirstAlignmentAction(mainFrame));
+		put("edit.insertGapSecond", new InsertGapSecondAlignmentAction(mainFrame));
+		put("edit.removeGapFirst", new RemoveGapFirstAlignmentAction(mainFrame));
+		put("edit.removeGapSecond", new RemoveGapSecondAlignmentAction(mainFrame));
 		put("edit.addComment", new AddCommentAction(mainFrame));
 		put("edit.moveComment", new MoveCommentAction(mainFrame));
 		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));

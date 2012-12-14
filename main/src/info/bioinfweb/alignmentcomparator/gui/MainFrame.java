@@ -205,6 +205,11 @@ public class MainFrame extends JFrame {
 			editMenu.add(getUndoMenu());
 			editMenu.add(getRedoMenu());
 			editMenu.addSeparator();
+			editMenu.add(getActionManagement().get("edit.insertGapFirst"));
+			editMenu.add(getActionManagement().get("edit.insertGapSecond"));
+			editMenu.add(getActionManagement().get("edit.removeGapFirst"));
+			editMenu.add(getActionManagement().get("edit.removeGapSecond"));
+			editMenu.addSeparator();
 			editMenu.add(getActionManagement().get("edit.addComment"));
 			editMenu.add(getActionManagement().get("edit.moveComment"));
 			editMenu.add(getActionManagement().get("edit.changeCommentText"));
