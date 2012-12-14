@@ -11,6 +11,7 @@ main/include/lib/commons-lang3-3.1.jar -text
 main/include/lib/guava-13.0.1.jar -text
 main/include/lib/info.bioinfweb.util.jar -text
 main/include/lib/info.webinsel.util.appver.jar -text
+main/include/lib/info.webinsel.util.collections.jar -text
 main/include/lib/info.webinsel.util.graphics.jar -text
 main/include/lib/info.webinsel.util.io.jar -text
 main/include/lib/info.webinsel.util.jar -text
