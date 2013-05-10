@@ -43,10 +43,10 @@ import org.biojava3.core.sequence.template.Sequence;
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
-import info.bioinfweb.alignmentcomparator.document.io.FastaReaderTools;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.ConsoleOutputDialog;
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 import info.bioinfweb.biojava3.core.sequence.compound.AmbiguityNoGapNucleotideCompoundSet;
+import info.bioinfweb.biojava3.core.sequence.io.FastaReaderTools;
 import info.bioinfweb.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
 
 
@@ -191,7 +191,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 					public void run() {
 						try {
 							try {
-								Map<String, DNASequence> resultMap = FastaReaderTools.readAlignment(fastaStream);
+								Map<String, DNASequence> resultMap = FastaReaderTools.readDNAAlignment(fastaStream);
 								for (int i = 0; i < 2; i++) {
 									addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
 								}

@@ -19,28 +19,17 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
-import info.bioinfweb.alignmentcomparator.document.io.FastaReaderTools;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
-import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
+import info.bioinfweb.biojava3.core.sequence.io.FastaReaderTools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JOptionPane;
-
-import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.NucleotideCompound;
-import org.biojava3.core.sequence.io.DNASequenceCreator;
-import org.biojava3.core.sequence.io.FastaReader;
-import org.biojava3.core.sequence.io.GenericFastaHeaderParser;
 
 
 
@@ -63,8 +52,8 @@ public class CompareAlignmentsAction extends DocumentAction {
 	public void actionPerformed(ActionEvent e) {
 		if (dialog.execute()) {
 			try {
-				getDocument().setUnalignedData(FastaReaderTools.readAlignment(new File(dialog.getFirstPath())), 
-						FastaReaderTools.readAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
+				getDocument().setUnalignedData(FastaReaderTools.readDNAAlignment(new File(dialog.getFirstPath())), 
+						FastaReaderTools.readDNAAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}
 			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "An IO error occurred while loading the files.", "Error",
