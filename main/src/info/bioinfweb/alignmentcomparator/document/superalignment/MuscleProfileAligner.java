@@ -48,6 +48,7 @@ import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleoti
 import info.bioinfweb.biojava3.core.sequence.compound.AmbiguityNoGapNucleotideCompoundSet;
 import info.bioinfweb.biojava3.core.sequence.io.FastaReaderTools;
 import info.bioinfweb.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
+import info.bioinfweb.biojava3.core.sequence.views.ReplaceNucleotideSequenceView;
 
 
 
@@ -70,26 +71,6 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 				}
 			};
 	
-			
-	private static final Map<NucleotideCompound, NucleotideCompound> REPLACEMENT_MAP = createReplacementMap(); 
-			
-			
-	private static Map<NucleotideCompound, NucleotideCompound> createReplacementMap() {
-		Map<NucleotideCompound, NucleotideCompound> result = new HashMap<NucleotideCompound, NucleotideCompound>();
-		AmbiguityNoGapNucleotideCompoundSet cs = AmbiguityNoGapNucleotideCompoundSet.getAmbiguityNoGapNucleotideCompoundSet(); 
-		result.put(cs.getCompoundForString("U"), cs.getCompoundForString("T"));
-		result.put(cs.getCompoundForString("M"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("W"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("S"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("K"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("V"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("H"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("D"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("B"), cs.getCompoundForString("N"));
-		result.put(cs.getCompoundForString("X"), cs.getCompoundForString("N"));
-		return result;
-	}
-
 			
 	@Override
 	public String getApplicationName() {
@@ -116,7 +97,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	private List<Sequence<NucleotideCompound>> createReplacedList(Document document, int alignmentIndex) {
 		ArrayList<Sequence<NucleotideCompound>> result = new ArrayList<Sequence<NucleotideCompound>>(document.getSequenceCount());
 		for (int i = 0; i < document.getSequenceCount(); i++) {
-			result.add(new ReplaceAbstractSequenceView(document.getUnalignedSequence(alignmentIndex, i), REPLACEMENT_MAP));
+			result.add(new ReplaceAbstractSequenceView(document.getUnalignedSequence(alignmentIndex, i), ReplaceNucleotideSequenceView.AMBIGUITY_RNA_TO_N_DNA_MAP));
 		}
 		return result;
 	}
