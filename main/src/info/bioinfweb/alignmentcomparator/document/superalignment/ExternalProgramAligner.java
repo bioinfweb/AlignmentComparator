@@ -47,7 +47,7 @@ public abstract class ExternalProgramAligner implements SuperAlignmentAlgorithm 
   
   
   /**
-   * Should return the full path to the external application to be used dependant on the current operating system.
+   * Should return the full path to the external application to be used dependent on the current operating system.
    */
   public abstract String getApplicationName();
 }

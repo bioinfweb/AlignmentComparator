@@ -48,7 +48,6 @@ import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.ConsoleOut
 import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 import info.bioinfweb.biojava3.core.sequence.compound.AmbiguityNoGapNucleotideCompoundSet;
 import info.bioinfweb.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
-import info.bioinfweb.biojava3.core.sequence.views.ReplaceNucleotideSequenceView;
 
 
 
