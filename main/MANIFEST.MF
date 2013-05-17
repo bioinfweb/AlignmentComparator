@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Main-Class: info.bioinfweb.alignmentcomparator.Main
-Class-Path: lib/biojava3-alignment-3.0.4.jar
-            lib/biojava3-core-3.0.4.jar
+Class-Path: lib/biojava3-alignment-3.0.5.jar
+            lib/biojava3-core-3.0.5.jar
             lib/commons-lang3-3.1.jar
             lib/guava-13.0.1.jar
             lib/info.webinsel.util.jar
