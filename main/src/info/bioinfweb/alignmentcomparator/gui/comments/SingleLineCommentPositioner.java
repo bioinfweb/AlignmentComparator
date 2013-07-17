@@ -32,7 +32,6 @@ import java.util.List;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel;
 import info.webinsel.util.Math2;
@@ -58,8 +57,6 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	/**
 	 * Calculates the upper most available line for the specified column and length and removes passed comments from
 	 * <code>blockingComments</code>.
-	 * @param column
-	 * @param blockingComments
 	 * @return
 	 */
 	private int calculateLine(Comment comment, int column, int length) {
