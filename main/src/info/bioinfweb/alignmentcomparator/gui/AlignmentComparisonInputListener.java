@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.webinsel.util.Math2;
+import info.webinsel.util.SystemUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -140,7 +141,7 @@ public class AlignmentComparisonInputListener extends MouseAdapter
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if ((e.isMetaDown() && Main.IS_MAC) || (e.isControlDown()&&  !Main.IS_MAC)) {
+		if ((e.isMetaDown() && SystemUtils.IS_OS_MAC) || (e.isControlDown()&&  !SystemUtils.IS_OS_MAC)) {
 			owner.setZoom(owner.getZoom() - (float)e.getWheelRotation() * ZOOM_PER_CLICK);
 		}
 		else {
