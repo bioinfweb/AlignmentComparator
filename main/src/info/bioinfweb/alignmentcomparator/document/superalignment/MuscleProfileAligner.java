@@ -122,7 +122,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 
 	private List<DNASequence> extractSuperAlignment(Map<String, DNASequence> map, String prefix) {
 		Iterator<String> iterator = map.keySet().iterator();
-		List<DNASequence> result = new ArrayList<>(map.size() / 2);
+		List<DNASequence> result = new ArrayList<DNASequence>(map.size() / 2);
 		while (iterator.hasNext()) {
 			DNASequence sequence = map.get(iterator.next());
 			if (sequence.getOriginalHeader().startsWith(prefix)) {
@@ -134,17 +134,19 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	
 	private void addSuperGaps(Document document, List<DNASequence> superAlignment, int alignmentIndex) {
-		// Es reicht nicht nur eine Sequenz mit dem Original zu verleichen, da dann Superlücken innerhalb vorher bestehender Lücken nicht genau bestimmt werden können.
 		int superalignedLength = superAlignment.get(0).getLength();
 		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
 		int unalignedPos = 1;
-		for (int i = 1; i <= superalignedLength; i++) {
+		for (int superIndex = 1; superIndex <= superalignedLength; superIndex++) {
 			Iterator<DNASequence> iterator = superAlignment.iterator();
-			boolean gap = true;
+			boolean gap = false;
 			while (iterator.hasNext()) {
-				String base = iterator.next().getCompoundAt(i).getBase(); 
-				if (!base.equals("" + AlignmentAmbiguityNucleotideCompoundSet.GAP_CHARACTER)) {
-					gap = false;
+				DNASequence superalignedSequence = iterator.next();
+				String newBase = superalignedSequence.getCompoundAt(superIndex).getBase();
+				String oldBase = document.getUnalignedSequence(alignmentIndex, document.getIndexByName(
+						superalignedSequence.getOriginalHeader().substring(2))).getCompoundAt(unalignedPos).getBase();
+				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contain columns only consisting of gaps.
+					gap = true;
 					break;
 				}
 			}
@@ -209,10 +211,11 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 				ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
 				dialog.showEmpty();
 	
-				runMuscle(document, process.getInputStream());
+				Thread thread = runMuscle(document, process.getInputStream());
 				dialog.addStream(process.getErrorStream());
 				dialog.addLine("");
 				dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
+				thread.join();  // Wait for the processing of the MUSCLE output after process is already finished.
 				dialog.setAllowClose(true);
 			}
 			finally {

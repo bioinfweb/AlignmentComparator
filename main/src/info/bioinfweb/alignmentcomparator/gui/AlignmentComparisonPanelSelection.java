@@ -165,7 +165,6 @@ public class AlignmentComparisonPanelSelection {
 				setFirstPos(getFirstPos() + columnCount);  // calls fireColumnSelectionChanged()
 			}
 			else {
-				System.out.println("3rd case");
 				setNewSelection(startColumn);  // calls fireColumnSelectionChanged()
 			}
 		}
