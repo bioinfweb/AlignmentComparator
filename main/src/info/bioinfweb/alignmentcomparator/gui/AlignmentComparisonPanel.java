@@ -25,8 +25,8 @@ import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.SingleLineCommentPositioner;
+import info.bioinfweb.commons.graphics.GraphicsUtils;
 import info.webinsel.util.Math2;
-import info.webinsel.util.graphics.GraphicsUtils;
 
 import java.awt.Color;
 import java.awt.Dimension;
