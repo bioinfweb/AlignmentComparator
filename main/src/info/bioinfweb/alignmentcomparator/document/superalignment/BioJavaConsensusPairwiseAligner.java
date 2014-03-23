@@ -21,7 +21,6 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.superalignment.data.ProfileSuperAlignment;
-import info.bioinfweb.util.ConsensusSequenceCreator;
 
 import org.biojava3.alignment.template.AbstractPairwiseSequenceAligner;
 import org.biojava3.core.sequence.compound.NucleotideCompound;

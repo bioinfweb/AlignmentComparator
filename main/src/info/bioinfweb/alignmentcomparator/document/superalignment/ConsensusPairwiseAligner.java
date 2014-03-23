@@ -27,7 +27,7 @@ import org.biojava3.core.sequence.template.Sequence;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.superalignment.data.SuperAlignment;
-import info.bioinfweb.util.ConsensusSequenceCreator;
+import info.bioinfweb.commons.bio.ConsensusSequenceCreator;
 
 
 
