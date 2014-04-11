@@ -30,11 +30,11 @@ import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignment
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
-import info.webinsel.util.ChangeMonitorable;
-import info.webinsel.util.io.Savable;
-import info.webinsel.util.swing.AccessibleUndoManager;
-import info.webinsel.util.swing.SwingSavable;
-import info.webinsel.util.swing.SwingSaver;
+import info.bioinfweb.commons.changemonitor.ChangeMonitorable;
+import info.bioinfweb.commons.io.Savable;
+import info.bioinfweb.commons.swing.AccessibleUndoManager;
+import info.bioinfweb.commons.swing.SwingSavable;
+import info.bioinfweb.commons.swing.SwingSaver;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

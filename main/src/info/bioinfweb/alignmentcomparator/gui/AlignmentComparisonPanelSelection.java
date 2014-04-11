@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
-import info.webinsel.util.Math2;
+import info.bioinfweb.commons.Math2;
 
 
 

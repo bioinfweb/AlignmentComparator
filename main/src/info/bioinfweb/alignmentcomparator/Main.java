@@ -23,9 +23,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
-import info.webinsel.util.ProgramMainClass;
-import info.webinsel.util.appversion.ApplicationType;
-import info.webinsel.util.appversion.ApplicationVersion;
+import info.bioinfweb.commons.ProgramMainClass;
+import info.bioinfweb.commons.appversion.ApplicationType;
+import info.bioinfweb.commons.appversion.ApplicationVersion;
 import info.webinsel.wikihelp.client.SwingErrorHandler;
 import info.webinsel.wikihelp.client.WikiHelp;
 

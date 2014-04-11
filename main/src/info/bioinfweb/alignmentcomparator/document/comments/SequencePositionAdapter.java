@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.document.comments;
 
 
-import info.webinsel.util.collections.SequenceIntervalPositionAdapter;
+import info.bioinfweb.commons.collections.SequenceIntervalPositionAdapter;
 
 
 

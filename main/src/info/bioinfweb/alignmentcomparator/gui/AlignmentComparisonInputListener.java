@@ -21,8 +21,8 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
-import info.webinsel.util.Math2;
-import info.webinsel.util.SystemUtils;
+import info.bioinfweb.commons.Math2;
+import info.bioinfweb.commons.SystemUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

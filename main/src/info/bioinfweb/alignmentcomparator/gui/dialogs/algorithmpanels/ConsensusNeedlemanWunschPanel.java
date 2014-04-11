@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 import info.bioinfweb.alignmentcomparator.document.superalignment.BioJavaConsensusPairwiseAligner;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
-import info.bioinfweb.biojava3.core.sequence.compound.NucleotideCompoundSet;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.NucleotideCompoundSet;
 
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
@@ -31,7 +31,6 @@ import org.biojava3.alignment.SimpleGapPenalty;
 import org.biojava3.alignment.SimpleSubstitutionMatrix;
 import org.biojava3.alignment.template.GapPenalty;
 import org.biojava3.alignment.template.SubstitutionMatrix;
-import org.biojava3.core.sequence.compound.DNACompoundSet;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
 import javax.swing.JLabel;

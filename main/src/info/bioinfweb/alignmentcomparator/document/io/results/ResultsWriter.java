@@ -25,8 +25,8 @@ import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
-import info.webinsel.util.appversion.AppVersionXMLReadWrite;
-import info.webinsel.util.io.XMLUtils;
+import info.bioinfweb.commons.appversion.AppVersionXMLReadWrite;
+import info.bioinfweb.commons.io.XMLUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;

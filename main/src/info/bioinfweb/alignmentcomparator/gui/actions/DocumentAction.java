@@ -22,7 +22,7 @@ package info.bioinfweb.alignmentcomparator.gui.actions;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanelSelection;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
-import info.webinsel.util.swing.ExtendedAbstractAction;
+import info.bioinfweb.commons.swing.ExtendedAbstractAction;
 
 
 

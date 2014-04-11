@@ -4,12 +4,8 @@ Class-Path: lib/biojava3-alignment-3.0.5.jar
             lib/biojava3-core-3.0.5.jar
             lib/commons-lang3-3.1.jar
             lib/guava-13.0.1.jar
-            lib/info.webinsel.util.jar
-            lib/info.webinsel.util.appver.jar
-            lib/info.webinsel.util.collections.jar
-            lib/info.webinsel.util.io.jar
-            lib/info.webinsel.util.swing.jar
-            lib/info.webinsel.util.graphics.jar
+            lib/bioinfweb.commons.core.jar
+            lib/bioinfweb.commons.swing.jar
             lib/info.webinsel.wikihelp.client.jar
             lib/org.jdesktop.swingx.scrollpaneselector.jar
             lib/BIWBioJava.jar

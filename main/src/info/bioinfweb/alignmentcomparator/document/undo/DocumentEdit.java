@@ -20,7 +20,7 @@ package info.bioinfweb.alignmentcomparator.document.undo;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.webinsel.util.swing.AbstractDocumentEdit;
+import info.bioinfweb.commons.swing.AbstractDocumentEdit;
 
 
 

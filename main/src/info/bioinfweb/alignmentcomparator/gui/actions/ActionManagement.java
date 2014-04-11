@@ -42,8 +42,8 @@ import info.bioinfweb.alignmentcomparator.gui.actions.file.CompareAlignmentsActi
 import info.bioinfweb.alignmentcomparator.gui.actions.file.OpenResultsAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAsAction;
-import info.webinsel.util.swing.AbstractUndoActionManagement;
-import info.webinsel.util.swing.AccessibleUndoManager;
+import info.bioinfweb.commons.swing.AbstractUndoActionManagement;
+import info.bioinfweb.commons.swing.AccessibleUndoManager;
 
 
 

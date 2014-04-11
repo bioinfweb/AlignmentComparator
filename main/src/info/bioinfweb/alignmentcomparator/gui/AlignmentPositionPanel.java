@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import info.webinsel.util.Math2;
+import info.bioinfweb.commons.Math2;
 
 import java.awt.BasicStroke;
 import java.awt.Dimension;

@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
-import info.webinsel.util.swing.scrollpaneselector.ExtendedScrollPaneSelector;
+import info.bioinfweb.commons.swing.scrollpaneselector.ExtendedScrollPaneSelector;
 
 import java.awt.BorderLayout;
 

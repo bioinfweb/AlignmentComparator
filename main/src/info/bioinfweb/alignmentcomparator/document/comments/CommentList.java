@@ -20,8 +20,8 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 
 
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
-import info.webinsel.util.collections.SequenceIntervalList;
-import info.webinsel.util.collections.SequenceIntervalPositionAdapter;
+import info.bioinfweb.commons.collections.SequenceIntervalList;
+import info.bioinfweb.commons.collections.SequenceIntervalPositionAdapter;
 
 import java.util.HashMap;
 import java.util.Map;

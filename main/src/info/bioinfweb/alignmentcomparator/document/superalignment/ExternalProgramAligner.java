@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
-import info.webinsel.util.io.IOUtils;
+import info.bioinfweb.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;

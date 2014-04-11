@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 
 import info.bioinfweb.alignmentcomparator.document.superalignment.BioInfWebConsensusPairwiseAligner;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
-import info.bioinfweb.util.alignment.pairwise.NeedlemanWunschAligner;
+import info.bioinfweb.commons.bio.alignment.pairwise.NeedlemanWunschAligner;
 
 
 

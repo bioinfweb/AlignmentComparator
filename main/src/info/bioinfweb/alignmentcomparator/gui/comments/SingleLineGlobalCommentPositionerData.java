@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui.comments;
 
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
-import info.webinsel.util.collections.SequenceIntervalList;
+import info.bioinfweb.commons.collections.SequenceIntervalList;
 
 
 

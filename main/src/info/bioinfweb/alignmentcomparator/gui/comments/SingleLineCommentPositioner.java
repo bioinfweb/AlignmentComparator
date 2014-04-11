@@ -34,8 +34,8 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel;
+import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.FontCalculator;
-import info.webinsel.util.Math2;
 
 
 

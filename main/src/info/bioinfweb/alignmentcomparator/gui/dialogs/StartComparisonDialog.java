@@ -23,7 +23,7 @@ import info.bioinfweb.alignmentcomparator.document.superalignment.CompareAlgorit
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanel;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
-import info.webinsel.util.swing.OkCancelApplyDialog;
+import info.bioinfweb.commons.swing.OkCancelApplyDialog;
 
 import javax.swing.JPanel;
 import java.awt.Frame;

@@ -25,8 +25,8 @@ import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.SingleLineCommentPositioner;
+import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.GraphicsUtils;
-import info.webinsel.util.Math2;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -289,7 +289,7 @@ public class AlignmentComparisonPanel extends JPanel implements Scrollable, Docu
 		int lastIndex = Math.min(getDocument().getSequenceCount() - 1, (int)Math.round((getVisibleRect().getMaxY() - y) / getCompoundHeight()));
 		y += firstIndex * getCompoundHeight();
 		for (int i = firstIndex; i <= lastIndex; i++) {
-			paintSequence(g, getDocument().getAlignedSequence(alignmentIndex, i), y);  //lastIndex
+			paintSequence(g, getDocument().getAlignedSequence(alignmentIndex, i), y);  // lastIndex
 	    y += getCompoundHeight();
     }
 	}

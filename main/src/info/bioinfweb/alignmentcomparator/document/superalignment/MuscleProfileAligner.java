@@ -43,10 +43,9 @@ import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.ConsoleOutputDialog;
-import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
-import info.bioinfweb.biojava3.core.sequence.io.FastaReaderTools;
-import info.bioinfweb.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
-import info.bioinfweb.biojava3.core.sequence.views.ReplaceNucleotideSequenceView;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.io.FastaReaderTools;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.views.ReplaceNucleotideSequenceView;
 
 
 

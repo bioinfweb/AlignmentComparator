@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 
 import javax.xml.namespace.QName;
 
-import info.webinsel.util.io.FormatVersion;
+import info.bioinfweb.commons.io.FormatVersion;
 
 
 

@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.superalignment.data.CharSequenceSuperAlignment;
-import info.bioinfweb.util.alignment.pairwise.PairwiseAligner;
+import info.bioinfweb.commons.bio.alignment.pairwise.PairwiseAligner;
 
 
 

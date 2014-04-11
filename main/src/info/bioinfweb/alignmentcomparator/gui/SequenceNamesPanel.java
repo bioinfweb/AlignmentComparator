@@ -22,8 +22,8 @@ package info.bioinfweb.alignmentcomparator.gui;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
+import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.FontCalculator;
-import info.webinsel.util.Math2;
 
 import java.awt.Dimension;
 import java.awt.Font;

@@ -22,10 +22,10 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
-import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
-import info.webinsel.util.appversion.AppVersionXMLConstants;
-import info.webinsel.util.appversion.AppVersionXMLReadWrite;
-import info.webinsel.util.io.XMLUtils;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
+import info.bioinfweb.commons.appversion.AppVersionXMLConstants;
+import info.bioinfweb.commons.appversion.AppVersionXMLReadWrite;
+import info.bioinfweb.commons.io.XMLUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

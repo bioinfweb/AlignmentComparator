@@ -19,7 +19,7 @@
 package info.bioinfweb.alignmentcomparator.document;
 
 
-import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 
 
 
