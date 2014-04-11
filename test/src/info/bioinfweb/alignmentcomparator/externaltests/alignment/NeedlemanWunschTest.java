@@ -3,7 +3,7 @@ package info.bioinfweb.alignmentcomparator.externaltests.alignment;
 
 import java.util.Iterator;
 
-import info.bioinfweb.biojava3.core.sequence.compound.NucleotideCompoundSet;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.NucleotideCompoundSet;
 
 import org.biojava3.alignment.NeedlemanWunsch;
 import org.biojava3.alignment.SimpleGapPenalty;

@@ -1,13 +1,13 @@
 package info.bioinfweb.alignmentcomparator;
 
 
-import info.bioinfweb.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
-import info.bioinfweb.util.AmbiguityBaseScore;
-import info.webinsel.util.RandomValues;
+import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
+import info.bioinfweb.commons.RandomValues;
 
 import org.biojava3.core.sequence.BasicSequence;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.junit.* ;
+
 
 import static org.junit.Assert.* ;
 
