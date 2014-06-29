@@ -302,10 +302,11 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 							setPereferencesPanel((CompareAlgorithm)getAlgorithmComboBox().getSelectedItem());
 						}
 					});
-			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
-			for (int i = 0; i < algorithms.length; i++) {
-		    algorithmComboBox.addItem(algorithms[i]);
-		  }
+			algorithmComboBox.addItem(CompareAlgorithm.MUSCLE_PROFILE);
+//			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
+//			for (int i = 0; i < algorithms.length; i++) {
+//		    algorithmComboBox.addItem(algorithms[i]);
+//		  }
 		}
 		return algorithmComboBox;
 	}

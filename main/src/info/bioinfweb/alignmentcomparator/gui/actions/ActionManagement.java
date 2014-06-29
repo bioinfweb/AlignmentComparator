@@ -42,6 +42,8 @@ import info.bioinfweb.alignmentcomparator.gui.actions.file.CompareAlignmentsActi
 import info.bioinfweb.alignmentcomparator.gui.actions.file.OpenResultsAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAction;
 import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAsAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.help.AboutAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.help.WebsiteAction;
 import info.bioinfweb.commons.swing.AbstractUndoActionManagement;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
 
@@ -78,6 +80,9 @@ public class ActionManagement extends AbstractUndoActionManagement {
 		put("edit.moveComment", new MoveCommentAction(mainFrame));
 		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
 		put("edit.removeComment", new RemoveCommentAction(mainFrame));
+
+		put("help.about", new AboutAction());
+		put("help.website", new WebsiteAction());
 	}
 	
 	

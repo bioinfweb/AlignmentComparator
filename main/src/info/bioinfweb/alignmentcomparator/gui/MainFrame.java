@@ -60,6 +60,7 @@ public class MainFrame extends JFrame {
 	private JMenu redoMenu;
 	private AlignmentPositionPanel positionPanel;
 	private SequenceNamesPanel namesPanel;
+	private JMenu helpMenu;
 
 	
 	/**
@@ -170,6 +171,7 @@ public class MainFrame extends JFrame {
 			mainMenu = new JMenuBar();
 			mainMenu.add(getFileMenu());
 			mainMenu.add(getEditMenu());
+			mainMenu.add(getHelpMenu());
 		}
 		return mainMenu;
 	}
@@ -287,5 +289,15 @@ public class MainFrame extends JFrame {
 			namesPanel = new SequenceNamesPanel(getComparisonPanel(), getDocument());
 		}
 		return namesPanel;
+	}
+	
+	
+	private JMenu getHelpMenu() {
+		if (helpMenu == null) {
+			helpMenu = new JMenu("Help");
+			helpMenu.add(getActionManagement().get("help.website"));
+			helpMenu.add(getActionManagement().get("help.about"));
+		}
+		return helpMenu;
 	}
 }
