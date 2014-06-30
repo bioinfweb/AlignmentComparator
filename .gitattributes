@@ -3,8 +3,10 @@ main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 main/MANIFEST.MF -text svneol=unset#text/plain
-main/include/lib/BIWBioJava.jar -text
 main/include/lib/BrowserLauncher2-1_3.jar -text
+main/include/lib/bioinfweb.commons.core.jar -text
+main/include/lib/bioinfweb.commons.experimental.bio.jar -text
+main/include/lib/bioinfweb.commons.swing.jar -text
 main/include/lib/biojava3-alignment-3.0.5.jar -text
 main/include/lib/biojava3-core-3.0.5.jar -text
 main/include/lib/commons-lang3-3.1.jar -text

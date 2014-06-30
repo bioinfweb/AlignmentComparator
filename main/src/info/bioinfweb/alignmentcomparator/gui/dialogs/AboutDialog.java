@@ -18,6 +18,8 @@ import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 
@@ -59,7 +61,7 @@ public class AboutDialog extends JDialog {
 		super(parent);  //TODO is this modal?
 		
 		setTitle("About AlignmentComarator");
-		setSize(new Dimension(600, 600));
+		setSize(new Dimension(600, 400));
 		//setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		{
@@ -68,7 +70,12 @@ public class AboutDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Close");
-				okButton.setActionCommand("OK");
+				okButton.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								setVisible(false);
+							}
+						});
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
@@ -99,15 +106,21 @@ public class AboutDialog extends JDialog {
 						"<p>You should have received a copy of the GNU General Public License " +
 						"along with this program. If not, see " +
 						"<a href='http://bioinfweb.info/AlignmentComparator/License'>http://bioinfweb.info/AlignmentComparator/License</a> " +
-						"or <a href='http://www.gnu.org/licenses/'>http://www.gnu.org/licenses/</a>." +
+						"or <a href='http://www.gnu.org/licenses/'>http://www.gnu.org/licenses/</a>.</p>" +
 						
-						"<p><b>The following libraries are used by AlignmentComparator:</b></p>" +
+						"<p>This product includes software developed by the Apache Software Foundation " +
+						"<a href='http://apache.org/'>http://apache.org/</a> distributed under the terms of the " +
+						"Apache License Version 2.0. Google guava-libraries are also distributed under Apache License Version 2.0. " +
+						"(<a href='http://www.apache.org/licenses/LICENSE-2.0'>http://www.apache.org/licenses/LICENSE-2.0</a>)</p>" +
+						
+						"<p><b>The following libraries and software packages are used by AlignmentComparator:</b></p>" +
 						"<ul>" +
     				  "<li>bioinfweb.commons.java (<a href='http://commons.bioinfweb.info/Java/'>http://commons.bioinfweb.info/Java/</a>)</li>" +
     				  //"<li>LibrAlign (<a href='http://bioinfweb.info/LibrAlign/'>http://bioinfweb.info/LibrAlign/</a>)</li>" +
+    				  "<li>MUSCLE (<a href='http://www.drive5.com/muscle/'>http://www.drive5.com/muscle/</a>)</li>" +
   					  "<li>BioJava (<a href='http://biojava.org/'>http://biojava.org/</a>)</li>" +
-						  "<li>Apache commons (<a href='http://commons.apache.org/'>http://commons.apache.org/</a>)</li>" +  //TODO Complete
-						  "<li>Guava</li>" +
+						  "<li>Apache commons Lang (<a href='http://commons.apache.org/proper/commons-lang/'>http://commons.apache.org/proper/commons-lang/</a>)</li>" +
+						  "<li>guava-libraries (<a href='https://code.google.com/p/guava-libraries/'>https://code.google.com/p/guava-libraries/</a>)</li>" +
 						  "<li>Browser Launcher (<a href='http://browserlaunch2.sourceforge.net/'>http://browserlaunch2.sourceforge.net/</a>)</li>" +
 						"</ul>" +
 						"</body></html>");			
