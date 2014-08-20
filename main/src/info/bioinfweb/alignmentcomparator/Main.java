@@ -26,7 +26,6 @@ import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.commons.ProgramMainClass;
 import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
-import info.webinsel.wikihelp.client.SwingErrorHandler;
 import info.webinsel.wikihelp.client.WikiHelp;
 
 
@@ -45,7 +44,7 @@ public class Main extends ProgramMainClass {
 	private static Main firstInstance = null;
 	
 	private MainFrame mainFrame = null;
-	private WikiHelp wikiHelp = new WikiHelp(WIKI_URL, new SwingErrorHandler(WIKI_URL));
+	private WikiHelp wikiHelp = new WikiHelp(WIKI_URL);
 	
 	
   private Main() {
