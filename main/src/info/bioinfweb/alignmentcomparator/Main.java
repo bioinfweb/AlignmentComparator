@@ -37,7 +37,7 @@ import info.webinsel.wikihelp.client.WikiHelp;
  */
 public class Main extends ProgramMainClass {
 	public static final String APPLICATION_URL = "http://bioinfweb.info/AlignmentComparator"; 
-	public static final String ERROR_URL = APPLICATION_URL + "/errorreport/ApplicationReport.jsp";  //TODO zentrale bioinfweb error report URL?, da Reports ja auch zu einzelnen Bibliotheken kommen kÃ¶nnten und diese dann zentral gesammelt werden kÃ¶nnten 
+	public static final String ERROR_URL = APPLICATION_URL + "/errorreport/ApplicationReport.jsp";  //TODO zentrale bioinfweb error report URL?, da Reports ja auch zu einzelnen Bibliotheken kommen könnten und diese dann zentral gesammelt werden könnten 
 	public static final String WIKI_URL = APPLICATION_URL + "/Help/";
 	
 	

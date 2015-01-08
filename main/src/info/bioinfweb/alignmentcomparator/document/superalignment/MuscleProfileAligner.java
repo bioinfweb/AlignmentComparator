@@ -93,8 +93,11 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	private List<Sequence<NucleotideCompound>> createReplacedList(Document document, int alignmentIndex) {
 		ArrayList<Sequence<NucleotideCompound>> result = new ArrayList<Sequence<NucleotideCompound>>(document.getSequenceCount());
-		for (int i = 0; i < document.getSequenceCount(); i++) {
-			result.add(new ReplaceAbstractSequenceView(document.getUnalignedSequence(alignmentIndex, i), ReplaceNucleotideSequenceView.AMBIGUITY_RNA_TO_N_DNA_MAP));
+		Iterator<Integer> idIterator = document.sequenceIDIterator();
+		while (idIterator.hasNext()) {
+			result.add(new ReplaceAbstractSequenceView(  //TODO Also allow protein sequences here.
+					(DNASequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
+							getSequence(idIterator.next()), ReplaceNucleotideSequenceView.AMBIGUITY_RNA_TO_N_DNA_MAP));
 		}
 		return result;
 	}
@@ -142,8 +145,9 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			while (iterator.hasNext()) {
 				DNASequence superalignedSequence = iterator.next();
 				String newBase = superalignedSequence.getCompoundAt(superIndex).getBase();
-				String oldBase = document.getUnalignedSequence(alignmentIndex, document.getIndexByName(
-						superalignedSequence.getOriginalHeader().substring(2))).getCompoundAt(unalignedPos).getBase();
+				String oldBase = ((Sequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
+						getSequence(document.sequenceIDByName(superalignedSequence.getOriginalHeader().substring(2)))).
+						getCompoundAt(unalignedPos).toString().substring(0, 1); 
 				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contain columns only consisting of gaps.
 					gap = true;
 					break;

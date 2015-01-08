@@ -20,18 +20,22 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentCompoundSet;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 import info.bioinfweb.commons.appversion.AppVersionXMLConstants;
 import info.bioinfweb.commons.appversion.AppVersionXMLReadWrite;
 import info.bioinfweb.commons.io.XMLUtils;
+import info.bioinfweb.libralign.sequenceprovider.tokenset.BioJavaTokenSet;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -177,6 +181,15 @@ public class ResultsReader implements ResultsXMLConstants {
   }
 
   
+  private Map<String, DNASequence> createAlignmentMap(int alignmentIndex, String[] names) {
+  	Map<String, DNASequence> result = new TreeMap<String, DNASequence>();
+  	for (int nameIndex = 0; nameIndex < names.length; nameIndex++) {
+			result.put(names[nameIndex], unalignedSequences.get(alignmentIndex).get(nameIndex));
+		}
+  	return result;
+  }
+  
+  
   private void readDocument(StartElement rootElement, Document alignments) throws XMLStreamException {
   	String[] names = null;
   	
@@ -209,9 +222,9 @@ public class ResultsReader implements ResultsXMLConstants {
       event = reader.nextEvent();
     }
     
-    alignments.setAlignedData(names, 
-    		//TODO Fehler nicht hier beheben, sonder Document-Datenstruktur noch mal sinnvoll überarbeiten und auf merkwürdige Array-Konstrukte verzichten.
-    		unalignedSequences.toArray(new LinkedList[unalignedSequences.size()]), 
+    alignments.setAlignedData("First", createAlignmentMap(0, names),  //TODO Save correct names into file
+    		"Second", createAlignmentMap(1, names),
+    		new BioJavaTokenSet(SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet(), false),  //TODO Also allow protein sequences and token sets. 
     		unalignedIndicesList.toArray(new ArrayList[unalignedIndicesList.size()]));
   }
 

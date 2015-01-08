@@ -21,7 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
-import info.bioinfweb.commons.swing.scrollpaneselector.ExtendedScrollPaneSelector;
+import info.bioinfweb.libralign.multiplealignments.SwingMultipleAlignmentsContainer;
 
 import java.awt.BorderLayout;
 
@@ -30,7 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
-import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import java.awt.event.KeyEvent;
@@ -40,6 +39,12 @@ import java.awt.event.WindowListener;
 
 
 
+/**
+ * The main window of AlignmentComporator.
+ * 
+ * @author Ben St&ouml;ver
+ * @since 1.0.0
+ */
 public class MainFrame extends JFrame {
 	public static final String TITLE_PREFIX = "AlignmentComparator";
 	
@@ -47,20 +52,17 @@ public class MainFrame extends JFrame {
 	
 	
 	private WindowListener windowListener = null;
-	private Document document = new Document();
+	private Document<?> document = new Document();  //TODO Instance can only be created after the token type has been determined from the file.
 	private ActionManagement actionManagement = new ActionManagement(this);
 	
 	private JPanel jContentPane = null;
+	private AlignmentComparisonComponent comparisonComponent = null;
 	private JMenuBar mainMenu = null;
 	private JMenu fileMenu = null;
 	private JMenu editMenu = null;
-	private JScrollPane scrollPane = null;
-	private AlignmentComparisonPanel comparisonPanel = null;
-	private JMenu undoMenu;
-	private JMenu redoMenu;
-	private AlignmentPositionPanel positionPanel;
-	private SequenceNamesPanel namesPanel;
-	private JMenu helpMenu;
+	private JMenu helpMenu = null;
+	private JMenu undoMenu = null;
+	private JMenu redoMenu = null;
 
 	
 	/**
@@ -92,7 +94,7 @@ public class MainFrame extends JFrame {
 		this.setSize(640, 480);
 		this.setJMenuBar(getMainMenu());
 		this.setContentPane(getJContentPane());
-		getDocument().addDocumentListener(getComparisonPanel());
+		getDocument().addDocumentListener(getComparisonComponent());
 		getActionManagement().refreshActionStatus();
 	}
 
@@ -109,7 +111,7 @@ public class MainFrame extends JFrame {
 					public void windowClosing(WindowEvent e) {
 						if (getDocument().askToSave()) {
 							//CurrentDirectoryModel.getInstance().removeFileChooser(getDocument().getFileChooser());
-							ExtendedScrollPaneSelector.uninstallScrollPaneSelector(getScrollPane());
+							//ExtendedScrollPaneSelector.uninstallScrollPaneSelector(getScrollPane());
 							setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 						}
 						else {
@@ -131,18 +133,13 @@ public class MainFrame extends JFrame {
 	}
 
 
-	public Document getDocument() {
+	public Document<?> getDocument() {
 		return document;
 	}
 	
 	
 	public ActionManagement getActionManagement() {
 		return actionManagement;
-	}
-
-
-	public AlignmentComparisonPanelSelection getSelection() {
-		return getComparisonPanel().getSelection();
 	}
 
 
@@ -155,9 +152,27 @@ public class MainFrame extends JFrame {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getScrollPane(), BorderLayout.CENTER);
+			jContentPane.add(getComparisonPanel(), BorderLayout.CENTER);
 		}
 		return jContentPane;
+	}
+	
+	
+	private AlignmentComparisonComponent getComparisonComponent() {
+		if (comparisonComponent == null) {
+			comparisonComponent = new AlignmentComparisonComponent(getDocument());
+		}
+		return comparisonComponent;
+	}
+	
+	
+	public AlignmentComparisonSelection getSelection() {
+		return getComparisonComponent().getSelection();
+	}
+	
+	
+	private SwingMultipleAlignmentsContainer getComparisonPanel() {
+		return getComparisonComponent().createSwingComponent();
 	}
 
 
@@ -238,57 +253,6 @@ public class MainFrame extends JFrame {
 			redoMenu.setIcon(new ImageIcon(Object.class.getResource("/resources/symbols/Redo16.png")));
 		}
 		return redoMenu;
-	}
-	
-	
-	/**
-	 * This method initializes scrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */
-	private JScrollPane getScrollPane() {
-		if (scrollPane == null) {
-			scrollPane = new JScrollPane();
-			scrollPane.setColumnHeaderView(getPositionPanel());
-			scrollPane.setRowHeaderView(getNamesPanel());
-			scrollPane.setViewportView(getComparisonPanel());
-			ExtendedScrollPaneSelector.installScrollPaneSelector(scrollPane);
-		}
-		return scrollPane;
-	}
-
-
-	/**
-	 * This method initializes comparisonPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private AlignmentComparisonPanel getComparisonPanel() {
-		if (comparisonPanel == null) {
-			comparisonPanel = new AlignmentComparisonPanel(getDocument());
-			AlignmentComparisonInputListener inputListener = new AlignmentComparisonInputListener(comparisonPanel);
-			comparisonPanel.addKeyListener(inputListener);
-			comparisonPanel.addMouseListener(inputListener);
-			comparisonPanel.addMouseMotionListener(inputListener);
-			comparisonPanel.addMouseWheelListener(inputListener);
-		}
-		return comparisonPanel;
-	}
-	
-	
-	private AlignmentPositionPanel getPositionPanel() {
-		if (positionPanel == null) {
-			positionPanel = new AlignmentPositionPanel(getComparisonPanel());
-		}
-		return positionPanel;
-	}
-
-	
-	private SequenceNamesPanel getNamesPanel() {
-		if (namesPanel == null) {
-			namesPanel = new SequenceNamesPanel(getComparisonPanel(), getDocument());
-		}
-		return namesPanel;
 	}
 	
 	

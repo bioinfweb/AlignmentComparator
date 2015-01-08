@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="include/lib/guava-13.0.1.jar"/>
 	<classpathentry kind="lib" path="include/lib/biojava3-alignment-3.0.5.jar"/>
 	<classpathentry kind="lib" path="include/lib/biojava3-core-3.0.5.jar"/>
+	<classpathentry kind="lib" path="/LibrAlign/bin" sourcepath="/LibrAlign/src"/>
+	<classpathentry kind="lib" path="/LibrAlign/lib/swt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

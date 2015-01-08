@@ -52,7 +52,9 @@ public abstract class ConsensusPairwiseAligner implements SuperAlignmentAlgorith
 	
 	
 	protected Sequence<NucleotideCompound> consensusSequence(Document alignments, int alignmentIndex) {
-		return ConsensusSequenceCreator.getInstance().majorityRuleConsensus(
-				alignments.getSingleAlignment(alignmentIndex));
+		//TODO reimplement if necessary
+		return null;
+//		return ConsensusSequenceCreator.getInstance().majorityRuleConsensus(
+//				alignments.getSingleAlignment(alignmentIndex));
   }
 }

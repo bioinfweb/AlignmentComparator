@@ -36,6 +36,9 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.biojava3.core.sequence.DNASequence;
+import org.biojava3.core.sequence.template.Sequence;
+
 
 
 public class ResultsWriter implements ResultsXMLConstants {
@@ -49,9 +52,11 @@ public class ResultsWriter implements ResultsXMLConstants {
 	
 	private void writeAlignment(Document alignments, int alignmentIndex) throws XMLStreamException {
 		writer.writeStartElement(TAG_ALIGNMENT.getLocalPart());
-		for (int sequenceIndex = 0; sequenceIndex < alignments.getSequenceCount(); sequenceIndex++) {  
+		Iterator<Integer> idIterator = alignments.sequenceIDIterator();
+		while (idIterator.hasNext()) {
 			writer.writeStartElement(TAG_SEQUENCE.getLocalPart());
-			writer.writeCharacters(alignments.getUnalignedSequence(alignmentIndex, sequenceIndex).getSequenceAsString());
+			writer.writeCharacters(((Sequence)alignments.getOriginalAlignmentProvider(alignments.getAlignmentName(alignmentIndex)).
+					getSequence(idIterator.next())).getSequenceAsString());
 			writer.writeEndElement();
 		}
 		writer.writeEndElement();
@@ -93,9 +98,10 @@ public class ResultsWriter implements ResultsXMLConstants {
 
 	private void writeNames(Document alignments) throws XMLStreamException {
 		writer.writeStartElement(TAG_NAMES.getLocalPart());
-		for (int i = 0; i < alignments.getSequenceCount(); i++) {  
+		Iterator<Integer> idIterator = alignments.sequenceIDIterator();
+		while (idIterator.hasNext()) {
 			writer.writeStartElement(TAG_NAME.getLocalPart());
-			writer.writeCharacters(alignments.getName(i));
+			writer.writeCharacters(alignments.sequenceNameByID(idIterator.next()));
 			writer.writeEndElement();
 		}
 		writer.writeEndElement();

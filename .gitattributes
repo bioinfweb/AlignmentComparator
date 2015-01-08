@@ -19,6 +19,7 @@ main/src/cmd/muscle3.8.31_i86linux32 -text
 main/src/cmd/muscle3.8.31_i86linux64 -text
 main/src/cmd/muscle3.8.31_i86win32.exe -text
 main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/AlignmentComparatorDataProvider.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignmentCompoundSet.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignmentSequenceView.java -text svneol=unset#text/plain
@@ -53,14 +54,10 @@ main/src/info/bioinfweb/alignmentcomparator/document/undo/InsertRemoveGapEdit.ja
 main/src/info/bioinfweb/alignmentcomparator/document/undo/MoveCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/RemoveCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/RemoveGapEdit.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonHeaderPanel.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonInputListener.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanel.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonComponent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelListener.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelSelection.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentPositionPanel.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonSelection.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/MainFrame.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/SequenceNamesPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/DocumentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/AddCommentAction.java -text svneol=unset#text/plain
@@ -86,6 +83,7 @@ main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/SaveAction.java -te
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/file/SaveAsAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/help/AboutAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/help/WebsiteAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentArea.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentPositioner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/CommentPositionerFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/comments/SingleLineCommentPositionData.java -text svneol=unset#text/plain

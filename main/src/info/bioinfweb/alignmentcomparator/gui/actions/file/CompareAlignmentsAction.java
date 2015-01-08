@@ -19,10 +19,12 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
+import info.bioinfweb.alignmentcomparator.document.SuperAlignmentCompoundSet;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
 import info.bioinfweb.commons.bio.biojava3.core.sequence.io.FastaReaderTools;
+import info.bioinfweb.libralign.sequenceprovider.tokenset.BioJavaTokenSet;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -55,8 +57,12 @@ public class CompareAlignmentsAction extends DocumentAction {
 	public void actionPerformed(ActionEvent e) {
 		if (dialog.execute()) {
 			try {
-				getDocument().setUnalignedData(FastaReaderTools.readDNAAlignment(new File(dialog.getFirstPath())), 
-				    FastaReaderTools.readDNAAlignment(new File(dialog.getSecondPath())), dialog.getAlgorithm());
+				File firstFile = new File(dialog.getFirstPath());
+				File secondFile = new File(dialog.getSecondPath());
+				getDocument().setUnalignedData(firstFile.getAbsolutePath(), FastaReaderTools.readDNAAlignment(firstFile), 
+				    secondFile.getAbsolutePath(), FastaReaderTools.readDNAAlignment(secondFile),
+				    new BioJavaTokenSet(SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet(), false),  //TODO Also allow protein sequences and token sets.
+				    dialog.getAlgorithm());
 //				getDocument().setUnalignedData(fastaReader.read(new File(dialog.getFirstPath())),
 //						fastaReader.read(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}

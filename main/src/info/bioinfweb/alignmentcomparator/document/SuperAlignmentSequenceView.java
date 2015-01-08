@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import org.biojava3.core.sequence.compound.NucleotideCompound;
+import org.biojava3.core.sequence.template.Sequence;
 import org.biojava3.core.sequence.template.SequenceProxyView;
 import org.biojava3.core.sequence.template.SequenceView;
 
@@ -34,8 +35,8 @@ public class SuperAlignmentSequenceView extends SequenceProxyView<NucleotideComp
 	private int alignmentIndex;
 	
 
-	public SuperAlignmentSequenceView(Document parent, int alignmentIndex, int sequenceIndex) {
-		super(parent.getSingleAlignment(alignmentIndex).get(sequenceIndex));
+	public SuperAlignmentSequenceView(Document parent, int alignmentIndex, Sequence viewedSequence) {
+		super(viewedSequence);
 		this.alignmentIndex = alignmentIndex;
 		this.parent = parent;
 	}

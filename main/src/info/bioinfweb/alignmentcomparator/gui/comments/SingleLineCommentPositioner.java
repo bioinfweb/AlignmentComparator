@@ -20,29 +20,36 @@ package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JComponent;
+
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
-import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel;
+import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonComponent;
 import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.FontCalculator;
+import info.bioinfweb.commons.graphics.GraphicsUtils;
+import info.bioinfweb.libralign.alignmentarea.content.AlignmentContentArea;
+import info.bioinfweb.libralign.alignmentarea.content.SequenceColorSchema;
 
 
 
 public class SingleLineCommentPositioner implements CommentPositioner {
 	public static final float MARGIN = 1f;
-	public static final Font NO_ZOOM_FONT = new Font(AlignmentComparisonPanel.FONT_NAME, 
-			AlignmentComparisonPanel.FONT_STYLE, Math.round(AlignmentComparisonPanel.FONT_SIZE_NO_ZOOM));
+	public static final Font NO_ZOOM_FONT = new Font(AlignmentContentArea.FONT_NAME, AlignmentContentArea.FONT_STYLE, 
+			Math.round(AlignmentContentArea.COMPOUND_WIDTH * AlignmentContentArea.FONT_SIZE_FACTOR));  //TODO Could become a problem if the compound width and height are changed independently which is allowed in LibrAlign. => Make sure the AC user cannot do this.
 	
 	
 	private List<Comment> blockingComments;
@@ -95,7 +102,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	
 	private int calculateLength(Comment comment) {
 		return Math.max(comment.getPosition().sequenceLength(),	Math2.roundUp((2 * MARGIN + 
-				FontCalculator.getInstance().getWidth(NO_ZOOM_FONT, comment.getText())) / AlignmentComparisonPanel.COMPOUND_WIDTH));
+				FontCalculator.getInstance().getWidth(NO_ZOOM_FONT, comment.getText())) / AlignmentContentArea.COMPOUND_WIDTH));
 	}
 	
 	
@@ -136,35 +143,37 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	}
 	
 	
-	private void paintComment(AlignmentComparisonPanel panel, Graphics2D g, Comment comment, float x, float y) {
+	private void paintComment(AlignmentComparisonComponent comparisonComponent, Graphics2D g, Comment comment, float x, float y) {
 		SingleLineCommentPositionData data = getData(comment);
 		CommentPosition pos = comment.getPosition();
+		AlignmentContentArea area = comparisonComponent.getFirstAlignmentArea();
 
 		Color fontColor;
-		if (comment.equals(panel.getSelection().getComment())) {
-			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.SELECTION_COLOR_ID));
-			fontColor = panel.getColorMap().get(AlignmentComparisonPanel.SELECTION_FONT_COLOR_ID);
+		SequenceColorSchema colorSchema = area.getColorSchema();
+		if (comment.equals(comparisonComponent.getSelection().getComment())) {
+			g.setColor(colorSchema.getSelectionColor());
+			fontColor = colorSchema.getSelectionFontColor();
 		}
 		else {
-			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.DEFAULT_BG_COLOR_ID));
-			fontColor = panel.getColorMap().get(AlignmentComparisonPanel.FONT_COLOR_ID);
+			g.setColor(colorSchema.getDefaultBgColor());
+			fontColor = colorSchema.getFontColor();
 		}
-		g.setFont(panel.getCompoundFont());
+		g.setFont(area.getCompoundFont());
 		
 		final float lineWidth = 1f;  //TODO Evtl. sinvolleren Wert (aus Stroke?)
-		float x1 = x + (pos.getFirstPos() - 1) * panel.getCompoundWidth();  // BioJava indices start with 1
-		float y1 = y + data.getLine() * panel.getCompoundHeight();
-		float y2 = y1 + panel.getCompoundHeight() - lineWidth;
+		float x1 = x + (pos.getFirstPos() - 1) * area.getCompoundWidth();  // BioJava indices start with 1
+		float y1 = y + data.getLine() * area.getCompoundHeight();
+		float y2 = y1 + area.getCompoundHeight() - lineWidth;
 
 		Rectangle2D.Float r = new Rectangle2D.Float(x1, y1, 
-				data.getLength() * panel.getCompoundWidth() - lineWidth, y2 - y1);  // BioJava indices start with 1
+				data.getLength() * area.getCompoundWidth() - lineWidth, y2 - y1);  // BioJava indices start with 1
 		g.fill(r);
 		if (pos.sequenceLength() <= data.getLength()) {
-			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_OVERLAPPING_BORDER_COLOR_ID));
+			g.setColor(colorSchema.getSelectionFontColor());  //TODO Can this be used as the border color?
 			g.draw(r);   
 			
-			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_BORDER_COLOR_ID));
-			float seqX2 = x + (pos.getLastPos()) * panel.getCompoundWidth() - lineWidth;  // BioJava indices start with 1
+			g.setColor(colorSchema.getTokenBorderColor());
+			float seqX2 = x + (pos.getLastPos()) * area.getCompoundWidth() - lineWidth;  // BioJava indices start with 1
 			Path2D.Float path = new Path2D.Float();
 			path.moveTo(seqX2, y1);
 			path.lineTo(x1, y1);
@@ -173,32 +182,39 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			g.draw(path);
 		}
 		else {
-			g.setColor(panel.getColorMap().get(AlignmentComparisonPanel.COMMENT_BORDER_COLOR_ID));
+			g.setColor(colorSchema.getTokenBorderColor());
 			g.draw(r);
 		}
 		FontMetrics fm = g.getFontMetrics();
 		g.setColor(fontColor);
-		g.drawString(comment.getText(), x1 + MARGIN * panel.getZoom(), y1 + fm.getAscent());
+		g.drawString(comment.getText(), x1 + MARGIN * area.getZoomX(), y1 + fm.getAscent());
 	}
 
 
 	@Override
-	public void paint(Document document, AlignmentComparisonPanel panel, int alignmentLength, Graphics2D g, float x, float y) {
-		Iterator<Comment> iterator = getGlobalPositionerData(document).getCommentList().getOverlappingElements(
-				Math.max(0, (int)Math.round((panel.getVisibleRect().getMinX() - x) / panel.getCompoundWidth()) - 1), 
-				Math.min(alignmentLength - 1, 
-						(int)Math.round((panel.getVisibleRect().getMaxX() - x) / panel.getCompoundWidth()))).iterator();
+	public void paint(AlignmentComparisonComponent comparisonComponent, int alignmentLength, 
+			Graphics2D g, float x, float y) {
+		
+		Rectangle visibleRect = ((JComponent)comparisonComponent.getCommentArea().getToolkitComponent()).getVisibleRect();
+		
+		AlignmentContentArea area = comparisonComponent.getFirstAlignmentArea();
+		Iterator<Comment> iterator = 
+				getGlobalPositionerData(comparisonComponent.getDocument()).getCommentList().getOverlappingElements(
+						Math.max(0, (int)Math.round((visibleRect.getMinX() - x) / area.getCompoundWidth()) - 1), 
+						Math.min(alignmentLength - 1, 
+								(int)Math.round((visibleRect.getMaxX() - x) / area.getCompoundWidth()))).iterator();
 		while (iterator.hasNext()) {
-			paintComment(panel, g, iterator.next(), x, y);
+			paintComment(comparisonComponent, g, iterator.next(), x, y);
 		}
 	}
 
 
 	@Override
-	public Dimension getCommentDimension(Document document, AlignmentComparisonPanel panel) {
-		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(document);
-		return new Dimension(Math2.roundUp(data.getMaxColumn() * panel.getCompoundWidth()),  // BioJava indices start with 1 
-				Math2.roundUp((data.getMaxLine() + 1) * panel.getCompoundHeight()));
+	public Dimension getCommentDimension(AlignmentComparisonComponent comparisonComponent) {
+		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(comparisonComponent.getDocument());
+		AlignmentContentArea area = comparisonComponent.getFirstAlignmentArea();
+		return new Dimension(Math2.roundUp(data.getMaxColumn() * area.getCompoundWidth()),  // BioJava indices start with 1 
+				Math2.roundUp((data.getMaxLine() + 1) * area.getCompoundHeight()));
 	}
 
 
@@ -206,18 +222,19 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	 * @see info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner#getCommentByMousePosition(info.bioinfweb.alignmentcomparator.document.Document, info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonPanel, float, float, int, int)
 	 */
 	@Override
-	public Comment getCommentByMousePosition(Document document, AlignmentComparisonPanel panel, 
+	public Comment getCommentByMousePosition(AlignmentComparisonComponent comparisonComponent, 
 			float paintX, float paintY, int mouseX, int mouseY) {
 		
 		if ((mouseX >= paintX) && (mouseY >= paintY)) {
-			int column = panel.columnByPaintX(Math.round(mouseX - paintX));
+			AlignmentContentArea area = comparisonComponent.getFirstAlignmentArea();
+			int column = area.columnByPaintX(Math.round(mouseX - paintX));
 			Iterator<Comment> iterator = 
-					getGlobalPositionerData(document).getCommentList().getOverlappingElements(column, column).iterator();  // Even if the mouse position should be behind the last column, an empty iterator will be returned here.
+					getGlobalPositionerData(comparisonComponent.getDocument()).getCommentList().getOverlappingElements(column, column).iterator();  // Even if the mouse position should be behind the last column, an empty iterator will be returned here.
 			while (iterator.hasNext()) {
 				Comment comment = iterator.next();
 				SingleLineCommentPositionData data = getData(comment);
-				if (Math2.isBetween(mouseY, paintY + data.getLine() * panel.getCompoundHeight(), 
-			  		paintY + (data.getLine() + 1) * panel.getCompoundHeight())) {
+				if (Math2.isBetween(mouseY, paintY + data.getLine() * area.getCompoundHeight(), 
+			  		paintY + (data.getLine() + 1) * area.getCompoundHeight())) {
 			  	
 			  	return comment;
 			  }
