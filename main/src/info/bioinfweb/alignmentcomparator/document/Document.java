@@ -148,8 +148,14 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 	}
 	
 	
-	private void setData(String firstName, Map<String, DNASequence> firstAlignment, 
-			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet) {
+	private void setData(String firstName, Map<String, DNASequence> firstMap, 
+			String secondName, Map<String, DNASequence> secondMap, TokenSet<T> tokenSet) {
+		
+		// Sort maps to ensure identical sequence IDs are assigned to both alignments (BioJava readers provide HashMaps here.):
+		TreeMap<String, DNASequence> firstAlignment = new TreeMap<String, DNASequence>();
+		firstAlignment.putAll(firstMap);
+		TreeMap<String, DNASequence> secondAlignment = new TreeMap<String, DNASequence>();
+		secondAlignment.putAll(secondMap);
 		
 		clear();
 		alignmentNames.add(firstName);

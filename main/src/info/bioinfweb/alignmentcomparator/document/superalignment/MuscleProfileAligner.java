@@ -137,7 +137,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	
 	private void addSuperGaps(Document document, List<DNASequence> superAlignment, int alignmentIndex) {
-		System.out.println("Add super gaps (" + alignmentIndex + "):");
+		//System.out.println("Add super gaps (" + alignmentIndex + "):");
 		int superalignedLength = superAlignment.get(0).getLength();
 		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
 		int unalignedPos = 1;
@@ -156,7 +156,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 				}
 				
 				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contains columns only consisting of gaps.
-					System.out.println("  Adding super gap " + superalignedSequence.getOriginalHeader().substring(2) + " " + indexList.size() + " " + unalignedPos + " " + oldBase + " " + newBase);
+					//System.out.println("  Adding super gap " + superalignedSequence.getOriginalHeader().substring(2) + " " + indexList.size() + " " + unalignedPos + " " + oldBase + " " + newBase);
 					gap = true;
 					break;
 				}
