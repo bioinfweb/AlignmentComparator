@@ -44,7 +44,7 @@ public class SuperAlignmentSequenceView extends SequenceProxyView<NucleotideComp
 
 	@Override
 	public NucleotideCompound getCompoundAt(int position) {
-		int index = parent.getUnalignedIndex(alignmentIndex, position - 1); 
+		int index = parent.getUnalignedIndex(alignmentIndex, position - 1);
 		if (index == GAP_INDEX) {
 			return SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet().getCompoundForString(
 					SuperAlignmentCompoundSet.SUPER_ALIGNMENT_GAP);

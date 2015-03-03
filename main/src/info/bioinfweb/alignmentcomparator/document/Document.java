@@ -137,10 +137,12 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 	}
 	
 	
-	private void addSuperAlignment(String alignmentName, Map<String, DNASequence> alignment, TokenSet<T> tokenSet) {
+	private void addSuperAlignment(String alignmentName, int alignmentIndex, Map<String, DNASequence> alignment, 
+			TokenSet<T> tokenSet) {  //TODO Remove alignmentIndex and use alignmentName in new SuperAlignmentSequenceView().
+		
 		BioJavaSequenceDataProvider provider = new BioJavaSequenceDataProvider(tokenSet, Collections.EMPTY_MAP);
 		for (String sequenceName : alignment.keySet()) {
-			provider.addSequence(sequenceName, new SuperAlignmentSequenceView(this, 0, alignment.get(sequenceName)));
+			provider.addSequence(sequenceName, new SuperAlignmentSequenceView(this, alignmentIndex, alignment.get(sequenceName)));
 		}
 		superAlignmentProviders.put(alignmentName, provider);
 	}
@@ -155,8 +157,8 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 		alignmentNames.add(secondName);
 		originalAlignmentProviders.put(secondName, new BioJavaSequenceDataProvider(tokenSet, secondAlignment));
 
-		addSuperAlignment(firstName, firstAlignment, tokenSet);
-		addSuperAlignment(secondName, secondAlignment, tokenSet);
+		addSuperAlignment(firstName, 0, firstAlignment, tokenSet);
+		addSuperAlignment(secondName, 1, secondAlignment, tokenSet);
 		
 		unalignedIndices = new ArrayList[2];
 		for (int i = 0; i < 2; i++) {

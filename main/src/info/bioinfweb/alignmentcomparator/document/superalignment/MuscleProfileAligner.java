@@ -36,6 +36,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.io.FastaWriter;
+import org.biojava3.core.sequence.io.GenericFastaHeaderFormat;
 import org.biojava3.core.sequence.io.template.FastaHeaderFormatInterface;
 import org.biojava3.core.sequence.template.Sequence;
 
@@ -136,6 +137,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	
 	private void addSuperGaps(Document document, List<DNASequence> superAlignment, int alignmentIndex) {
+		System.out.println("Add super gaps (" + alignmentIndex + "):");
 		int superalignedLength = superAlignment.get(0).getLength();
 		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
 		int unalignedPos = 1;
@@ -145,10 +147,16 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			while (iterator.hasNext()) {
 				DNASequence superalignedSequence = iterator.next();
 				String newBase = superalignedSequence.getCompoundAt(superIndex).getBase();
-				String oldBase = ((Sequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
-						getSequence(document.sequenceIDByName(superalignedSequence.getOriginalHeader().substring(2)))).
-						getCompoundAt(unalignedPos).toString().substring(0, 1); 
-				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contain columns only consisting of gaps.
+				
+				String oldBase = null;
+				Sequence sequence = (Sequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
+						getSequence(document.sequenceIDByName(superalignedSequence.getOriginalHeader().substring(2)));
+				if (sequence.getLength() >= unalignedPos) {  // Otherwise terminal super gaps need to inserted from now on.
+					oldBase = sequence.getCompoundAt(unalignedPos).toString().substring(0, 1);
+				}
+				
+				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contains columns only consisting of gaps.
+					System.out.println("  Adding super gap " + superalignedSequence.getOriginalHeader().substring(2) + " " + indexList.size() + " " + unalignedPos + " " + oldBase + " " + newBase);
 					gap = true;
 					break;
 				}
@@ -163,6 +171,12 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			}
 		}
 		document.setUnalignedIndexList(alignmentIndex, indexList);
+		
+		System.out.print("indexList " + alignmentIndex + ": ");
+		for (int i = 0; i < indexList.size(); i++) {
+			System.out.print(indexList.get(i) + " ");
+		}
+		System.out.println();
 	}
 	
 	
@@ -176,6 +190,15 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 						try {
 							try {
 								Map<String, DNASequence> resultMap = FastaReaderTools.readDNAAlignment(fastaStream);
+								
+								try {
+									FastaWriter writer = new FastaWriter(new FileOutputStream("D:\\Users\\BenStoever\\ownCloud\\Dokumente\\Projekte\\AlignmentComparator\\Testdaten\\kleines Alignment\\Combined.fasta"), resultMap.values(), new GenericFastaHeaderFormat());
+									writer.process();
+								}
+								catch (Exception e) {
+									e.printStackTrace();
+								}
+
 								for (int i = 0; i < 2; i++) {
 									addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
 								}

@@ -1,8 +1,6 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import javax.swing.JComponent;
-
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
