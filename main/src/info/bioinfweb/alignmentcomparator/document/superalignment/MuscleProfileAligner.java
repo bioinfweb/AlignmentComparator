@@ -191,13 +191,13 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 							try {
 								Map<String, DNASequence> resultMap = FastaReaderTools.readDNAAlignment(fastaStream);
 								
-								try {
-									FastaWriter writer = new FastaWriter(new FileOutputStream("D:\\Users\\BenStoever\\ownCloud\\Dokumente\\Projekte\\AlignmentComparator\\Testdaten\\kleines Alignment\\Combined.fasta"), resultMap.values(), new GenericFastaHeaderFormat());
-									writer.process();
-								}
-								catch (Exception e) {
-									e.printStackTrace();
-								}
+//								try {
+//									FastaWriter writer = new FastaWriter(new FileOutputStream("D:\\Users\\BenStoever\\ownCloud\\Dokumente\\Projekte\\AlignmentComparator\\Testdaten\\kleines Alignment\\Combined.fasta"), resultMap.values(), new GenericFastaHeaderFormat());
+//									writer.process();
+//								}
+//								catch (Exception e) {
+//									e.printStackTrace();
+//								}
 
 								for (int i = 0; i < 2; i++) {
 									addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
