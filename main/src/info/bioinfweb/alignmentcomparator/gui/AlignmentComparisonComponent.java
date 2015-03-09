@@ -8,6 +8,8 @@ import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentArea;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
 import info.bioinfweb.libralign.alignmentarea.content.AlignmentContentArea;
+import info.bioinfweb.libralign.alignmentarea.selection.SelectionChangeEvent;
+import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
 import info.bioinfweb.libralign.dataarea.implementations.SequenceIndexArea;
@@ -81,6 +83,14 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			getAlignmentAreas().add(createComparisonPartArea(document.getSuperAlignmentProvider(name)));
 		}
 		getAlignmentAreas().add(createCommentAlignmentArea());
+		if (document.getAlignmentCount() > 0) {
+			getAlignmentAreas().get(1).getContentArea().getSelection().addSelectionListener(new SelectionListener() {  // Area 0 contains only index area.
+						@Override
+						public void selectionChanged(SelectionChangeEvent event) {  //TODO Check if this implementation needs to changed due to update and object recreation strategies.
+							Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
+						}
+					});
+		}
 	}
 	
 	
@@ -120,7 +130,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 
 	@Override
 	public void changeHappened(DocumentEvent e) {
-		getAlignmentAreas().clear();
+		getAlignmentAreas().clear();  //TODO Alter implementation to keep previous alignment areas (especially if they have many sequences). 
 		init();
 		//((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign
 		assignSize();
