@@ -1,6 +1,13 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JComponent;
+
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
@@ -14,6 +21,7 @@ import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
 import info.bioinfweb.libralign.dataarea.implementations.SequenceIndexArea;
 import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
+import info.bioinfweb.libralign.sequenceprovider.SequenceAccessDataProvider;
 import info.bioinfweb.libralign.sequenceprovider.SequenceDataProvider;
 
 
@@ -26,6 +34,14 @@ import info.bioinfweb.libralign.sequenceprovider.SequenceDataProvider;
  */
 public class AlignmentComparisonComponent extends MultipleAlignmentsContainer implements DocumentListener {
 	public static final int FIRST_ALIGNMENT_INDEX = 1;
+	public static final int BOTTOM_AREAS_COUNT = 1;  // Currently only comment area.
+
+	private final SelectionListener SELECTION_LISTENER = new SelectionListener() {
+				@Override
+				public void selectionChanged(SelectionChangeEvent event) {  //TODO Check if this implementation needs to changed due to update and object recreation strategies.
+					Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
+				}
+			}; 
 	
 	
 	private Document<?> document = null;
@@ -76,31 +92,67 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
+	private void addSelectionListener() {
+		if (document.getAlignmentCount() > 0) {
+			getFirstAlignmentArea().getSelection().addSelectionListener(SELECTION_LISTENER);
+		}
+	}
+	
+	
 	private void init() {
 		getAlignmentAreas().add(createIndexArea());
 		for (int i = 0; i < document.getAlignmentCount(); i++) {
 			String name = document.getAlignmentName(i);
 			getAlignmentAreas().add(createComparisonPartArea(document.getSuperAlignmentProvider(name)));
 		}
+		addSelectionListener();
 		getAlignmentAreas().add(createCommentAlignmentArea());
-		if (document.getAlignmentCount() > 0) {
-			getAlignmentAreas().get(1).getContentArea().getSelection().addSelectionListener(new SelectionListener() {  // Area 0 contains only index area.
-						@Override
-						public void selectionChanged(SelectionChangeEvent event) {  //TODO Check if this implementation needs to changed due to update and object recreation strategies.
-							Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
-						}
-					});
-		}
 	}
 	
 	
-//	private void updateAlignments() {
-//		for (int alignmentIndex = 0; alignmentIndex < document.getAlignmentCount(); alignmentIndex++) {
-//			if (FIRST_ALIGNMENT_INDEX + alignmentIndex < getAlignmentAreas().size()) {
-//				
-//			}
-//		}
-//	}
+	private void updateAlignments() {
+		// Backup current GUI components:
+		List<AlignmentArea> topAreas = new ArrayList<AlignmentArea>(getAlignmentAreas().size());
+		for (int i = 0; i < FIRST_ALIGNMENT_INDEX; i++) {
+			topAreas.add(getAlignmentAreas().get(i));
+		}
+		
+		Map<SequenceDataProvider, AlignmentArea> previousComparisonParts = new HashMap<SequenceDataProvider, AlignmentArea>();
+		for (AlignmentArea area : getAlignmentAreas()) {
+			if (area.getContentArea().hasSequenceProvider()) {
+				previousComparisonParts.put(area.getContentArea().getSequenceProvider(), area);
+			}
+		}
+		
+		List<AlignmentArea> bottomAreas = new ArrayList<AlignmentArea>(getAlignmentAreas().size());
+		for (int i = getAlignmentAreas().size() - BOTTOM_AREAS_COUNT; i < getAlignmentAreas().size(); i++) {
+			bottomAreas.add(getAlignmentAreas().get(i));
+		}
+		
+		// Remove current GUI elements:
+		getFirstAlignmentArea().getSelection().removeSelectionListener(SELECTION_LISTENER);
+		getAlignmentAreas().clear();
+		selectionSynchronizer.clear();
+		
+		// Repopulate area list:
+		getAlignmentAreas().addAll(topAreas);
+		
+		for (int i = 0; i < document.getAlignmentCount(); i++) {
+			String name = document.getAlignmentName(i);
+			SequenceAccessDataProvider provider = document.getSuperAlignmentProvider(name);
+			AlignmentArea area = previousComparisonParts.get(provider);
+			if (area != null) {
+				getAlignmentAreas().add(area);
+				selectionSynchronizer.add(area.getContentArea().getSelection());
+			}
+			else {
+				getAlignmentAreas().add(createComparisonPartArea(provider));  // selectionSynchronizer.add() is called inside createComparisonPartArea().
+			}			
+		}
+		addSelectionListener();
+	
+		getAlignmentAreas().addAll(bottomAreas);
+	}
 	
 	
 	public AlignmentComparisonSelection getSelection() {
@@ -130,11 +182,9 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 
 	@Override
 	public void changeHappened(DocumentEvent e) {
-		getAlignmentAreas().clear();  //TODO Alter implementation to keep previous alignment areas (especially if they have many sequences). 
-		init();
-		//((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign
-		assignSize();
-		repaint();
+		updateAlignments();
+		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign
+		assignSize();  //TODO Needed?
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 	}
 
