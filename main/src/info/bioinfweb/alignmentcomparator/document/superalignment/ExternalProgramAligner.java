@@ -31,7 +31,6 @@ public abstract class ExternalProgramAligner implements SuperAlignmentAlgorithm 
 	
 	
   protected File createTempFile(String prefix, String extension) throws IOException {
-  	//System.out.println(IOUtils.getClassDir(getClass()) + System.getProperty("file.separator") + prefix +  "*." + extension);
 		return File.createTempFile(prefix, "." + extension);
   }
   
