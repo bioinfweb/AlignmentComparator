@@ -64,7 +64,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 
 	private AlignmentArea createIndexArea() {
 		AlignmentArea result = new AlignmentArea(this);
-		result.getContentArea().getDataAreas().getTopAreas().add(new SequenceIndexArea(result.getContentArea()));
+		result.getDataAreas().getTopAreas().add(new SequenceIndexArea(result.getContentArea()));
 		result.setAllowVerticalScrolling(false);
 		return result;
 	}
@@ -73,7 +73,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	private AlignmentArea createCommentAlignmentArea() {
 		AlignmentArea result = new AlignmentArea(this);
 		commentArea = new CommentArea(result.getContentArea());
-		result.getContentArea().getDataAreas().getBottomAreas().add(commentArea);
+		result.getDataAreas().getBottomAreas().add(commentArea);
 		result.setAllowVerticalScrolling(false);
 		return result;
 	}
@@ -81,10 +81,10 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	private <T> AlignmentArea createComparisonPartArea(SequenceDataProvider<T> privoder) {
 		AlignmentArea result = new AlignmentArea(this);
-		result.getContentArea().setSequenceProvider(privoder, false);
+		result.setSequenceProvider(privoder, false);
 		//TODO Link order objects
-		result.getContentArea().getSelection().setType(SelectionType.COLUMN_ONLY);
-		selectionSynchronizer.add(result.getContentArea().getSelection());  //TODO Do instances need to be removed, when a new comparison is loaded?
+		result.getSelection().setType(SelectionType.COLUMN_ONLY);
+		selectionSynchronizer.add(result.getSelection());  //TODO Do instances need to be removed, when a new comparison is loaded?
 		//TODO Add consensus sequence area on bottom
 		//TODO Link vertical scrolling
 		result.setAllowVerticalScrolling(true);
@@ -119,8 +119,8 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		
 		Map<SequenceDataProvider, AlignmentArea> previousComparisonParts = new HashMap<SequenceDataProvider, AlignmentArea>();
 		for (AlignmentArea area : getAlignmentAreas()) {
-			if (area.getContentArea().hasSequenceProvider()) {
-				previousComparisonParts.put(area.getContentArea().getSequenceProvider(), area);
+			if (area.hasSequenceProvider()) {
+				previousComparisonParts.put(area.getSequenceProvider(), area);
 			}
 		}
 		
@@ -143,7 +143,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			AlignmentArea area = previousComparisonParts.get(provider);
 			if (area != null) {
 				getAlignmentAreas().add(area);
-				selectionSynchronizer.add(area.getContentArea().getSelection());
+				selectionSynchronizer.add(area.getSelection());
 			}
 			else {
 				getAlignmentAreas().add(createComparisonPartArea(provider));  // selectionSynchronizer.add() is called inside createComparisonPartArea().
@@ -161,16 +161,16 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	
 	/**
-	 * Returns the alignment content area of the top most alignment area that contains an alignment.
+	 * Returns the alignment area of the top most alignment area that contains an alignment.
 	 * 
-	 * @return the first valid alignment content area or {@code null} if no alignment is contained in this instance
+	 * @return the first valid alignment area or {@code null} if no alignment is contained in this instance
 	 */
-	public AlignmentContentArea getFirstAlignmentArea() {
+	public AlignmentArea getFirstAlignmentArea() {
 		if (getAlignmentAreas().size() <= FIRST_ALIGNMENT_INDEX) {
 			return null;
 		}
 		else {
-			return getAlignmentAreas().get(FIRST_ALIGNMENT_INDEX).getContentArea();
+			return getAlignmentAreas().get(FIRST_ALIGNMENT_INDEX);
 		}
 	}
 	

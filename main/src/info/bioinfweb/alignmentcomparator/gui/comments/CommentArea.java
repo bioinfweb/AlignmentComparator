@@ -49,7 +49,7 @@ public class CommentArea extends DataArea {
 
 	@Override
 	public int getLength() {
-		return getOwner().getCompoundWidth() * getOwner().getGlobalMaxSequenceLength();
+		return getOwner().getOwner().getCompoundWidth() * getOwner().getOwner().getGlobalMaxSequenceLength();
 	}
 
 	
@@ -61,7 +61,7 @@ public class CommentArea extends DataArea {
 
 	@Override
 	public void paint(TICPaintEvent e) {
-		commentPositioner.paint(getComparisonComponent(), getOwner().getGlobalMaxSequenceLength(), e.getGraphics(), 0, 0);
+		commentPositioner.paint(getComparisonComponent(), getOwner().getOwner().getGlobalMaxSequenceLength(), e.getGraphics(), 0, 0);
 	}
 	
 	
