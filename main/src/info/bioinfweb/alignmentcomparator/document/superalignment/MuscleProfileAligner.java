@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -20,9 +20,6 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,19 +31,9 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.NucleotideCompound;
-import org.biojava3.core.sequence.io.FastaWriter;
-import org.biojava3.core.sequence.io.GenericFastaHeaderFormat;
-import org.biojava3.core.sequence.io.template.FastaHeaderFormatInterface;
-import org.biojava3.core.sequence.template.Sequence;
 
-import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.ConsoleOutputDialog;
-import info.bioinfweb.commons.bio.biojava3.core.sequence.io.FastaReaderTools;
-import info.bioinfweb.commons.bio.biojava3.core.sequence.views.ReplaceAbstractSequenceView;
-import info.bioinfweb.commons.bio.biojava3.core.sequence.views.ReplaceNucleotideSequenceView;
 
 
 
@@ -54,26 +41,26 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	public static final int HEADER_PREFIX_LENGTH = 2;
 	
 	
-	public static final FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> FIRST_HEADER_FORMAT = 
-			new FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
-				public String getHeader(Sequence<NucleotideCompound> sequence) {
-					return "0 " + ((ReplaceAbstractSequenceView)sequence).getOriginalHeader();  
-				}
-			};
-	
-	
-	public static final FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> SECOND_HEADER_FORMAT = 
-			new FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
-				public String getHeader(Sequence<NucleotideCompound> sequence) {
-					return "1 " + ((ReplaceAbstractSequenceView)sequence).getOriginalHeader();  
-				}
-			};
+//	public static final FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> FIRST_HEADER_FORMAT = 
+//			new FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
+//				public String getHeader(Sequence<NucleotideCompound> sequence) {
+//					return "0 " + ((ReplaceAbstractSequenceView)sequence).getOriginalHeader();  
+//				}
+//			};
+//	
+//	
+//	public static final FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> SECOND_HEADER_FORMAT = 
+//			new FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound>() {
+//				public String getHeader(Sequence<NucleotideCompound> sequence) {
+//					return "1 " + ((ReplaceAbstractSequenceView)sequence).getOriginalHeader();  
+//				}
+//			};
 	
 			
 	@Override
 	public String getApplicationName() {
 		String architecture = "32";
-    if (is64BitJRE()) {  //TODO So kann nur festgestellt werden, ob es sich im ein 64 Bit JRE handelt. Wird ein 32 Bit JRE auf einem 64 Bit System ausgeführt, wird trotzdem 32 zurückgegeben.
+    if (is64BitJRE()) {  //TODO So kann nur festgestellt werden, ob es sich im ein 64 Bit JRE handelt. Wird ein 32 Bit JRE auf einem 64 Bit System ausgefï¿½hrt, wird trotzdem 32 zurï¿½ckgegeben.
     	architecture = "64";
     }
     
@@ -92,35 +79,35 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	}
 	
 	
-	private List<Sequence<NucleotideCompound>> createReplacedList(Document document, int alignmentIndex) {
-		ArrayList<Sequence<NucleotideCompound>> result = new ArrayList<Sequence<NucleotideCompound>>(document.getSequenceCount());
-		Iterator<Integer> idIterator = document.sequenceIDIterator();
-		while (idIterator.hasNext()) {
-			result.add(new ReplaceAbstractSequenceView(  //TODO Also allow protein sequences here.
-					(DNASequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
-							getSequence(idIterator.next()), ReplaceNucleotideSequenceView.AMBIGUITY_RNA_TO_N_DNA_MAP));
-		}
-		return result;
-	}
-	
-	
-	private File writeInputFile(Document document, int alignmentIndex) throws Exception {
-		String prefix = "First_";
-		FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> headerFormat = FIRST_HEADER_FORMAT;
-		if (alignmentIndex == 1) {
-			prefix = "Second_";
-			headerFormat = SECOND_HEADER_FORMAT;
-		}
-		File result = createTempFile(prefix, "fasta");
-		BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(result)); 
-		FastaWriter<Sequence<NucleotideCompound>, NucleotideCompound> fastaWriter = 
-				new FastaWriter<Sequence<NucleotideCompound>, NucleotideCompound>(
-				    stream, createReplacedList(document, alignmentIndex),
-		    		headerFormat);
-		fastaWriter.process();
-		stream.close();
-		return result;
-	}
+//	private List<Sequence<NucleotideCompound>> createReplacedList(Document document, int alignmentIndex) {
+//		ArrayList<Sequence<NucleotideCompound>> result = new ArrayList<Sequence<NucleotideCompound>>(document.getSequenceCount());
+//		Iterator<Integer> idIterator = document.sequenceIDIterator();
+//		while (idIterator.hasNext()) {
+//			result.add(new ReplaceAbstractSequenceView(  //TODO Also allow protein sequences here.
+//					(DNASequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
+//							getSequence(idIterator.next()), ReplaceNucleotideSequenceView.AMBIGUITY_RNA_TO_N_DNA_MAP));
+//		}
+//		return result;
+//	}
+//	
+//	
+//	private File writeInputFile(Document document, int alignmentIndex) throws Exception {
+//		String prefix = "First_";
+//		FastaHeaderFormatInterface<Sequence<NucleotideCompound>, NucleotideCompound> headerFormat = FIRST_HEADER_FORMAT;
+//		if (alignmentIndex == 1) {
+//			prefix = "Second_";
+//			headerFormat = SECOND_HEADER_FORMAT;
+//		}
+//		File result = createTempFile(prefix, "fasta");
+//		BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(result)); 
+//		FastaWriter<Sequence<NucleotideCompound>, NucleotideCompound> fastaWriter = 
+//				new FastaWriter<Sequence<NucleotideCompound>, NucleotideCompound>(
+//				    stream, createReplacedList(document, alignmentIndex),
+//		    		headerFormat);
+//		fastaWriter.process();
+//		stream.close();
+//		return result;
+//	}
 	
 
 	private List<DNASequence> extractSuperAlignment(Map<String, DNASequence> map, String prefix) {
@@ -136,40 +123,40 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	}
 	
 	
-	private void addSuperGaps(Document document, List<DNASequence> superAlignment, int alignmentIndex) {
-		int superalignedLength = superAlignment.get(0).getLength();
-		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
-		int unalignedPos = 1;
-		for (int superIndex = 1; superIndex <= superalignedLength; superIndex++) {
-			Iterator<DNASequence> iterator = superAlignment.iterator();
-			boolean gap = false;
-			while (iterator.hasNext()) {
-				DNASequence superalignedSequence = iterator.next();
-				String newBase = superalignedSequence.getCompoundAt(superIndex).getBase();
-				
-				String oldBase = null;
-				Sequence sequence = (Sequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
-						getSequence(document.sequenceIDByName(superalignedSequence.getOriginalHeader().substring(2)));
-				if (sequence.getLength() >= unalignedPos) {  // Otherwise terminal super gaps need to inserted from now on.
-					oldBase = sequence.getCompoundAt(unalignedPos).toString().substring(0, 1);
-				}
-				
-				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contains columns only consisting of gaps.
-					gap = true;
-					break;
-				}
-			}
-			
-			if (gap) {
-			  indexList.add(SuperAlignmentSequenceView.GAP_INDEX);
-			}
-			else {
-			  indexList.add(unalignedPos);
-				unalignedPos++;
-			}
-		}
-		document.setUnalignedIndexList(alignmentIndex, indexList);
-	}
+//	private void addSuperGaps(Document document, List<DNASequence> superAlignment, int alignmentIndex) {
+//		int superalignedLength = superAlignment.get(0).getLength();
+//		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
+//		int unalignedPos = 1;
+//		for (int superIndex = 1; superIndex <= superalignedLength; superIndex++) {
+//			Iterator<DNASequence> iterator = superAlignment.iterator();
+//			boolean gap = false;
+//			while (iterator.hasNext()) {
+//				DNASequence superalignedSequence = iterator.next();
+//				String newBase = superalignedSequence.getCompoundAt(superIndex).getBase();
+//				
+//				String oldBase = null;
+//				Sequence sequence = (Sequence)document.getOriginalAlignmentProvider(document.getAlignmentName(alignmentIndex)).
+//						getSequence(document.sequenceIDByName(superalignedSequence.getOriginalHeader().substring(2)));
+//				if (sequence.getLength() >= unalignedPos) {  // Otherwise terminal super gaps need to inserted from now on.
+//					oldBase = sequence.getCompoundAt(unalignedPos).toString().substring(0, 1);
+//				}
+//				
+//				if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contains columns only consisting of gaps.
+//					gap = true;
+//					break;
+//				}
+//			}
+//			
+//			if (gap) {
+//			  indexList.add(SuperAlignmentSequenceView.GAP_INDEX);
+//			}
+//			else {
+//			  indexList.add(unalignedPos);
+//				unalignedPos++;
+//			}
+//		}
+//		document.setUnalignedIndexList(alignmentIndex, indexList);
+//	}
 	
 	
 	private Thread runMuscle(Document paramDocument, InputStream stream) throws IOException {
@@ -181,7 +168,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 					public void run() {
 						try {
 							try {
-								Map<String, DNASequence> resultMap = FastaReaderTools.readDNAAlignment(fastaStream);
+//								Map<String, DNASequence> resultMap = FastaReaderTools.readDNAAlignment(fastaStream);
 								
 //								try {
 //									FastaWriter writer = new FastaWriter(new FileOutputStream("D:\\Users\\BenStoever\\ownCloud\\Dokumente\\Projekte\\AlignmentComparator\\Testdaten\\kleines Alignment\\Combined.fasta"), resultMap.values(), new GenericFastaHeaderFormat());
@@ -192,7 +179,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 //								}
 
 								for (int i = 0; i < 2; i++) {
-									addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
+//									addSuperGaps(document, extractSuperAlignment(resultMap, i + " "), i);
 								}
 							}
 							finally {
@@ -214,37 +201,37 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	@Override
 	public void performAlignment(Document document) throws Exception {
-		String applicationName = getApplicationName();
-		if (applicationName != null) {
-			File first = writeInputFile(document, 0);
-			File second = writeInputFile(document, 1);
-			try {
-				ProcessBuilder pb = new ProcessBuilder(cmdFolder() + getApplicationName(), 
-						"-in1",	first.getAbsolutePath(),
-						"-in2", second.getAbsolutePath(), 
-						"-profile");
-				pb.directory(new File(cmdFolder()));
-				Process process = pb.start();
-				
-				ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
-				dialog.showEmpty();
-	
-				Thread thread = runMuscle(document, process.getInputStream());
-				dialog.addStream(process.getErrorStream());
-				dialog.addLine("");
-				dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
-				thread.join();  // Wait for the processing of the MUSCLE output after process is already finished.
-				dialog.setAllowClose(true);
-			}
-			finally {
-				first.delete();
-				second.delete();
-			}
-		}
-		else {
-			JOptionPane.showMessageDialog(Main.getInstance().getMainFrame(), 
-					"This operation is not supported on your operating system (" + System.getProperty("os.name") + ").", 
-          "Error", JOptionPane.ERROR_MESSAGE);
-		}
+//		String applicationName = getApplicationName();
+//		if (applicationName != null) {
+//			File first = writeInputFile(document, 0);
+//			File second = writeInputFile(document, 1);
+//			try {
+//				ProcessBuilder pb = new ProcessBuilder(cmdFolder() + getApplicationName(), 
+//						"-in1",	first.getAbsolutePath(),
+//						"-in2", second.getAbsolutePath(), 
+//						"-profile");
+//				pb.directory(new File(cmdFolder()));
+//				Process process = pb.start();
+//				
+//				ConsoleOutputDialog dialog = ConsoleOutputDialog.getInstance();
+//				dialog.showEmpty();
+//	
+//				Thread thread = runMuscle(document, process.getInputStream());
+//				dialog.addStream(process.getErrorStream());
+//				dialog.addLine("");
+//				dialog.addLine("Exit code of MUSCLE: " + process.waitFor());
+//				thread.join();  // Wait for the processing of the MUSCLE output after process is already finished.
+//				dialog.setAllowClose(true);
+//			}
+//			finally {
+//				first.delete();
+//				second.delete();
+//			}
+//		}
+//		else {
+//			JOptionPane.showMessageDialog(Main.getInstance().getMainFrame(), 
+//					"This operation is not supported on your operating system (" + System.getProperty("os.name") + ").", 
+//          "Error", JOptionPane.ERROR_MESSAGE);
+//		}
 	}
 }

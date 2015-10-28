@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 public enum CompareAlgorithm {
-  CONSENSUS_BIOJAVA_NEEDLEMAN_WUNSCH,
-  CONSENSUS_BIW_NEEDLEMAN_WUNSCH,
-  MUSCLE_PROFILE;
+  MUSCLE_PROFILE,
+	AVERAGE_UNGAPED_POSITION;
 }

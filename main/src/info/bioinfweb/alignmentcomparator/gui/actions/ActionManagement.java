@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -26,24 +26,9 @@ import javax.swing.JMenu;
 import javax.swing.undo.UndoableEdit;
 
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.AddCommentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.ChangeCommentTextAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.InsertGapFirstAlignmentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.InsertGapSecondAlignmentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.MoveCommentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.RedoAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.RedoToAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveCommentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveGapFirstAlignmentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.RemoveGapSecondAlignmentAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.UndoAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.edit.UndoToAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.file.CompareAlignmentsAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.file.OpenResultsAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.file.SaveAsAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.help.AboutAction;
-import info.bioinfweb.alignmentcomparator.gui.actions.help.WebsiteAction;
+import info.bioinfweb.alignmentcomparator.gui.actions.edit.*;
+import info.bioinfweb.alignmentcomparator.gui.actions.file.*;
+import info.bioinfweb.alignmentcomparator.gui.actions.help.*;
 import info.bioinfweb.commons.swing.AbstractUndoActionManagement;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
 
@@ -66,20 +51,17 @@ public class ActionManagement extends AbstractUndoActionManagement {
 	 */
 	protected void fillMap() {
 		put("file.compareAlignments", new CompareAlignmentsAction(mainFrame));
-		put("file.openResults", new OpenResultsAction(mainFrame));
+		//put("file.openResults", new OpenResultsAction(mainFrame));
 		put("file.save", new SaveAction(mainFrame));
 		put("file.saveAs", new SaveAsAction(mainFrame));
 		
 		put("edit.undo", new UndoAction(mainFrame));
 		put("edit.redo", new RedoAction(mainFrame));
-		put("edit.insertGapFirst", new InsertGapFirstAlignmentAction(mainFrame));
-		put("edit.insertGapSecond", new InsertGapSecondAlignmentAction(mainFrame));
-		put("edit.removeGapFirst", new RemoveGapFirstAlignmentAction(mainFrame));
-		put("edit.removeGapSecond", new RemoveGapSecondAlignmentAction(mainFrame));
-		put("edit.addComment", new AddCommentAction(mainFrame));
-		put("edit.moveComment", new MoveCommentAction(mainFrame));
-		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
-		put("edit.removeComment", new RemoveCommentAction(mainFrame));
+		put("edit.insertSupergap", new InsertSupergapAction(mainFrame));
+//		put("edit.addComment", new AddCommentAction(mainFrame));
+//		put("edit.moveComment", new MoveCommentAction(mainFrame));
+//		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
+//		put("edit.removeComment", new RemoveCommentAction(mainFrame));
 
 		put("help.about", new AboutAction());
 		put("help.website", new WebsiteAction());

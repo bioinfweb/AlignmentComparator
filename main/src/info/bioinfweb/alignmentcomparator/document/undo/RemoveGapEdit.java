@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -27,10 +27,8 @@ import javax.swing.undo.CannotUndoException;
 
 
 public class RemoveGapEdit extends InsertRemoveGapEdit {
-	public RemoveGapEdit(Document document, boolean inFirstAlignment,
-			int startPos, int endPos) {
-
-		super(document, inFirstAlignment, startPos, endPos);
+	public RemoveGapEdit(Document document, String alignmentName, int startPos,	int endPos) {
+		super(document, alignmentName, startPos, endPos);
 	}
 
 
@@ -50,6 +48,6 @@ public class RemoveGapEdit extends InsertRemoveGapEdit {
 	
 	@Override
 	public String getPresentationName() {
-		return "Remove gap(s) at " + getStartPos() + " in alignment " + getActiveAlignment();
+		return "Remove gap(s) at " + getStartPos() + " in alignment \"" + getAlignmentName() + "\"";
 	}
 }

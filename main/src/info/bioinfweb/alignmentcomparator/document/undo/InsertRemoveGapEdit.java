@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,55 +19,54 @@
 package info.bioinfweb.alignmentcomparator.document.undo;
 
 
+import java.util.List;
+
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignedModelDecorator;
 
 
 
 public abstract class InsertRemoveGapEdit extends DocumentEdit {
-	private int activeAlignment;
-	private int passiveAlignment;
+	private String alignmentName;
   private int startPos;
   private int length;
   
   
-	public InsertRemoveGapEdit(Document document, boolean inFirstAlignment,
-			int startPos, int endPos) {
-		
+	public InsertRemoveGapEdit(Document document, String alignmentName, int startPos, int endPos) {		
 		super(document);
-		if (inFirstAlignment) {
-			activeAlignment = 0;
-			passiveAlignment = 1;
-		}
-		else {
-			activeAlignment = 1;
-			passiveAlignment = 0;
-		}
+		this.alignmentName = alignmentName;
 		this.startPos = startPos;
-		length = endPos - startPos + 1; 
+		this.length = endPos - startPos + 1; 
 	}
 	
 	
 	protected void insert() {
+		List<Integer> unalignedIndices = getDocument().getAlignments().get(
+				getAlignmentName()).getSuperAligned().getUnalignedIndices();
 		for (int pos = getStartPos(); pos <= getStartPos() + getLength() - 1; pos++) {
-			getDocument().insertSuperGap(getActiveAlignment(), pos);
+			unalignedIndices.add(pos,	SuperAlignedModelDecorator.SUPER_GAP_INDEX);
 		}
 	}
 	
 	
 	protected void remove() {
+		List<Integer> unalignedIndices = getDocument().getAlignments().get(
+				getAlignmentName()).getSuperAligned().getUnalignedIndices();
 		for (int pos = getStartPos(); pos <= getStartPos() + getLength() - 1; pos++) {
-			getDocument().removeSuperGap(getActiveAlignment(), getStartPos());
+			if (unalignedIndices.get(getStartPos()) == SuperAlignedModelDecorator.SUPER_GAP_INDEX) {
+				unalignedIndices.remove(getStartPos());
+			}
+			else {
+				throw new IllegalArgumentException("Removing a supergap from index " + getStartPos() + 
+						" is not possible, because there is no supergap present at this position, but a reference to position " + 
+						unalignedIndices.get(getStartPos()) + " in the underlying alignment.");
+			}
 		}
 	}
 
 
-	public int getActiveAlignment() {
-		return activeAlignment;
-	}
-
-
-	public int getPassiveAlignment() {
-		return passiveAlignment;
+	public String getAlignmentName() {
+		return alignmentName;
 	}
 
 

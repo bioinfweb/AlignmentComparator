@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
 import info.bioinfweb.libralign.multiplealignments.SwingMultipleAlignmentsContainer;
+import info.bioinfweb.tic.SwingComponentFactory;
 
 import java.awt.BorderLayout;
 
@@ -52,7 +53,7 @@ public class MainFrame extends JFrame {
 	
 	
 	private WindowListener windowListener = null;
-	private Document<?> document = new Document();  //TODO Instance can only be created after the token type has been determined from the file.
+	private Document document = new Document();  //TODO Instance can only be created after the token type has been determined from the file.
 	private ActionManagement actionManagement = new ActionManagement(this);
 	
 	private JPanel jContentPane = null;
@@ -133,7 +134,7 @@ public class MainFrame extends JFrame {
 	}
 
 
-	public Document<?> getDocument() {
+	public Document getDocument() {
 		return document;
 	}
 	
@@ -158,9 +159,9 @@ public class MainFrame extends JFrame {
 	}
 	
 	
-	private AlignmentComparisonComponent getComparisonComponent() {
+	public AlignmentComparisonComponent getComparisonComponent() {
 		if (comparisonComponent == null) {
-			comparisonComponent = new AlignmentComparisonComponent(getDocument());
+			comparisonComponent = new AlignmentComparisonComponent(this);
 		}
 		return comparisonComponent;
 	}
@@ -172,7 +173,7 @@ public class MainFrame extends JFrame {
 	
 	
 	private SwingMultipleAlignmentsContainer getComparisonPanel() {
-		return getComparisonComponent().createSwingComponent();
+		return (SwingMultipleAlignmentsContainer)SwingComponentFactory.getInstance().getSwingComponent(getComparisonComponent());
 	}
 
 
@@ -221,11 +222,6 @@ public class MainFrame extends JFrame {
 			editMenu.setText("Edit");
 			editMenu.add(getUndoMenu());
 			editMenu.add(getRedoMenu());
-			editMenu.addSeparator();
-			editMenu.add(getActionManagement().get("edit.insertGapFirst"));
-			editMenu.add(getActionManagement().get("edit.insertGapSecond"));
-			editMenu.add(getActionManagement().get("edit.removeGapFirst"));
-			editMenu.add(getActionManagement().get("edit.removeGapSecond"));
 			editMenu.addSeparator();
 			editMenu.add(getActionManagement().get("edit.addComment"));
 			editMenu.add(getActionManagement().get("edit.moveComment"));

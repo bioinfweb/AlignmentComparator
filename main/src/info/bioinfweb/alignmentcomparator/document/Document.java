@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -25,8 +25,6 @@ import info.bioinfweb.alignmentcomparator.document.comments.SequencePositionAdap
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
-import info.bioinfweb.alignmentcomparator.document.io.results.ResultsWriter;
-import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
@@ -35,44 +33,30 @@ import info.bioinfweb.commons.io.Savable;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
 import info.bioinfweb.commons.swing.SwingSavable;
 import info.bioinfweb.commons.swing.SwingSaver;
-import info.bioinfweb.libralign.sequenceprovider.SequenceAccessDataProvider;
-import info.bioinfweb.libralign.sequenceprovider.implementations.BioJavaSequenceDataProvider;
-import info.bioinfweb.libralign.sequenceprovider.tokenset.TokenSet;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
-import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.template.Compound;
-import org.biojava3.core.sequence.template.Sequence;
+import org.apache.commons.collections4.map.ListOrderedMap;
 
 
 
-public class Document<T extends Compound> extends SwingSaver implements ChangeMonitorable, Savable, SwingSavable {
+public class Document extends SwingSaver implements ChangeMonitorable, Savable, SwingSavable {
 	public static final int GAP_INDEX = -1;
 	public static final String DEFAULT_DOCUMENT_NAME = "New";
 	public static final double ARRAY_LIST_SIZE_FACTOR = 1.3;
 	
 	
-  private List<String> alignmentNames = new ArrayList<String>();
-	private Map<String, SequenceAccessDataProvider<Sequence<T>, T>> originalAlignmentProviders = 
-			new TreeMap<String, SequenceAccessDataProvider<Sequence<T>, T>>();
-	private Map<String, SequenceAccessDataProvider<Sequence<T>, T>> superAlignmentProviders = 
-			new TreeMap<String, SequenceAccessDataProvider<Sequence<T>, T>>();
-	private ArrayList<Integer>[] unalignedIndices; 
+	private ListOrderedMap<String, ComparedAlignment> alignments = 
+			ListOrderedMap.listOrderedMap(new TreeMap<String, ComparedAlignment>());
 	private CommentList comments = new CommentList(new SequencePositionAdapter());
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
-	private ResultsWriter writer = new ResultsWriter();
+	//private ResultsWriter writer = new ResultsWriter();  //TODO Move somewhere else?
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
   
 	
@@ -87,121 +71,106 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 	}
 	
 	
-	public String getAlignmentName(int index) {
-		return alignmentNames.get(index);
+	public ListOrderedMap<String, ComparedAlignment> getAlignments() {
+		return alignments;
 	}
 	
 	
-	public SequenceAccessDataProvider<Sequence<T>, T> getOriginalAlignmentProvider(String name) {
-		return originalAlignmentProviders.get(name);
-	}
+//	public Iterator<Integer> sequenceIDIterator() {
+//		if (isEmpty()) {
+//			return Collections.emptyIterator();
+//		}
+//		else {
+//			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceIDIterator();  // Important that always the same provider is used, because the order might differ between the different providers.
+//		}
+//	}
+//	
+//	
+//	public String sequenceNameByID(int sequenceID) {
+//		if (isEmpty()) {
+//			return null;
+//		}
+//		else {
+//			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceNameByID(sequenceID);
+//		}
+//	}
+//	
+//	
+//	public int sequenceIDByName(String sequenceName) {
+//		if (isEmpty()) {
+//			return -1;
+//		}
+//		else {
+//			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceIDByName(sequenceName);
+//		}
+//	}
+//	
+//	
+//	private void addSuperAlignment(String alignmentName, int alignmentIndex, Map<String, DNASequence> alignment, 
+//			TokenSet<T> tokenSet) {  //TODO Remove alignmentIndex and use alignmentName in new SuperAlignmentSequenceView().
+//		
+//		BioJavaSequenceDataProvider provider = new BioJavaSequenceDataProvider(tokenSet, Collections.EMPTY_MAP);
+//		for (String sequenceName : alignment.keySet()) {
+//			provider.addSequence(sequenceName, new SuperAlignmentSequenceView(this, alignmentIndex, alignment.get(sequenceName)));
+//		}
+//		superAlignmentProviders.put(alignmentName, provider);
+//	}
 	
 	
-	public SequenceAccessDataProvider<Sequence<T>, T> getSuperAlignmentProvider(String name) {
-		return superAlignmentProviders.get(name);
-	}
+//	private void setData(String firstName, Map<String, DNASequence> firstMap, 
+//			String secondName, Map<String, DNASequence> secondMap, TokenSet<T> tokenSet) {
+//		
+//		// Sort maps to ensure identical sequence IDs are assigned to both alignments (BioJava readers provide HashMaps here.):
+//		TreeMap<String, DNASequence> firstAlignment = new TreeMap<String, DNASequence>();
+//		firstAlignment.putAll(firstMap);
+//		TreeMap<String, DNASequence> secondAlignment = new TreeMap<String, DNASequence>();
+//		secondAlignment.putAll(secondMap);
+//		
+//		clear();
+//		alignmentNames.add(firstName);
+//		originalAlignmentProviders.put(firstName, new BioJavaSequenceDataProvider(tokenSet, firstAlignment)); //new AlignmentComparatorDataProvider<T>(tokenSet));
+//		alignmentNames.add(secondName);
+//		originalAlignmentProviders.put(secondName, new BioJavaSequenceDataProvider(tokenSet, secondAlignment));
+//
+//		addSuperAlignment(firstName, 0, firstAlignment, tokenSet);
+//		addSuperAlignment(secondName, 1, secondAlignment, tokenSet);
+//		
+//		unalignedIndices = new ArrayList[2];
+//		for (int i = 0; i < 2; i++) {
+//			unalignedIndices[i] = new ArrayList<Integer>();
+//		}
+//	}
 	
 	
-	public Iterator<Integer> sequenceIDIterator() {
-		if (isEmpty()) {
-			return Collections.emptyIterator();
-		}
-		else {
-			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceIDIterator();  // Important that always the same provider is used, because the order might differ between the different providers.
-		}
-	}
-	
-	
-	public String sequenceNameByID(int sequenceID) {
-		if (isEmpty()) {
-			return null;
-		}
-		else {
-			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceNameByID(sequenceID);
-		}
-	}
-	
-	
-	public int sequenceIDByName(String sequenceName) {
-		if (isEmpty()) {
-			return -1;
-		}
-		else {
-			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceIDByName(sequenceName);
-		}
-	}
-	
-	
-	public int getAlignmentCount() {
-		return alignmentNames.size();
-	}
-	
-	
-	private void addSuperAlignment(String alignmentName, int alignmentIndex, Map<String, DNASequence> alignment, 
-			TokenSet<T> tokenSet) {  //TODO Remove alignmentIndex and use alignmentName in new SuperAlignmentSequenceView().
-		
-		BioJavaSequenceDataProvider provider = new BioJavaSequenceDataProvider(tokenSet, Collections.EMPTY_MAP);
-		for (String sequenceName : alignment.keySet()) {
-			provider.addSequence(sequenceName, new SuperAlignmentSequenceView(this, alignmentIndex, alignment.get(sequenceName)));
-		}
-		superAlignmentProviders.put(alignmentName, provider);
-	}
-	
-	
-	private void setData(String firstName, Map<String, DNASequence> firstMap, 
-			String secondName, Map<String, DNASequence> secondMap, TokenSet<T> tokenSet) {
-		
-		// Sort maps to ensure identical sequence IDs are assigned to both alignments (BioJava readers provide HashMaps here.):
-		TreeMap<String, DNASequence> firstAlignment = new TreeMap<String, DNASequence>();
-		firstAlignment.putAll(firstMap);
-		TreeMap<String, DNASequence> secondAlignment = new TreeMap<String, DNASequence>();
-		secondAlignment.putAll(secondMap);
-		
-		clear();
-		alignmentNames.add(firstName);
-		originalAlignmentProviders.put(firstName, new BioJavaSequenceDataProvider(tokenSet, firstAlignment)); //new AlignmentComparatorDataProvider<T>(tokenSet));
-		alignmentNames.add(secondName);
-		originalAlignmentProviders.put(secondName, new BioJavaSequenceDataProvider(tokenSet, secondAlignment));
-
-		addSuperAlignment(firstName, 0, firstAlignment, tokenSet);
-		addSuperAlignment(secondName, 1, secondAlignment, tokenSet);
-		
-		unalignedIndices = new ArrayList[2];
-		for (int i = 0; i < 2; i++) {
-			unalignedIndices[i] = new ArrayList<Integer>();
-		}
-	}
-	
-	
-	public void setUnalignedData(String firstName, Map<String, DNASequence> firstAlignment, 
-			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet, 
-			SuperAlignmentAlgorithm algorithm) throws Exception {
-		
-		setData(firstName, firstAlignment, secondName, secondAlignment, tokenSet);
-		algorithm.performAlignment(this);
-		registerChange();
-		fireNamesChanged();
-	}
-	
-	
-	public void setAlignedData(String firstName, Map<String, DNASequence> firstAlignment, 
-			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet, 
-			List<Integer>[] unalignedIndices) {
-		
-		setData(firstName, firstAlignment, secondName, secondAlignment, tokenSet);
-		for (int i = 0; i < unalignedIndices.length; i++) {
-			setUnalignedIndexList(i, unalignedIndices[i]);
-		}
-
-		performChange();  // Hier nicht registerChange(), da Dokument am Anfang nicht als ungespeichert angezeigt werden soll.
-		fireNamesChanged();
-	}
+//	public void setUnalignedData(String firstName, Map<String, DNASequence> firstAlignment, 
+//			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet, 
+//			SuperAlignmentAlgorithm algorithm) throws Exception {
+//		
+//		setData(firstName, firstAlignment, secondName, secondAlignment, tokenSet);
+//		algorithm.performAlignment(this);
+//		registerChange();
+//		fireNamesChanged();
+//	}
+//	
+//	
+//	public void setAlignedData(String firstName, Map<String, DNASequence> firstAlignment, 
+//			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet, 
+//			List<Integer>[] unalignedIndices) {
+//		
+//		setData(firstName, firstAlignment, secondName, secondAlignment, tokenSet);
+//		for (int i = 0; i < unalignedIndices.length; i++) {
+//			setUnalignedIndexList(i, unalignedIndices[i]);
+//		}
+//
+//		performChange();  // Hier nicht registerChange(), da Dokument am Anfang nicht als ungespeichert angezeigt werden soll.
+//		fireNamesChanged();
+//	}
 
 	
 	@Override
 	protected void saveDataToFile(File file) {
 		try {
-			writer.write(new BufferedOutputStream(new FileOutputStream(file)), this);
+			//writer.write(new BufferedOutputStream(new FileOutputStream(file)), this);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -232,132 +201,133 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 
 
 	public void clear() {
-		originalAlignmentProviders.clear();
-		superAlignmentProviders.clear();
-		unalignedIndices = new ArrayList[0];
+//		originalAlignmentProviders.clear();
+//		superAlignmentProviders.clear();
+//		unalignedIndices = new ArrayList[0];
+		alignments.clear();
 		comments.clear();
 	}
 	
 	
 	public boolean isEmpty() {
-		return originalAlignmentProviders.isEmpty();
+		return alignments.isEmpty();
 	}
 	
 	
-	public int getUnalignedIndex(int alignmentIndex, int pos) {
-		return unalignedIndices[alignmentIndex].get(pos);
-	}
+//	public int getUnalignedIndex(int alignmentIndex, int pos) {
+//		return unalignedIndices[alignmentIndex].get(pos);
+//	}
 	
 	
-	/**
-	 * Returns <code>true</code>, if the specified alignment contains a supergap at the specified position.
-	 * 
-	 * @param alignmentIndex - the index of the alignment
-	 * @param pos - the position to be checked (BioJava indices start with 1)
-	 */
-	public boolean containsSuperGap(int alignmentIndex, int pos) {
-		return unalignedIndices[alignmentIndex].get(pos - 1).equals(SuperAlignmentSequenceView.GAP_INDEX);
-	}
+//	/**
+//	 * Returns <code>true</code>, if the specified alignment contains a supergap at the specified position.
+//	 * 
+//	 * @param alignmentIndex - the index of the alignment
+//	 * @param pos - the position to be checked (BioJava indices start with 1)
+//	 */
+//	public boolean containsSuperGap(int alignmentIndex, int pos) {
+//		return unalignedIndices[alignmentIndex].get(pos - 1).equals(SuperAlignmentSequenceView.GAP_INDEX);
+//	}
 	
 	
-	/**
-	 * Returns <code>true</code> if the specified interval contains at least one supergap.
-	 * 
-	 * @param alignmentIndex - the index of the alignment
-	 * @param firstPos - the first position of the interval that is checked (BioJava indices start with 1)
-	 * @param lastPos - the last position of the interval that is checked (BioJava indices start with 1)
-	 * 
-	 * @see #isFilledWithSuperGaps(int, int, int)
-	 */
-	public boolean containsSuperGap(int alignmentIndex, int firstPos, int lastPos) {
-		for (int i = firstPos; i <= lastPos; i++) {
-			if (containsSuperGap(alignmentIndex, i)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
-	/**
-	 * Returns <code>true</code> if the specified interval contains a supergap a every position.
-	 * 
-	 * @param alignmentIndex - the index of the alignment
-	 * @param firstPos - the first position of the interval that is checked (BioJava indices start with 1)
-	 * @param lastPos - the last position of the interval that is checked (BioJava indices start with 1)
-	 * 
-	 * @see #containsSuperGap(int, int, int)
-	 */
-	public boolean isFilledWithSuperGaps(int alignmentIndex, int firstPos, int lastPos) {
-		for (int i = firstPos; i <= lastPos; i++) {
-			if (!containsSuperGap(alignmentIndex, i)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	
-	/**
-	 * Inserts a supergap at the specified position.
-	 * 
-	 * @param alignmentIndex - the index of the alignment
-	 * @param pos - the position where the supergap should be inserted (BioJava indices start with 1)
-	 */
-	public void insertSuperGap(int alignmentIndex, int pos) {
-		unalignedIndices[alignmentIndex].add(pos - 1, SuperAlignmentSequenceView.GAP_INDEX);
-		if (alignmentIndex == 0) {
-			unalignedIndices[1].add(SuperAlignmentSequenceView.GAP_INDEX);
-		}
-		else {
-			unalignedIndices[0].add(SuperAlignmentSequenceView.GAP_INDEX);
-		}
-		removeTrailingGaps();  //TODO Implementing this method for a whole interval instead of a single position would be more efficient because removeTrailingGaps() would have to be called only once. 
-	}
-	
-	
-	/**
-	 * Removes a supergap from the specified position.
-	 * 
-	 * @param alignmentIndex - the index of the alignment
-	 * @param pos - the position where the supergap should be removed (BioJava indices start with 1)
-	 * @throws IllegalArgumentException if there is no supergap present at the specified position
-	 */
-	public void removeSuperGap(int alignmentIndex, int pos) {
-		if (containsSuperGap(alignmentIndex, pos)) {
-			unalignedIndices[alignmentIndex].remove(pos - 1);
-			unalignedIndices[alignmentIndex].add(SuperAlignmentSequenceView.GAP_INDEX);
-			removeTrailingGaps();  //TODO Implementing this method for a whole interval instead of a single position would be more efficient because removeTrailingGaps() would have to be called only once.
-		}
-		else {
-			throw new IllegalArgumentException("There is no gap at position " + pos + " in alignment " + alignmentIndex + ".");
-		}
-	}
-	
-	
-	/**
-	 * Removes trailing super alignment gaps present in both alignments.
-	 */
-	public void removeTrailingGaps() {
-		int lastIndex = unalignedIndices[0].size() - 1;
-		while ((lastIndex >= 0) && containsSuperGap(0, lastIndex + 1) &&	containsSuperGap(1, lastIndex + 1)) {
-			unalignedIndices[0].remove(lastIndex);
-			unalignedIndices[1].remove(lastIndex);
-			lastIndex--;
-		}
-		//TODO Können Kommentare in diesem Bereich liegen, die behandelt werden müssen?
-	}
-	
-	
-	public void setUnalignedIndexList(int alignmentIndex, List<Integer> list) {
-		if (list instanceof ArrayList<?>) {
-			unalignedIndices[alignmentIndex] = (ArrayList<Integer>)list;
-		}
-		else {
-			unalignedIndices[alignmentIndex] = new ArrayList<Integer>((int)(list.size() * ARRAY_LIST_SIZE_FACTOR));
-			unalignedIndices[alignmentIndex].addAll(list);
-		}
-	}
+//	/**
+//	 * Returns {@code true} if the specified interval contains at least one supergap.
+//	 * 
+//	 * @param alignmentIndex - the index of the alignment
+//	 * @param firstPos - the first position of the interval that is checked (BioJava indices start with 1)
+//	 * @param lastPos - the last position of the interval that is checked (BioJava indices start with 1)
+//	 * 
+//	 * @see #isFilledWithSuperGaps(int, int, int)
+//	 */
+//	public boolean containsSuperGap(int alignmentIndex, int firstPos, int lastPos) {
+//		for (int i = firstPos; i <= lastPos; i++) {
+//			if (containsSuperGap(alignmentIndex, i)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	
+//	
+//	/**
+//	 * Returns <code>true</code> if the specified interval contains a supergap a every position.
+//	 * 
+//	 * @param alignmentIndex - the index of the alignment
+//	 * @param firstPos - the first position of the interval that is checked (BioJava indices start with 1)
+//	 * @param lastPos - the last position of the interval that is checked (BioJava indices start with 1)
+//	 * 
+//	 * @see #containsSuperGap(int, int, int)
+//	 */
+//	public boolean isFilledWithSuperGaps(int alignmentIndex, int firstPos, int lastPos) {
+//		for (int i = firstPos; i <= lastPos; i++) {
+//			if (!containsSuperGap(alignmentIndex, i)) {
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
+//	
+//	
+//	/**
+//	 * Inserts a supergap at the specified position.
+//	 * 
+//	 * @param alignmentIndex - the index of the alignment
+//	 * @param pos - the position where the supergap should be inserted (BioJava indices start with 1)
+//	 */
+//	public void insertSuperGap(int alignmentIndex, int pos) {
+//		unalignedIndices[alignmentIndex].add(pos - 1, SuperAlignmentSequenceView.GAP_INDEX);
+//		if (alignmentIndex == 0) {
+//			unalignedIndices[1].add(SuperAlignmentSequenceView.GAP_INDEX);
+//		}
+//		else {
+//			unalignedIndices[0].add(SuperAlignmentSequenceView.GAP_INDEX);
+//		}
+//		removeTrailingGaps();  //TODO Implementing this method for a whole interval instead of a single position would be more efficient because removeTrailingGaps() would have to be called only once. 
+//	}
+//	
+//	
+//	/**
+//	 * Removes a supergap from the specified position.
+//	 * 
+//	 * @param alignmentIndex - the index of the alignment
+//	 * @param pos - the position where the supergap should be removed (BioJava indices start with 1)
+//	 * @throws IllegalArgumentException if there is no supergap present at the specified position
+//	 */
+//	public void removeSuperGap(int alignmentIndex, int pos) {
+//		if (containsSuperGap(alignmentIndex, pos)) {
+//			unalignedIndices[alignmentIndex].remove(pos - 1);
+//			unalignedIndices[alignmentIndex].add(SuperAlignmentSequenceView.GAP_INDEX);
+//			removeTrailingGaps();  //TODO Implementing this method for a whole interval instead of a single position would be more efficient because removeTrailingGaps() would have to be called only once.
+//		}
+//		else {
+//			throw new IllegalArgumentException("There is no gap at position " + pos + " in alignment " + alignmentIndex + ".");
+//		}
+//	}
+//	
+//	
+//	/**
+//	 * Removes trailing super alignment gaps present in both alignments.
+//	 */
+//	public void removeTrailingGaps() {
+//		int lastIndex = unalignedIndices[0].size() - 1;
+//		while ((lastIndex >= 0) && containsSuperGap(0, lastIndex + 1) &&	containsSuperGap(1, lastIndex + 1)) {
+//			unalignedIndices[0].remove(lastIndex);
+//			unalignedIndices[1].remove(lastIndex);
+//			lastIndex--;
+//		}
+//		//TODO Kï¿½nnen Kommentare in diesem Bereich liegen, die behandelt werden mï¿½ssen?
+//	}
+//	
+//	
+//	public void setUnalignedIndexList(int alignmentIndex, List<Integer> list) {
+//		if (list instanceof ArrayList<?>) {
+//			unalignedIndices[alignmentIndex] = (ArrayList<Integer>)list;
+//		}
+//		else {
+//			unalignedIndices[alignmentIndex] = new ArrayList<Integer>((int)(list.size() * ARRAY_LIST_SIZE_FACTOR));
+//			unalignedIndices[alignmentIndex].addAll(list);
+//		}
+//	}
 	
 	
 //	public void setUnalignedSequences(int alignmentIndex, List<DNASequence> list) {
@@ -371,27 +341,27 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 //	}
 	
 	
-	 /**
-		* Returns the number of sequences present in each alignment.
-		*/
-	public int getSequenceCount() {
-		if (isEmpty()) {
-			return 0;
-		}
-		else {
-			return originalAlignmentProviders.values().iterator().next().getSequenceCount();
-		}
-	}
-	
-	
-	public int getAlignedLength() {
-		if (isEmpty()) {
-			return 0;
-		}
-		else {
-			return unalignedIndices[0].size();
-		}
-	}
+//	 /**
+//		* Returns the number of sequences present in each alignment.
+//		*/
+//	public int getSequenceCount() {
+//		if (isEmpty()) {
+//			return 0;
+//		}
+//		else {
+//			return originalAlignmentProviders.values().iterator().next().getSequenceCount();
+//		}
+//	}
+//	
+//	
+//	public int getAlignedLength() {
+//		if (isEmpty()) {
+//			return 0;
+//		}
+//		else {
+//			return unalignedIndices[0].size();
+//		}
+//	}
 
 
 	public CommentList getComments() {
@@ -405,7 +375,7 @@ public class Document<T extends Compound> extends SwingSaver implements ChangeMo
 
 
 	public void executeEdit(DocumentEdit edit) {
-    if (!getUndoManager().addEdit(edit)) {  // Muss vor Ausführung erfolgen da sonst Undo-Schalter ggf. nicht aktiviert werden.
+    if (!getUndoManager().addEdit(edit)) {  // Muss vor Ausfï¿½hrung erfolgen da sonst Undo-Schalter ggf. nicht aktiviert werden.
       throw new RuntimeException("The edit could not be executed.");
     }
     edit.redo();  // for real this time

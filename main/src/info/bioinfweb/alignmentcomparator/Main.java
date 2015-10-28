@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.commons.ProgramMainClass;
 import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
-import info.webinsel.wikihelp.client.WikiHelp;
+import info.bioinfweb.wikihelp.client.WikiHelp;
 
 
 
@@ -37,7 +37,7 @@ import info.webinsel.wikihelp.client.WikiHelp;
  */
 public class Main extends ProgramMainClass {
 	public static final String APPLICATION_URL = "http://bioinfweb.info/AlignmentComparator"; 
-	public static final String ERROR_URL = APPLICATION_URL + "/errorreport/ApplicationReport.jsp";  //TODO zentrale bioinfweb error report URL?, da Reports ja auch zu einzelnen Bibliotheken kommen könnten und diese dann zentral gesammelt werden könnten 
+	public static final String ERROR_URL = APPLICATION_URL + "/errorreport/ApplicationReport.jsp";  //TODO zentrale bioinfweb error report URL?, da Reports ja auch zu einzelnen Bibliotheken kommen kï¿½nnten und diese dann zentral gesammelt werden kï¿½nnten 
 	public static final String WIKI_URL = APPLICATION_URL + "/Help/";
 	
 	

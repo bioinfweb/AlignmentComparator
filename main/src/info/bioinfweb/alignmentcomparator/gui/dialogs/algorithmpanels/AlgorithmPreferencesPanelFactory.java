@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -47,8 +47,7 @@ public class AlgorithmPreferencesPanelFactory {
 
   
   private void fillList() {
-  	panels.put(CompareAlgorithm.CONSENSUS_BIOJAVA_NEEDLEMAN_WUNSCH, new ConsensusNeedlemanWunschPanel());
-  	panels.put(CompareAlgorithm.CONSENSUS_BIW_NEEDLEMAN_WUNSCH, new ConsensusBIWNeedlemanWunschPanel());
+  	panels.put(CompareAlgorithm.AVERAGE_UNGAPED_POSITION, new AverageDegapedPositionPanel());
   	panels.put(CompareAlgorithm.MUSCLE_PROFILE, new MuscleProfilePanel());
   }
   

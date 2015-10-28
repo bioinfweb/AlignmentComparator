@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -25,25 +25,32 @@ import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmP
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
 import info.bioinfweb.commons.swing.OkCancelApplyDialog;
 
-import javax.swing.JPanel;
 import java.awt.Frame;
-import javax.swing.BoxLayout;
 import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Component;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.GridBagConstraints;
-
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.Component;
 import javax.swing.JComboBox;
-import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import javax.swing.BoxLayout;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 
 
@@ -52,15 +59,14 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 
 	private JPanel jContentPane = null;
 	private JPanel alignmentsPanel = null;
-	private JTextField firstPathTextField = null;
-	private JButton firstPathButton = null;
-	private JTextField secondPathTextField = null;
-	private JButton secondPathButton = null;
+	private JButton addPathButton = null;
+	private JButton removeButton = null;
 	private AlgorithmPreferencesPanel preferencesPanel = null;
 	private JFileChooser fileChooser = null;
 	private JPanel algorithmPanel;
 	private JComboBox<CompareAlgorithm> algorithmComboBox;
 	private JPanel outerPreferencesPanel;
+	private JList<File> fileList;
 
 	
 	/**
@@ -74,18 +80,21 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 
 	
 	@Override
+	public boolean execute() {
+		getFileListModel().clear();
+		getRemoveButton().setEnabled(false);
+		return super.execute();
+	}
+
+
+	@Override
 	protected boolean apply() {
-		return true;
-	}
-	
-	
-	public String getFirstPath() {
-		return getFirstPathTextField().getText();
-	}
-	
-	
-	public String getSecondPath() {
-		return getSecondPathTextField().getText();
+		boolean enoughFiles = (getFileListModel().size() >= 2);
+		if (!enoughFiles) {
+			JOptionPane.showMessageDialog(this, "At least two alignment files need to be selected for comparison.", 
+					"Not enough files", JOptionPane.ERROR_MESSAGE);
+		}
+		return enoughFiles;
 	}
 	
 	
@@ -101,7 +110,6 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	 */
 	private void initialize() {
 		setTitle("Compare alignments");
-		//this.setSize(300, 200);
 		setContentPane(getJContentPane());
 		getApplyButton().setVisible(false);
 		pack();
@@ -112,6 +120,7 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
   	if (fileChooser == null) {
   		fileChooser = new JFileChooser();
   		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("FASTA alignment", "fasta", "fas"));
+  		fileChooser.setMultiSelectionEnabled(true);
   	}
   	return fileChooser;
   }
@@ -141,45 +150,35 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	 */
 	private JPanel getAlignmentsPanel() {
 		if (alignmentsPanel == null) {
-			GridBagConstraints firstTextGBC = new GridBagConstraints();
-			firstTextGBC.gridx = 0;
-			firstTextGBC.gridy = 0;
-			firstTextGBC.weightx = 1.0;
-			firstTextGBC.fill = GridBagConstraints.HORIZONTAL;
 			GridBagConstraints firstButtonGBC = new GridBagConstraints();
+			firstButtonGBC.insets = new Insets(0, 0, 5, 0);
+			firstButtonGBC.fill = GridBagConstraints.HORIZONTAL;
 			firstButtonGBC.gridx = 1;
 			firstButtonGBC.gridy = 0;
-			GridBagConstraints secondTextGBC = new GridBagConstraints();
-			secondTextGBC.gridx = 0;
-			secondTextGBC.gridy = 1;
-			secondTextGBC.weightx = 1.0;
-			secondTextGBC.fill = GridBagConstraints.HORIZONTAL;
 			GridBagConstraints secondButtonGBC = new GridBagConstraints();
+			secondButtonGBC.fill = GridBagConstraints.HORIZONTAL;
 			secondButtonGBC.gridx = 1;
 			secondButtonGBC.gridy = 1;
 			alignmentsPanel = new JPanel();
-			alignmentsPanel.setLayout(new GridBagLayout());
+			GridBagLayout gbl_alignmentsPanel = new GridBagLayout();
+			gbl_alignmentsPanel.rowWeights = new double[]{1.0, 0.0};
+			gbl_alignmentsPanel.columnWeights = new double[]{1.0, 0.0};
+			alignmentsPanel.setLayout(gbl_alignmentsPanel);
 			alignmentsPanel.setBorder(BorderFactory.createTitledBorder(null, "Alignments", 
 					TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-			alignmentsPanel.add(getFirstPathTextField(), firstTextGBC);
-			alignmentsPanel.add(getFirstPathButton(), firstButtonGBC);
-			alignmentsPanel.add(getSecondPathTextField(), secondTextGBC);
-			alignmentsPanel.add(getSecondPathButton(), secondButtonGBC);
+			GridBagConstraints gbc_list = new GridBagConstraints();
+			gbc_list.gridheight = 2;
+			gbc_list.weighty = 1.0;
+			gbc_list.weightx = 1.0;
+			gbc_list.insets = new Insets(0, 0, 5, 5);
+			gbc_list.fill = GridBagConstraints.BOTH;
+			gbc_list.gridx = 0;
+			gbc_list.gridy = 0;
+			alignmentsPanel.add(getFileList(), gbc_list);
+			alignmentsPanel.add(getAddButton(), firstButtonGBC);
+			alignmentsPanel.add(getRemoveButton(), secondButtonGBC);
 		}
 		return alignmentsPanel;
-	}
-
-
-	/**
-	 * This method initializes firstPathTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-	private JTextField getFirstPathTextField() {
-		if (firstPathTextField == null) {
-			firstPathTextField = new JTextField();
-		}
-		return firstPathTextField;
 	}
 
 
@@ -189,33 +188,33 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	 * 	
 	 * @return javax.swing.JButton	
 	 */
-	private JButton getFirstPathButton() {
-		if (firstPathButton == null) {
-			firstPathButton = new JButton();
-			firstPathButton.setText("...");
+	private JButton getAddButton() {
+		if (addPathButton == null) {
+			addPathButton = new JButton();
+			addPathButton.setText("Add...");
 			final StartComparisonDialog thisDialog = this;
-			firstPathButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
+			addPathButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
 					if (getFileChooser().showOpenDialog(thisDialog) == JFileChooser.APPROVE_OPTION) {
-						getFirstPathTextField().setText(getFileChooser().getSelectedFile().getAbsolutePath());
+						StringBuilder skippedFiles = new StringBuilder();
+						for (File file : getFileChooser().getSelectedFiles()) {
+							if (file.exists() && !getFileListModel().contains(file)) {
+								getFileListModel().addElement(file);
+							}
+							else {
+								skippedFiles.append(file.getAbsolutePath() + "\n");
+							}
+						}
+						if (skippedFiles.length() > 0) {
+							JOptionPane.showMessageDialog(thisDialog, 
+									"The following files were skipped, because the do not exist or are already in the list:\n\n" 
+									 + skippedFiles.toString(), "Invalid file(s)", JOptionPane.WARNING_MESSAGE);
+						}
 					}
 				}
 			});
 		}
-		return firstPathButton;
-	}
-
-
-	/**
-	 * This method initializes secondPathTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-	private JTextField getSecondPathTextField() {
-		if (secondPathTextField == null) {
-			secondPathTextField = new JTextField();
-		}
-		return secondPathTextField;
+		return addPathButton;
 	}
 
 
@@ -224,20 +223,20 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	 * 	
 	 * @return javax.swing.JButton	
 	 */
-	private JButton getSecondPathButton() {
-		if (secondPathButton == null) {
-			secondPathButton = new JButton();
-			secondPathButton.setText("...");
-			final StartComparisonDialog thisDialog = this;
-			secondPathButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if (getFileChooser().showOpenDialog(thisDialog) == JFileChooser.APPROVE_OPTION) {
-						getSecondPathTextField().setText(getFileChooser().getSelectedFile().getAbsolutePath());
+	private JButton getRemoveButton() {
+		if (removeButton == null) {
+			removeButton = new JButton();
+			removeButton.setText("Remove");
+			removeButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int index = getFileList().getSelectedIndex();
+					if (index != -1) {
+						getFileListModel().remove(index);
 					}
 				}
 			});
 		}
-		return secondPathButton;
+		return removeButton;
 	}
 
 
@@ -302,7 +301,7 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 							setPereferencesPanel((CompareAlgorithm)getAlgorithmComboBox().getSelectedItem());
 						}
 					});
-			algorithmComboBox.addItem(CompareAlgorithm.MUSCLE_PROFILE);
+			algorithmComboBox.addItem(CompareAlgorithm.AVERAGE_UNGAPED_POSITION);
 //			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
 //			for (int i = 0; i < algorithms.length; i++) {
 //		    algorithmComboBox.addItem(algorithms[i]);
@@ -322,5 +321,24 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 
 	public AlgorithmPreferencesPanel getPreferencesPanel() {
 		return preferencesPanel;
+	}
+	
+	
+	private JList<File> getFileList() {
+		if (fileList == null) {
+			fileList = new JList<File>(new DefaultListModel<File>());
+			fileList.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent event) {
+					getRemoveButton().setEnabled(getFileList().getSelectedIndex() != -1);
+				}
+			});
+			fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		}
+		return fileList;
+	}
+	
+	
+	public DefaultListModel<File> getFileListModel() {
+		return (DefaultListModel<File>)getFileList().getModel();
 	}
 }

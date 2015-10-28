@@ -5,14 +5,14 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonComponent;
-import info.bioinfweb.commons.tic.TICPaintEvent;
 import info.bioinfweb.libralign.alignmentarea.content.AlignmentContentArea;
 import info.bioinfweb.libralign.dataarea.DataArea;
 import info.bioinfweb.libralign.dataarea.DataAreaListType;
-import info.bioinfweb.libralign.sequenceprovider.SequenceDataProvider;
-import info.bioinfweb.libralign.sequenceprovider.events.SequenceChangeEvent;
-import info.bioinfweb.libralign.sequenceprovider.events.SequenceRenamedEvent;
-import info.bioinfweb.libralign.sequenceprovider.events.TokenChangeEvent;
+import info.bioinfweb.libralign.model.AlignmentModel;
+import info.bioinfweb.libralign.model.events.SequenceChangeEvent;
+import info.bioinfweb.libralign.model.events.SequenceRenamedEvent;
+import info.bioinfweb.libralign.model.events.TokenChangeEvent;
+import info.bioinfweb.tic.TICPaintEvent;
 
 
 
@@ -27,7 +27,7 @@ public class CommentArea extends DataArea {
 	
 	
 	public CommentArea(AlignmentContentArea owner) {
-		super(owner);
+		super(owner, null);  //TODO Specify labeled area
 	}
 	
 	
@@ -47,12 +47,6 @@ public class CommentArea extends DataArea {
 	}
 	
 
-	@Override
-	public int getLength() {
-		return getOwner().getOwner().getCompoundWidth() * getOwner().getOwner().getGlobalMaxSequenceLength();
-	}
-
-	
 	@Override
 	public int getHeight() {
 		return getCommentPositioner().getCommentDimension(getComparisonComponent()).height;
@@ -87,9 +81,7 @@ public class CommentArea extends DataArea {
 	
 
 	@Override
-	public <T, U> void afterProviderChanged(SequenceDataProvider<T> previous,
-			SequenceDataProvider<U> current) {
+	public <T, U> void afterProviderChanged(AlignmentModel<T> previous,	AlignmentModel<U> current) {
 		// TODO Auto-generated method stub
-		
 	}
 }

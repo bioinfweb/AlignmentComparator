@@ -6,7 +6,9 @@ Class-Path: lib/biojava3-alignment-3.0.5.jar
             lib/guava-13.0.1.jar
             lib/bioinfweb.commons.core.jar
             lib/bioinfweb.commons.swing.jar
+            lib/bioinfweb.commons.tic.jar
             lib/bioinfweb.commons.experimental.bio.jar
             lib/info.webinsel.wikihelp.client.jar
             lib/org.jdesktop.swingx.scrollpaneselector.jar
             lib/BrowserLauncher2-1_3.jar
+            lib/LibrAlign.jar

@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.AlignmentAmbig
 import info.bioinfweb.commons.appversion.AppVersionXMLConstants;
 import info.bioinfweb.commons.appversion.AppVersionXMLReadWrite;
 import info.bioinfweb.commons.io.XMLUtils;
-import info.bioinfweb.libralign.sequenceprovider.tokenset.BioJavaTokenSet;
+import info.bioinfweb.libralign.model.tokenset.BioJava3TokenSet;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +67,7 @@ public class ResultsReader implements ResultsXMLConstants {
         			AlignmentAmbiguityNucleotideCompoundSet.getAlignmentAmbiguityNucleotideCompoundSet()));
         	XMLUtils.reachElementEnd(reader);
         }
-        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusï¿½tzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
@@ -105,7 +105,7 @@ public class ResultsReader implements ResultsXMLConstants {
         	unalignedIndicesList.add(decodeGapPattern(XMLUtils.readCharactersAsString(reader)));
         	XMLUtils.reachElementEnd(reader);
         }
-        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusï¿½tzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
@@ -122,7 +122,7 @@ public class ResultsReader implements ResultsXMLConstants {
         if (element.getName().equals(TAG_ALTERNATIVE)) {
         	readAlternative();
         }
-        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusï¿½tzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
@@ -141,7 +141,7 @@ public class ResultsReader implements ResultsXMLConstants {
         	names.add(XMLUtils.readCharactersAsString(reader));
           XMLUtils.reachElementEnd(reader);  
         }
-        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusï¿½tzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
@@ -172,7 +172,7 @@ public class ResultsReader implements ResultsXMLConstants {
         			XMLUtils.readCharactersAsString(reader));
         	XMLUtils.reachElementEnd(reader);
         }
-        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusï¿½tzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
@@ -215,7 +215,7 @@ public class ResultsReader implements ResultsXMLConstants {
         else if (element.getName().equals(TAG_COMMENTS)) {
         	readComments(alignments.getComments());
         }
-        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusï¿½tzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
@@ -224,7 +224,7 @@ public class ResultsReader implements ResultsXMLConstants {
     
     alignments.setAlignedData("First", createAlignmentMap(0, names),  //TODO Save correct names into file
     		"Second", createAlignmentMap(1, names),
-    		new BioJavaTokenSet(SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet(), false),  //TODO Also allow protein sequences and token sets. 
+    		new BioJava3TokenSet(SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet(), false),  //TODO Also allow protein sequences and token sets. 
     		unalignedIndicesList.toArray(new ArrayList[unalignedIndicesList.size()]));
   }
 

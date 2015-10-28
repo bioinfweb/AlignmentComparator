@@ -1,28 +1,32 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
+import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentArea;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
-import info.bioinfweb.libralign.alignmentarea.content.AlignmentContentArea;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionChangeEvent;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
+import info.bioinfweb.libralign.alignmentarea.tokenpainter.NucleotideTokenPainter;
 import info.bioinfweb.libralign.dataarea.implementations.SequenceIndexArea;
+import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
-import info.bioinfweb.libralign.sequenceprovider.SequenceAccessDataProvider;
-import info.bioinfweb.libralign.sequenceprovider.SequenceDataProvider;
 
 
 
@@ -34,7 +38,7 @@ import info.bioinfweb.libralign.sequenceprovider.SequenceDataProvider;
  */
 public class AlignmentComparisonComponent extends MultipleAlignmentsContainer implements DocumentListener {
 	public static final int FIRST_ALIGNMENT_INDEX = 1;
-	public static final int BOTTOM_AREAS_COUNT = 1;  // Currently only comment area.
+	public static final int BOTTOM_AREAS_COUNT = 0 /*1*/;  // Currently only comment area.
 
 	private final SelectionListener SELECTION_LISTENER = new SelectionListener() {
 				@Override
@@ -44,21 +48,26 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			}; 
 	
 	
-	private Document<?> document = null;
+	private MainFrame owner;
 	private SelectionSynchronizer selectionSynchronizer = new SelectionSynchronizer();
 	private AlignmentComparisonSelection selection = new AlignmentComparisonSelection(this);
 	private CommentArea commentArea;
 
 	
-	public AlignmentComparisonComponent(Document<?> document) {
+	public AlignmentComparisonComponent(MainFrame owner) {
 		super();
-		this.document = document;
+		this.owner = owner;
 		init();
 	}
 	
 	
-	public Document<?> getDocument() {
-		return document;
+	public MainFrame getOwner() {
+		return owner;
+	}
+
+
+	public Document getDocument() {
+		return getOwner().getDocument();
 	}
 
 
@@ -70,30 +79,40 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
-	private AlignmentArea createCommentAlignmentArea() {
-		AlignmentArea result = new AlignmentArea(this);
-		commentArea = new CommentArea(result.getContentArea());
-		result.getDataAreas().getBottomAreas().add(commentArea);
-		result.setAllowVerticalScrolling(false);
-		return result;
-	}
+//	private AlignmentArea createCommentAlignmentArea() {
+//		AlignmentArea result = new AlignmentArea(this);
+//		commentArea = new CommentArea(result.getContentArea());
+//		result.getDataAreas().getBottomAreas().add(commentArea);
+//		result.setAllowVerticalScrolling(false);
+//		return result;
+//	}
 	
 	
-	private <T> AlignmentArea createComparisonPartArea(SequenceDataProvider<T> privoder) {
+	private AlignmentArea createComparisonPartArea(String alignmentName) {
 		AlignmentArea result = new AlignmentArea(this);
-		result.setSequenceProvider(privoder, false);
+		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperAligned(), false);
+		result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
+		
+		NucleotideTokenPainter painter = new NucleotideTokenPainter();
+		painter.getBackgroundColorMap().put(Character.toString(SuperAlignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
+		result.getPaintSettings().getTokenPainterList().set(0, painter);  //TODO Set amino acid painter, when necessary.
+		
 		//TODO Link order objects
 		result.getSelection().setType(SelectionType.COLUMN_ONLY);
 		selectionSynchronizer.add(result.getSelection());  //TODO Do instances need to be removed, when a new comparison is loaded?
 		//TODO Add consensus sequence area on bottom
 		//TODO Link vertical scrolling
 		result.setAllowVerticalScrolling(true);
+		
+		result.getContentArea().getActionMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), 
+				getOwner().getActionManagement().get("edit.insertSupergap"));
+		
 		return result;
 	}
 	
 	
-	private void addSelectionListener() {
-		if (document.getAlignmentCount() > 0) {
+	private void addSelectionListener() {  //TODO Why does that only have to be done on the first area?
+		if (getDocument().getAlignments().size() > 0) {
 			getFirstAlignmentArea().getSelection().addSelectionListener(SELECTION_LISTENER);
 		}
 	}
@@ -101,12 +120,34 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	private void init() {
 		getAlignmentAreas().add(createIndexArea());
-		for (int i = 0; i < document.getAlignmentCount(); i++) {
-			String name = document.getAlignmentName(i);
-			getAlignmentAreas().add(createComparisonPartArea(document.getSuperAlignmentProvider(name)));
+		Iterator<String> iterator = getDocument().getAlignments().keySet().iterator();
+		while (iterator.hasNext()) {
+			String name = iterator.next();
+			getAlignmentAreas().add(createComparisonPartArea(name));
 		}
 		addSelectionListener();
-		getAlignmentAreas().add(createCommentAlignmentArea());
+		//getAlignmentAreas().add(createCommentAlignmentArea());
+	}
+	
+	
+	/**
+	 * Tests if the currently displayed alignment areas match the data model.
+	 * 
+	 * @return {@code true} if an update is needed to reflect the data model, {@code false} if not.
+	 */
+	private boolean updateNeeded() {
+		int pos = FIRST_ALIGNMENT_INDEX;
+		Iterator<String> iterator = getDocument().getAlignments().keySet().iterator();
+		while (iterator.hasNext()) {
+			String name = iterator.next();
+			if ((pos >= getAlignmentAreas().size() - BOTTOM_AREAS_COUNT) || (!getAlignmentAreas().get(pos).getAlignmentModel().equals(
+					getDocument().getAlignments().get(name).getSuperAligned()))) {
+				
+				return true;
+			}
+			pos++;
+		}
+		return false;
 	}
 	
 	
@@ -117,10 +158,11 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			topAreas.add(getAlignmentAreas().get(i));
 		}
 		
-		Map<SequenceDataProvider, AlignmentArea> previousComparisonParts = new HashMap<SequenceDataProvider, AlignmentArea>();
+		Map<AlignmentModel<Character>, AlignmentArea> previousComparisonParts = 
+				new HashMap<AlignmentModel<Character>, AlignmentArea>();
 		for (AlignmentArea area : getAlignmentAreas()) {
-			if (area.hasSequenceProvider()) {
-				previousComparisonParts.put(area.getSequenceProvider(), area);
+			if (area.hasAlignmentModel()) {
+				previousComparisonParts.put((AlignmentModel<Character>)area.getAlignmentModel(), area);
 			}
 		}
 		
@@ -130,28 +172,32 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		}
 		
 		// Remove current GUI elements:
-		getFirstAlignmentArea().getSelection().removeSelectionListener(SELECTION_LISTENER);
+		AlignmentArea firstArea = getFirstAlignmentArea();
+		if (firstArea != null) {
+			firstArea.getSelection().removeSelectionListener(SELECTION_LISTENER);
+		}
 		getAlignmentAreas().clear();
 		selectionSynchronizer.clear();
 		
 		// Repopulate area list:
 		getAlignmentAreas().addAll(topAreas);
 		
-		for (int i = 0; i < document.getAlignmentCount(); i++) {
-			String name = document.getAlignmentName(i);
-			SequenceAccessDataProvider provider = document.getSuperAlignmentProvider(name);
-			AlignmentArea area = previousComparisonParts.get(provider);
+		Iterator<String> iterator = getDocument().getAlignments().keySet().iterator();
+		while (iterator.hasNext()) {
+			String name = iterator.next();
+			AlignmentArea area = previousComparisonParts.get(getDocument().getAlignments().get(name).getSuperAligned());
 			if (area != null) {
 				getAlignmentAreas().add(area);
 				selectionSynchronizer.add(area.getSelection());
 			}
 			else {
-				getAlignmentAreas().add(createComparisonPartArea(provider));  // selectionSynchronizer.add() is called inside createComparisonPartArea().
+				getAlignmentAreas().add(createComparisonPartArea(name));  // selectionSynchronizer.add() is called inside createComparisonPartArea().
 			}			
 		}
 		addSelectionListener();
 	
 		getAlignmentAreas().addAll(bottomAreas);
+		redistributeHeight();
 	}
 	
 	
@@ -161,7 +207,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	
 	/**
-	 * Returns the alignment area of the top most alignment area that contains an alignment.
+	 * Returns the top most alignment area that actually contains alignment data.
 	 * 
 	 * @return the first valid alignment area or {@code null} if no alignment is contained in this instance
 	 */
@@ -182,7 +228,10 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 
 	@Override
 	public void changeHappened(DocumentEvent e) {
-		updateAlignments();
+		if (updateNeeded()) {
+			System.out.println("update");
+			updateAlignments();
+		}
 		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign
 		assignSize();  //TODO Needed?
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	

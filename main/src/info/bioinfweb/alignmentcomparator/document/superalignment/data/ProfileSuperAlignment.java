@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ public class ProfileSuperAlignment implements SuperAlignment {
 
 	@Override
 	public boolean containsGap(int seqIndex, int charIndex) {
-		return profile.getAlignedSequence(seqIndex + 1).getCompoundAt(charIndex + 1).getBase().equals(GAP_CHAR);  //TODO Gap Zeichen besser aus entsprechenden BioJava Klassen bestimmen
+		return profile.getAlignedSequence(seqIndex + 1).getCompoundAt(charIndex + 1).getBase().equals(GAP_CHAR);
 	}
 
 
