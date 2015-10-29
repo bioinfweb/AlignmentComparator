@@ -22,7 +22,7 @@ main/src/cmd/muscle3.8.31_i86win32.exe -text
 main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/ComparedAlignment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/SuperAlignedmodelDecorator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/SuperalignedModelDecorator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/UnlignedIndicesChangeListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/comments/Comment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/comments/CommentList.java -text svneol=unset#text/plain
@@ -62,12 +62,12 @@ main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -t
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/DocumentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/AddCommentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/ChangeCommentTextAction.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/DeleteSuperGapBackwardsAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/InsertSupergapAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/MoveCommentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RedoAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RedoToAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveCommentAction.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/RemoveSupergapAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/SupergapAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/UndoRedoToAction.java -text svneol=unset#text/plain

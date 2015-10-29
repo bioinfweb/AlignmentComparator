@@ -26,7 +26,7 @@ import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignment
  * @author Ben St&ouml;ver
  * @since 0.1.0
  */
-public class SuperAlignedmodelDecorator extends AbstractAlignmentModelDecorator<Character, Character> {
+public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<Character, Character> {
 	public static final char SUPER_ALIGNMENT_GAP = '.';
 	public static final int SUPER_GAP_INDEX = -1;
 	
@@ -35,7 +35,7 @@ public class SuperAlignedmodelDecorator extends AbstractAlignmentModelDecorator<
 	private List<Integer> unalignedIndices;
 	
 	
-	public SuperAlignedmodelDecorator(ComparedAlignment owner, List<Integer> unalignedIndices) {
+	public SuperalignedModelDecorator(ComparedAlignment owner, List<Integer> unalignedIndices) {
 		super(owner.getOriginal().getTokenSet().clone(), owner.getOriginal());
 		this.owner = owner;
 		this.unalignedIndices = unalignedIndices;
@@ -78,7 +78,7 @@ public class SuperAlignedmodelDecorator extends AbstractAlignmentModelDecorator<
 	public void insertSupergap(int start, int length) {
 		// Add super gap:
 		for (int pos = start; pos <= start + length - 1; pos++) {
-			unalignedIndices.add(pos,	SuperAlignedmodelDecorator.SUPER_GAP_INDEX);
+			unalignedIndices.add(pos,	SuperalignedModelDecorator.SUPER_GAP_INDEX);
 		}
 		
 		// Fire change events:
@@ -93,7 +93,7 @@ public class SuperAlignedmodelDecorator extends AbstractAlignmentModelDecorator<
 	public void removeSupergap(int start, int length) {
 		// Add super gap:
 		for (int pos = start; pos <= start + length - 1; pos++) {
-			if (unalignedIndices.get(start) == SuperAlignedmodelDecorator.SUPER_GAP_INDEX) {
+			if (unalignedIndices.get(start) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
 				unalignedIndices.remove(start);
 			}
 			else {
@@ -109,6 +109,28 @@ public class SuperAlignedmodelDecorator extends AbstractAlignmentModelDecorator<
 		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
 			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
 		}
+	}
+	
+	
+	public boolean containsSupergap(int column) {
+		return getUnalignedIndices().get(column) == SUPER_GAP_INDEX;
+	}
+
+
+	/**
+	 * Checks if the specified range of columns contains only supergaps.
+	 * 
+	 * @param startColumn the index of the first column to be checked
+	 * @param endColumn the index behind the last column to be checked
+	 * @return {@code true} if all columns contains supergaps, {@code false} if at least one column does not
+	 */
+	public boolean containsSupergap(int startColumn, int endColumn) {
+		for (int column = startColumn; column < endColumn; column++) {
+			if (!containsSupergap(column)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 

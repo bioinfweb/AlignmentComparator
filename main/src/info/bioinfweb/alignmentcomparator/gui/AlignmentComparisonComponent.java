@@ -14,7 +14,7 @@ import javax.swing.KeyStroke;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.SuperAlignedmodelDecorator;
+import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentArea;
@@ -94,7 +94,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
 		
 		NucleotideTokenPainter painter = new NucleotideTokenPainter();
-		painter.getBackgroundColorMap().put(Character.toString(SuperAlignedmodelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
+		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
 		result.getPaintSettings().getTokenPainterList().set(0, painter);  //TODO Set amino acid painter, when necessary.
 		
 		//TODO Link order objects
@@ -106,6 +106,10 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		
 		result.getContentArea().getActionMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), 
 				getOwner().getActionManagement().get("edit.insertSupergap"));
+		result.getContentArea().getActionMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), 
+				getOwner().getActionManagement().get("edit.removeSupergapBackwards"));
+		result.getContentArea().getActionMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), 
+				getOwner().getActionManagement().get("edit.removeSupergapForward"));
 		
 		return result;
 	}

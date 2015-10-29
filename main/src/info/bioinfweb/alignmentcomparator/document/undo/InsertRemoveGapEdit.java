@@ -33,7 +33,7 @@ public abstract class InsertRemoveGapEdit extends DocumentEdit {
 		super(document);
 		this.alignmentName = alignmentName;
 		this.startPos = startPos;
-		this.length = endPos - startPos + 1; 
+		this.length = endPos - startPos; 
 	}
 	
 	

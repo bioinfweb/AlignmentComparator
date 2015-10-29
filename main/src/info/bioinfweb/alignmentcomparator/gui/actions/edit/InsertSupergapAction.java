@@ -36,7 +36,7 @@ public class InsertSupergapAction extends SupergapAction {
 			getDocument().executeEdit(new InsertGapEdit(getDocument(), 
 					getDocument().getAlignments().get(getMainFrame().getComparisonComponent().getAlignmentAreas().indexOf(area) - 
 							AlignmentComparisonComponent.FIRST_ALIGNMENT_INDEX), 
-							selection.getFirstColumn(), selection.getLastColumn()));  // lastColumn - 1?
+							selection.getFirstColumn(), selection.getLastColumn() + 1));
 			
 			selection.setNewCursorColumn(selection.getLastColumn() + 1);  // Move cursor behind inserted gap and clear selection.
 		}
