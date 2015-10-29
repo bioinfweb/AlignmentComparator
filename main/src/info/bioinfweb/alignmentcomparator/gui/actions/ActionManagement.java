@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.actions;
 
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.Action;
@@ -46,7 +47,7 @@ public class ActionManagement extends AbstractUndoActionManagement {
 
 
 	/**
-	 * All <code>Action</code> objects used in XMLFormatCreator are added to the <code>HashMap</code>
+	 * All {@link Action} objects used in XMLFormatCreator are added to the {@link HashMap}
 	 * in this method. New actions should be added here as well.
 	 */
 	protected void fillMap() {
