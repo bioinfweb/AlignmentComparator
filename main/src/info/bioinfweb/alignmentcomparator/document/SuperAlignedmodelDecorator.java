@@ -1,22 +1,12 @@
 package info.bioinfweb.alignmentcomparator.document;
 
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
-import java.util.Set;
 
-import info.bioinfweb.commons.collections.observable.ListAddEvent;
-import info.bioinfweb.commons.collections.observable.ListChangeAdapter;
-import info.bioinfweb.commons.collections.observable.ListChangeListener;
-import info.bioinfweb.commons.collections.observable.ListRemoveEvent;
-import info.bioinfweb.commons.collections.observable.ListReplaceEvent;
-import info.bioinfweb.commons.collections.observable.ObservableList;
-import info.bioinfweb.libralign.model.AlignmentModelChangeListener;
 import info.bioinfweb.libralign.model.AlignmentModelWriteType;
 import info.bioinfweb.libralign.model.events.TokenChangeEvent;
 import info.bioinfweb.libralign.model.exception.AlignmentSourceNotWritableException;
@@ -36,70 +26,33 @@ import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignment
  * @author Ben St&ouml;ver
  * @since 0.1.0
  */
-public class SuperAlignedModelDecorator extends AbstractAlignmentModelDecorator<Character, Character> {
+public class SuperAlignedmodelDecorator extends AbstractAlignmentModelDecorator<Character, Character> {
 	public static final char SUPER_ALIGNMENT_GAP = '.';
 	public static final int SUPER_GAP_INDEX = -1;
 	
 	
 	private ComparedAlignment owner;
-	private ObservableList<Integer> unalignedIndices;
+	private List<Integer> unalignedIndices;
 	
 	
-	public SuperAlignedModelDecorator(ComparedAlignment owner) {
+	public SuperAlignedmodelDecorator(ComparedAlignment owner, List<Integer> unalignedIndices) {
 		super(owner.getOriginal().getTokenSet().clone(), owner.getOriginal());
 		this.owner = owner;
+		this.unalignedIndices = unalignedIndices;
 		getTokenSet().add(SUPER_ALIGNMENT_GAP);
-		
 	}
 	
 	
-	private void createUnlignedIndexList() {
-		unalignedIndices = new ObservableList<Integer>(new ArrayList<Integer>());
-		
-		final SuperAlignedModelDecorator thisModel = this;
-		unalignedIndices.addListChangeListener(new ListChangeAdapter<Integer>() {
-			private Queue<TokenChangeEvent<Character>> waitingEvents = new ArrayDeque<TokenChangeEvent<Character>>();
-			
-			@Override
-			public void beforeElementsRemoved(ListRemoveEvent<Integer, Object> event) {
-				waitingEvents.clear();
-				List<Character> removedTokens = new ArrayList<Character>();
-				Iterator<Integer> idIterator = sequenceIDIterator();
-				while (idIterator.hasNext()) {
-					int id = idIterator.next();
-					removedTokens.clear();
-					int end = event.getIndex() + event.getAffectedElements().size();
-					for (int column = event.getIndex(); column < end; column++) {
-						removedTokens.add(getTokenAt(id, column));
-					}
-					waitingEvents.add(TokenChangeEvent.newRemoveInstance(thisModel, id, event.getIndex(), 
-							Collections.unmodifiableCollection(removedTokens)));
-				}
-			}
-			
-			@Override
-			public void afterElementsRemoved(ListRemoveEvent<Integer, Integer> event) {
-				while (!waitingEvents.isEmpty()) {
-					fireAfterTokenChange(waitingEvents.poll());
-				}
-			}
-			
-			@Override
-			public void afterElementsAdded(ListAddEvent<Integer> event) {
-				// TODO Auto-generated method stub
-				//event.getIndex()
-			}
-			
-			@Override
-			public void afterElementReplaced(ListReplaceEvent<Integer> event) {
-				//event.get
-				// TODO Auto-generated method stub
-				
-			}
-		});
+	private Collection<Character> createTokenCollection(int size) {
+		Collection<Character> result = new ArrayList<Character>();
+		for (int column = 0; column < size; column++) {
+			result.add(SUPER_ALIGNMENT_GAP);
+		}
+		result = Collections.unmodifiableCollection(result);
+		return result;
 	}
-
-
+	
+	
 	public ComparedAlignment getOwner() {
 		return owner;
 	}
@@ -117,8 +70,45 @@ public class SuperAlignedModelDecorator extends AbstractAlignmentModelDecorator<
 	 * 
 	 * @return the index of the according row in the underlying model of {@link #SUPER_GAP_INDEX}
 	 */
-	public List<Integer> getUnalignedIndices() {
+	protected List<Integer> getUnalignedIndices() {
 		return unalignedIndices;
+	}
+	
+	
+	public void insertSupergap(int start, int length) {
+		// Add super gap:
+		for (int pos = start; pos <= start + length - 1; pos++) {
+			unalignedIndices.add(pos,	SuperAlignedmodelDecorator.SUPER_GAP_INDEX);
+		}
+		
+		// Fire change events:
+		Collection<Character> addedTokens = createTokenCollection(length);
+		Iterator<Integer> iterator = sequenceIDIterator();
+		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
+			fireAfterTokenChange(TokenChangeEvent.newInsertInstance(this, iterator.next(), start, addedTokens));
+		}
+	}
+
+
+	public void removeSupergap(int start, int length) {
+		// Add super gap:
+		for (int pos = start; pos <= start + length - 1; pos++) {
+			if (unalignedIndices.get(start) == SuperAlignedmodelDecorator.SUPER_GAP_INDEX) {
+				unalignedIndices.remove(start);
+			}
+			else {
+				throw new IllegalArgumentException("Removing a supergap from index " + start + 
+						" is not possible, because there is no supergap present at this position, but a reference to position " + 
+						unalignedIndices.get(start) + " in the underlying alignment.");
+			}
+		}
+		
+		// Fire change events:
+		Collection<Character> removedTokens = createTokenCollection(length);
+		Iterator<Integer> iterator = sequenceIDIterator();
+		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
+			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
+		}
 	}
 
 
@@ -217,11 +207,5 @@ public class SuperAlignedModelDecorator extends AbstractAlignmentModelDecorator<
 	@Override
 	public void removeTokensAt(int sequenceID, int beginIndex, int endIndex) throws AlignmentSourceNotWritableException {
 		throw new AlignmentSourceNotWritableException(this);
-	}
-
-
-	@Override
-	public Set<AlignmentModelChangeListener> getChangeListeners() {
-		return getOwner().getOriginal().getChangeListeners();  //TODO Replace by other implementation.
 	}
 }

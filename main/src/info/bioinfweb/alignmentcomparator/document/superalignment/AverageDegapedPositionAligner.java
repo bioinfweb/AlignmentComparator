@@ -132,7 +132,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	private void calculateUnalignedIndices(Document document, Map<String, List<Double>> alignedPositions) {
 		for (String name : document.getAlignments().keyList()) {
-			List<Integer> unalignedIndices = document.getAlignments().get(name).getSuperAligned().getUnalignedIndices();
+			List<Integer> unalignedIndices = new ArrayList<Integer>(alignedPositions.get(name).size());
 			int unalignedIndex = 0;
 			for (Double position : alignedPositions.get(name)) {
 				if (position.isNaN()) {
@@ -143,6 +143,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 					unalignedIndex++;
 				}
 			}
+			document.getAlignments().get(name).createSuperaligned(unalignedIndices);
 		}
 	}
 	

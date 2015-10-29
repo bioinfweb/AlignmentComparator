@@ -14,7 +14,7 @@ import javax.swing.KeyStroke;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.SuperAlignedModelDecorator;
+import info.bioinfweb.alignmentcomparator.document.SuperAlignedmodelDecorator;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentArea;
@@ -90,11 +90,11 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	private AlignmentArea createComparisonPartArea(String alignmentName) {
 		AlignmentArea result = new AlignmentArea(this);
-		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperAligned(), false);
+		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperaligned(), false);
 		result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
 		
 		NucleotideTokenPainter painter = new NucleotideTokenPainter();
-		painter.getBackgroundColorMap().put(Character.toString(SuperAlignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
+		painter.getBackgroundColorMap().put(Character.toString(SuperAlignedmodelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
 		result.getPaintSettings().getTokenPainterList().set(0, painter);  //TODO Set amino acid painter, when necessary.
 		
 		//TODO Link order objects
@@ -123,7 +123,9 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		Iterator<String> iterator = getDocument().getAlignments().keySet().iterator();
 		while (iterator.hasNext()) {
 			String name = iterator.next();
-			getAlignmentAreas().add(createComparisonPartArea(name));
+			if (getDocument().getAlignments().get(name).hasSuperaligned()) {
+				getAlignmentAreas().add(createComparisonPartArea(name));
+			}
 		}
 		addSelectionListener();
 		//getAlignmentAreas().add(createCommentAlignmentArea());
@@ -141,7 +143,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		while (iterator.hasNext()) {
 			String name = iterator.next();
 			if ((pos >= getAlignmentAreas().size() - BOTTOM_AREAS_COUNT) || (!getAlignmentAreas().get(pos).getAlignmentModel().equals(
-					getDocument().getAlignments().get(name).getSuperAligned()))) {
+					getDocument().getAlignments().get(name).getSuperaligned()))) {
 				
 				return true;
 			}
@@ -185,12 +187,12 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		Iterator<String> iterator = getDocument().getAlignments().keySet().iterator();
 		while (iterator.hasNext()) {
 			String name = iterator.next();
-			AlignmentArea area = previousComparisonParts.get(getDocument().getAlignments().get(name).getSuperAligned());
+			AlignmentArea area = previousComparisonParts.get(getDocument().getAlignments().get(name).getSuperaligned());
 			if (area != null) {
 				getAlignmentAreas().add(area);
 				selectionSynchronizer.add(area.getSelection());
 			}
-			else {
+			else if (getDocument().getAlignments().get(name).hasSuperaligned()) {
 				getAlignmentAreas().add(createComparisonPartArea(name));  // selectionSynchronizer.add() is called inside createComparisonPartArea().
 			}			
 		}
@@ -229,10 +231,9 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	@Override
 	public void changeHappened(DocumentEvent e) {
 		if (updateNeeded()) {
-			System.out.println("update");
 			updateAlignments();
 		}
-		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign
+		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign (Still necessary?)
 		assignSize();  //TODO Needed?
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 	}

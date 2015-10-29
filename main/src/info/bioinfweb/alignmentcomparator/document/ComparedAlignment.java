@@ -9,14 +9,13 @@ import info.bioinfweb.libralign.model.AlignmentModel;
 
 public class ComparedAlignment {
 	private AlignmentModel<Character> original;
-	private SuperAlignedModelDecorator superAligned;
+	private SuperAlignedmodelDecorator superAligned = null;
 	private List<Double> averagePositions = null;
 	
 	
 	public ComparedAlignment(AlignmentModel<Character> original) {
 		super();
 		this.original = original;
-		superAligned = new SuperAlignedModelDecorator(this);  // Original must have been set before.
 	}
 
 
@@ -25,8 +24,18 @@ public class ComparedAlignment {
 	}
 	
 	
-	public SuperAlignedModelDecorator getSuperAligned() {
+	public SuperAlignedmodelDecorator getSuperaligned() {
 		return superAligned;
+	}
+	
+	
+	public void createSuperaligned(List<Integer> unalignedIndices) {
+		superAligned = new SuperAlignedmodelDecorator(this, unalignedIndices);  // Original must have been set before.
+	}
+	
+	
+	public boolean hasSuperaligned() {
+		return superAligned != null;
 	}
 	
 	

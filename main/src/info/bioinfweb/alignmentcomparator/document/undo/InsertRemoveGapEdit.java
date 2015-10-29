@@ -19,10 +19,7 @@
 package info.bioinfweb.alignmentcomparator.document.undo;
 
 
-import java.util.List;
-
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.SuperAlignedModelDecorator;
 
 
 
@@ -41,27 +38,12 @@ public abstract class InsertRemoveGapEdit extends DocumentEdit {
 	
 	
 	protected void insert() {
-		List<Integer> unalignedIndices = getDocument().getAlignments().get(
-				getAlignmentName()).getSuperAligned().getUnalignedIndices();
-		for (int pos = getStartPos(); pos <= getStartPos() + getLength() - 1; pos++) {
-			unalignedIndices.add(pos,	SuperAlignedModelDecorator.SUPER_GAP_INDEX);
-		}
+		getDocument().getAlignments().get(getAlignmentName()).getSuperaligned().insertSupergap(getStartPos(), getLength());
 	}
 	
 	
 	protected void remove() {
-		List<Integer> unalignedIndices = getDocument().getAlignments().get(
-				getAlignmentName()).getSuperAligned().getUnalignedIndices();
-		for (int pos = getStartPos(); pos <= getStartPos() + getLength() - 1; pos++) {
-			if (unalignedIndices.get(getStartPos()) == SuperAlignedModelDecorator.SUPER_GAP_INDEX) {
-				unalignedIndices.remove(getStartPos());
-			}
-			else {
-				throw new IllegalArgumentException("Removing a supergap from index " + getStartPos() + 
-						" is not possible, because there is no supergap present at this position, but a reference to position " + 
-						unalignedIndices.get(getStartPos()) + " in the underlying alignment.");
-			}
-		}
+		getDocument().getAlignments().get(getAlignmentName()).getSuperaligned().removeSupergap(getStartPos(), getLength());
 	}
 
 
