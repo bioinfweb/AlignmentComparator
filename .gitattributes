@@ -40,9 +40,6 @@ main/src/info/bioinfweb/alignmentcomparator/document/superalignment/CompareAlgor
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/ExternalProgramAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/MuscleProfileAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/data/CharSequenceSuperAlignment.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/data/ProfileSuperAlignment.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/data/SuperAlignment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/AddCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/AddRemoveCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/ChangeCommentTextEdit.java -text svneol=unset#text/plain

@@ -19,7 +19,7 @@ import info.bioinfweb.libralign.model.utils.DegapedIndexCalculator;
 
 
 public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
-	private static double REMOVE_LATER = -1.0;
+	private static final double REMOVE_LATER = -1.0;
 	
 	
 	private Deque<Double> calculateAverageIndices(AlignmentModel<Character> model) {
