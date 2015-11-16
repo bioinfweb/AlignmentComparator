@@ -1,7 +1,9 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment.maximumsequencematch;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -9,12 +11,15 @@ import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.tokenset.AbstractTokenSet;
-import info.bioinfweb.libralign.model.utils.DegapedIndexCalculator;
 
 
 
 public class MaximumSequenceMatchAligner implements SuperAlignmentAlgorithm {
+	private static final int NO_GAP = 0;
+	private static final int GAP_IN_FIRST = 1;
+	private static final int GAP_IN_SECOND = 2;
+	
+	
 	private Iterator<Integer> createSequenceIDIterator(Document alignments) {
 		return alignments.getAlignments().getValue(0).getOriginal().sequenceIDIterator();
 	}
@@ -29,93 +34,60 @@ public class MaximumSequenceMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private AlignmentNode createGraph(Document alignments) {  //TODO Can this method also be efficiently implemented with more than two models? 
-		// Create index calculators:
-		DegapedIndexCalculator<Character>[] calculators = new DegapedIndexCalculator[alignments.getAlignments().size()];
-		for (int i = 0; i < calculators.length; i++) {
-			calculators[i] = new DegapedIndexCalculator<Character>(alignments.getAlignments().get(
-					alignments.getAlignments().get(i)).getOriginal()); 
-		}
+	private Map<Integer, List<int[]>> createShiftLists(Document alignments) {  //TODO Can this method also be efficiently implemented with more than two models? 
+		Map<Integer, List<int[]>> result = new TreeMap<>();
+		int alignmentCount = alignments.getAlignments().size();
+		int[] positions = new int[alignmentCount];
+		int[] columnCounts = new int[alignmentCount];
+		boolean[] gaps = new boolean[alignmentCount];
 		
-		// Create map of current column positions:
-//		Map<Integer, int[]> positionsMap = new TreeMap<Integer, int[]>();
-//		int alignmentCount = alignments.getAlignments().size();
-//		Iterator<Integer> idIterator = 
-//				alignments.getAlignments().get(alignments.getAlignments().get(0)).getOriginal().sequenceIDIterator();
-//		while (idIterator.hasNext()) {
-//			int[] positions = new int[alignmentCount];
-//			for (int i = 0; i < positions.length; i++) {
-//				positions[i] = 0;
-//			}
-//			positionsMap.put(idIterator.next(), positions);
-//		}
-
-		//TODO Algorithmus wie im Wiki beschrieben implementieren und dabei eine Datenstruktur füllen, die 
-		//     Positionen der Supergaps und Verknüpfungen der alternativen Alignierungen abbildet.
-		
-		Map<Integer, AlignmentNode> currentNodes = new TreeMap<Integer, AlignmentNode>();
-		
-		// Create start node:
-		AlignmentNode start = new AlignmentNode();
-		start.setPosition(0, -1);
-		start.setPosition(1, -1);
 		Iterator<Integer> idIterator = createSequenceIDIterator(alignments);
-		while (idIterator.hasNext()) {  // Add all sequences to the start node
-			start.getSequences().add(idIterator.next());
-		}
-		
-		//TODO Create end node here?
-		
-		// Set start node as the current node for all sequences:
-		idIterator = createSequenceIDIterator(alignments);
-		while (idIterator.hasNext()) {  // Add all sequences to the start node
-			currentNodes.put(idIterator.next(), start);
-		}
-		
-		// Add all possible superalignments to graph:
-		int minColumnCount = minAlignmentLength(alignments);
-		int[] unalignedPositions = new int[alignments.getAlignments().size()];
-		int[] alignedPositions = new int[alignments.getAlignments().size()];
-		boolean[] gaps = new boolean[alignments.getAlignments().size()];
-		for (int column = 0; column < minColumnCount; column++) {
-			idIterator = createSequenceIDIterator(alignments);
-			while (idIterator.hasNext()) {
-				int sequenceID = idIterator.next();
-				for (int i = 0; i < alignments.getAlignments().size(); i++) {
-					alignedPositions[i] = Math.max(column, currentNodes.get(sequenceID).getPosition(i)); 
+		while (idIterator.hasNext()) {
+			int sequenceID = idIterator.next();
+			List<int[]> shiftList = new ArrayList<int[]>();
+			
+			for (int i = 0; i < positions.length; i++) {
+				positions[i] = 0;
+				columnCounts[i] = alignments.getAlignments().getValue(i).getOriginal().getMaxSequenceLength();
+			}
+			
+			int currentCase = NO_GAP;
+			while ((positions[0] < columnCounts[0]) && (positions[1] < columnCounts[1])) {
+				for (int i = 0; i < gaps.length; i++) {
+					AlignmentModel<Character> model = alignments.getAlignments().getValue(i).getOriginal(); 
+					gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, positions[i]));
 				}
 				
-				if (!((alignedPositions[0] > column) && (alignedPositions[1] > column))) {
-					for (int i = 0; i < alignments.getAlignments().size(); i++) {
-						char token = alignments.getAlignments().getValue(i).getOriginal().getTokenAt(sequenceID, alignedPositions[i]);
-						gaps[i] = (token == AbstractTokenSet.DEFAULT_GAP_REPRESENTATION);
-						unalignedPositions[i] = calculators[i].degapedIndex(sequenceID, alignedPositions[i]);
+				int previousCase = currentCase;
+				if (gaps[0] && !gaps[1]) {
+					positions[0]++;
+					currentCase = GAP_IN_FIRST;
+					if (positions[1] == 0) {
+						previousCase = currentCase;  // Avoid always creating entry in first step. 
 					}
-					
-					if (gaps[0] && !gaps[1]) {
-						//TODO Add node for new supergap (if there is not an according node present from another sequence)
-						// Evtl. ist es besser Knoten zu erzeugen und dessen Indices in kommenden Schritten zu erhöhen, direkt bis zum 
-						// Ende einer Supergap zu laufen?
-						// - Kann es zu Problemen kommen, wenn eine "Vereinigungskante" zu einem Knoten erstellt wird, der danach noch
-						//   vergrößert wird?
-						// - Weiteres Problem: Koten kann (ohne Vergleich mit vorherigem) nicht angesehen werden, in welchem Alignment 
-						//   eine Supergap eingefügt wurde (ob der selbe Fall wie momentan vorlag). Bei Vereingingungen können sogar
-						//   veschiedene Fälle zu diesem Knoten geführt haben. => Doppelte Verkettung (also zweite Zeigerliste pro Knoten)
-						//   kann eine Lösung sein.
-						// => Ist dieses Modell zu kompliziert und bietet zu wenig Vorteile im Vergleich zu einer DP-Matrix?
+				}
+				else if (!gaps[0] && gaps[1]) {
+					positions[1]++;
+					currentCase = GAP_IN_SECOND;
+					if (positions[0] == 0) {
+						previousCase = currentCase;  // Avoid always creating entry in first step. 
 					}
-					else if (!gaps[0] && gaps[1]) {
-						//TODO Add node for new supergap
-					}
-					else {
-						
-					}
-					//TODO Check three cases and possibly add new node to graph and link it to the previous node(s)
+				}
+				else {
+					positions[0]++;
+					positions[1]++;
+					currentCase = NO_GAP;
+				}
+				
+				if (previousCase != currentCase) {
+					shiftList.add(positions);
 				}
 			}
+			
+			result.put(sequenceID, shiftList);
 		}
 		
-		return start;
+		return result;
 	}
 	
 	
@@ -125,7 +97,8 @@ public class MaximumSequenceMatchAligner implements SuperAlignmentAlgorithm {
 			throw new IllegalArgumentException("This algorithm currently only supports comparing two alignments.");
 		}
 		else {
-			//TODO implement
+			Map<Integer, List<int[]>> shiftLists = createShiftLists(alignments);
+			//TODO Extract optimal path from set of lists.
 		}
 	}
 }
