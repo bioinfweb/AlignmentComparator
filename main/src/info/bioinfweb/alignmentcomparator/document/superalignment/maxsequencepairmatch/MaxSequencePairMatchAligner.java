@@ -124,7 +124,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();
 					int alignedPosition = startColumns[i] + position;
 					gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedPosition));
-					degapedIndices[i] = calculators[0].degapedIndex(sequenceID, alignedPosition);
+					degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedPosition);
 				}
 				
 				if (!gaps[0] && !gaps[1] && (degapedIndices[0] == degapedIndices[1])) {
@@ -146,29 +146,29 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private void linkNodeToOptimalOpenEnd(Document document, Map<Integer, AlignmentNode> openEnds, AlignmentNode currentNode) {
+	private void linkNodeToOptimalOpenEnd(Document document, Map<Integer, AlignmentNode> openEnds, AlignmentNode newNode) {
 		AlignmentNode optimalPreviousNode = null;
 		int maxScore = -1;
 		if (openEnds.size() < document.getAlignments().getValue(0).getOriginal().getSequenceCount()) {  // If at least one open end is the start of the superalignment:
 			maxScore = calculateScore(document, new int[]{0, 0},  // Score to superalignment start 
-					Math.min(currentNode.getPosition(0), currentNode.getPosition(1)));
+					Math.min(newNode.getPosition(0), newNode.getPosition(1)));
 		}
 		
 		for (AlignmentNode otherNode : openEnds.values()) {
-			int length = Math.min(currentNode.getPosition(0) - otherNode.getPosition(0), 
-					currentNode.getPosition(1) - otherNode.getPosition(1));
+			int length = Math.min(newNode.getPosition(0) - otherNode.getPosition(0), 
+					newNode.getPosition(1) - otherNode.getPosition(1));
 			
-			if (length > 0) {
+			if (length > 0) {  // Also avoids linking the node to itself
 				int currentScore = otherNode.getOptimalScore() + calculateScore(document, otherNode.getPositions(), length);
 				if (currentScore > maxScore) {
-					optimalPreviousNode = currentNode;
+					optimalPreviousNode = otherNode;
 					maxScore = currentScore;
 				}
 			}
 		}
 		
-		currentNode.setOptimalPreviousNode(optimalPreviousNode);  // null will be set here, if the score to the superalignment start was maximal.
-		currentNode.setOptimalScore(maxScore);
+		newNode.setOptimalPreviousNode(optimalPreviousNode);  // null will be set here, if the score to the superalignment start was maximal.
+		newNode.setOptimalScore(maxScore);
 	}
 	
 	
@@ -190,7 +190,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		// Calculate maximum score from open ends to the end of the superalignment: 
 		int ends[] = new int[document.getAlignments().size()];
 		for (int i = 0; i < ends.length; i++) {
-			ends[i] = document.getAlignments().getValue(0).getOriginal().getMaxSequenceLength(); 
+			ends[i] = document.getAlignments().getValue(i).getOriginal().getMaxSequenceLength(); 
 		}
 		AlignmentNode result = new AlignmentNode(ends);
 		
@@ -222,18 +222,20 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					(currentNode.getPosition(1) - previousPositions[1]);
 			if (superGapLength < 0) {
 				for (int i = 0; i < -superGapLength; i++) {
-					unalignedIndexLists[1].addFirst(Document.GAP_INDEX);
+					unalignedIndexLists[0].addFirst(Document.GAP_INDEX);
 				}
 			}
 			else if (superGapLength > 0) {
 				for (int i = 0; i < superGapLength; i++) {
-					unalignedIndexLists[0].addFirst(Document.GAP_INDEX);
+					unalignedIndexLists[1].addFirst(Document.GAP_INDEX);
 				}
 			}
 			
 			// Insert link indices:
 			for (int alignmentIndex = 0; alignmentIndex < unalignedIndexLists.length; alignmentIndex++) {
-				for (int columnIndex = currentNode.getPosition(0) - 1; columnIndex >= previousPositions[0]; columnIndex--) {
+				for (int columnIndex = currentNode.getPosition(alignmentIndex) - 1; columnIndex >= previousPositions[alignmentIndex]; 
+						columnIndex--) {
+					
 					unalignedIndexLists[alignmentIndex].addFirst(columnIndex);
 				}
 			}
@@ -256,9 +258,13 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		}
 		else {
 			ShiftQueues shiftQueues = createShiftQueues(document);
-			System.out.println(shiftQueues);
 			createCalculators(document);
 			AlignmentNode end = createGraph(document, shiftQueues);
+//			AlignmentNode node = end;
+//			while (node != null) {
+//				System.out.println(node + " ");
+//				node = node.getOptimalPreviousNode();
+//			}
 			createSuperAlignment(document, end);
 		}
 	}

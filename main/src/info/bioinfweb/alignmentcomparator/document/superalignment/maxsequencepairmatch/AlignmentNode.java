@@ -57,4 +57,10 @@ public class AlignmentNode {
 	public int getOptimalScore() {
 		return optimalScore;
 	}
+
+
+	@Override
+	public String toString() {
+		return "(" + getPosition(0) + ", " + getPosition(1) + "):" + getOptimalScore();  //TODO Refactor method, if more than two indices should be supported in the future.
+	}
 }
