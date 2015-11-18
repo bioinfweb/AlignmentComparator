@@ -47,6 +47,7 @@ public class AlgorithmPreferencesPanelFactory {
 
   
   private void fillList() {
+  	panels.put(CompareAlgorithm.MAX_SEQUENCE_PAIR_MATCH, new MaxSequencePairMatchPanel());
   	panels.put(CompareAlgorithm.AVERAGE_UNGAPED_POSITION, new AverageDegapedPositionPanel());
   	panels.put(CompareAlgorithm.MUSCLE_PROFILE, new MuscleProfilePanel());
   }

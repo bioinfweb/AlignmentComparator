@@ -1,4 +1,4 @@
-package info.bioinfweb.alignmentcomparator.document.superalignment.maximumsequencepairmatch;
+package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
 
 

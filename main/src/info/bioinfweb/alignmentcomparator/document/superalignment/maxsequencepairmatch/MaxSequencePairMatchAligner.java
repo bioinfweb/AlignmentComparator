@@ -1,8 +1,9 @@
-package info.bioinfweb.alignmentcomparator.document.superalignment.maximumsequencepairmatch;
+package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +19,7 @@ import info.bioinfweb.libralign.model.utils.DegapedIndexCalculator;
 
 
 
-public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm {
+public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private static final int NO_GAP = 0;
 	private static final int GAP_IN_FIRST = 1;
 	private static final int GAP_IN_SECOND = 2;
@@ -47,6 +48,9 @@ public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm 
 		int[] positions = new int[alignmentCount];
 		int[] columnCounts = new int[alignmentCount];
 		boolean[] gaps = new boolean[alignmentCount];
+		for (int i = 0; i < columnCounts.length; i++) {
+			columnCounts[i] = document.getAlignments().getValue(i).getOriginal().getMaxSequenceLength();
+		}
 		
 		Iterator<Integer> idIterator = createSequenceIDIterator(document);
 		while (idIterator.hasNext()) {
@@ -55,7 +59,6 @@ public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm 
 			
 			for (int i = 0; i < positions.length; i++) {
 				positions[i] = 0;
-				columnCounts[i] = document.getAlignments().getValue(i).getOriginal().getMaxSequenceLength();
 			}
 			
 			int currentCase = NO_GAP;
@@ -65,29 +68,22 @@ public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm 
 					gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, positions[i]));
 				}
 				
-				int previousCase = currentCase;
 				if (gaps[0] && !gaps[1]) {
 					positions[0]++;
 					currentCase = GAP_IN_FIRST;
-					if (positions[1] == 0) {
-						previousCase = currentCase;  // Avoid always creating entry in first step. 
-					}
 				}
 				else if (!gaps[0] && gaps[1]) {
 					positions[1]++;
 					currentCase = GAP_IN_SECOND;
-					if (positions[0] == 0) {
-						previousCase = currentCase;  // Avoid always creating entry in first step. 
-					}
 				}
 				else {
+					if (currentCase != NO_GAP) {
+						shiftList.add(Arrays.copyOf(positions, 2));
+					}
+					
 					positions[0]++;
 					positions[1]++;
 					currentCase = NO_GAP;
-				}
-				
-				if (previousCase != currentCase) {
-					shiftList.add(positions);
 				}
 			}
 		}
@@ -260,6 +256,7 @@ public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm 
 		}
 		else {
 			ShiftQueues shiftQueues = createShiftQueues(document);
+			System.out.println(shiftQueues);
 			createCalculators(document);
 			AlignmentNode end = createGraph(document, shiftQueues);
 			createSuperAlignment(document, end);

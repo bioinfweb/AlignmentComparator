@@ -40,9 +40,9 @@ main/src/info/bioinfweb/alignmentcomparator/document/superalignment/CompareAlgor
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/ExternalProgramAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/MuscleProfileAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maximumsequencepairmatch/AlignmentNode.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maximumsequencepairmatch/MaximumSequencePairMatchAligner.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maximumsequencepairmatch/ShiftQueues.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/AlignmentNode.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/MaxSequencePairMatchAligner.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/ShiftQueues.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/AddCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/AddRemoveCommentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/ChangeCommentTextEdit.java -text svneol=unset#text/plain
@@ -92,6 +92,7 @@ main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/StartComparisonDialog.ja
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AlgorithmPreferencesPanelFactory.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AverageDegapedPositionPanel.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/MaxSequencePairMatchPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/MuscleProfilePanel.java -text svneol=unset#text/plain
 main/src/resources/about/Style.css -text svneol=unset#text/plain
 main/src/resources/symbols/Delete16.png -text

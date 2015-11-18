@@ -22,5 +22,6 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 public enum CompareAlgorithm {
   MUSCLE_PROFILE,
-	AVERAGE_UNGAPED_POSITION;
+	AVERAGE_UNGAPED_POSITION,
+	MAX_SEQUENCE_PAIR_MATCH;
 }
