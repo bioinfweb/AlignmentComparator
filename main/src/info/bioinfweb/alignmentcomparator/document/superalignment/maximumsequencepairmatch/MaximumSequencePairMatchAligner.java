@@ -205,7 +205,7 @@ public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm 
 	
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void createSuperAlignment(Document document, AlignmentNode end) {
-		Deque[] unalignedIndexLists = new Deque[document.getAlignments().size()];
+		ArrayDeque[] unalignedIndexLists = new ArrayDeque[document.getAlignments().size()];  //TODO Does inserting on the left really happen in contant time or are all other elements moved in each call? 
 		for (int i = 0; i < unalignedIndexLists.length; i++) {
 			unalignedIndexLists[i] = new ArrayDeque<Integer>(
 					document.getAlignments().getValue(i).getOriginal().getMaxSequenceLength());  //TODO Possibly multiply by factor.
@@ -247,7 +247,8 @@ public class MaximumSequencePairMatchAligner implements SuperAlignmentAlgorithm 
 		
 		// Create superalignment decorators:
 		for (int alignmentIndex = 0; alignmentIndex < unalignedIndexLists.length; alignmentIndex++) {
-			document.getAlignments().getValue(alignmentIndex).createSuperaligned((List)unalignedIndexLists[alignmentIndex]);
+			document.getAlignments().getValue(alignmentIndex).createSuperaligned(new ArrayList(unalignedIndexLists[alignmentIndex]));
+			unalignedIndexLists[alignmentIndex] = null;  // Allow removing copy of list from memory.
 		}
 	}
 	
