@@ -25,7 +25,9 @@ import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
 import info.bioinfweb.libralign.model.AlignmentModel;
+import info.bioinfweb.libralign.model.factory.AlignmentModelFactory;
 import info.bioinfweb.libralign.model.factory.BioPolymerCharAlignmentModelFactory;
+import info.bioinfweb.libralign.model.implementations.SequenceIDManager;
 import info.bioinfweb.libralign.model.io.AlignmentDataReader;
 
 import java.awt.event.ActionEvent;
@@ -41,6 +43,8 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 public class CompareAlignmentsAction extends DocumentAction {
   private StartComparisonDialog dialog = null;
+  private AlignmentModelFactory<Character> alignmentModelFactory = 
+  		new BioPolymerCharAlignmentModelFactory(new SequenceIDManager());
   
   
   public CompareAlignmentsAction(MainFrame mainFrame) {
@@ -56,7 +60,7 @@ public class CompareAlignmentsAction extends DocumentAction {
   
   private AlignmentModel<Character> loadAlignment(File file) throws Exception {
   	AlignmentDataReader reader = new AlignmentDataReader(new FASTAEventReader(file, true),  //TODO Support other formats. (Implement factory or GUI components in JPhyloIO that allow format selection.) 
-  			new BioPolymerCharAlignmentModelFactory());
+  			alignmentModelFactory);
   	reader.readAll();
   	return (AlignmentModel<Character>)reader.getAlignmentModelReader().getCompletedModels().get(0);  //TODO Handle additional alignments read from the file or (e.g. Nexus) files without alignments.
   }

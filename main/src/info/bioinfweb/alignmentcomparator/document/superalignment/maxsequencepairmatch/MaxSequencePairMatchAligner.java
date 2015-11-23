@@ -5,10 +5,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.TreeMap;
 
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
@@ -154,15 +156,19 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					Math.min(newNode.getPosition(0), newNode.getPosition(1)));
 		}
 		
+		Set<int[]> calculatedPositions = new HashSet<int[]>();  //TODO Is a map at all necessary or would a set for openEnds be sufficient? => If steps that no pair makes are allowed, the map does probably not make sense at all and a (full?) DP-matric must be used instead.
 		for (AlignmentNode otherNode : openEnds.values()) {
-			int length = Math.min(newNode.getPosition(0) - otherNode.getPosition(0), 
-					newNode.getPosition(1) - otherNode.getPosition(1));
-			
-			if (length > 0) {  // Also avoids linking the node to itself
-				int currentScore = otherNode.getOptimalScore() + calculateScore(document, otherNode.getPositions(), length);
-				if (currentScore > maxScore) {
-					optimalPreviousNode = otherNode;
-					maxScore = currentScore;
+			if (!calculatedPositions.contains(otherNode.getPositions())) {  // Avoid calculating the same distance several times.
+				int length = Math.min(newNode.getPosition(0) - otherNode.getPosition(0), 
+						newNode.getPosition(1) - otherNode.getPosition(1));
+				
+				if (length > 0) {  // Also avoids linking the node to itself
+					int currentScore = otherNode.getOptimalScore() + calculateScore(document, otherNode.getPositions(), length);
+					calculatedPositions.add(otherNode.getPositions());
+					if (currentScore > maxScore) {
+						optimalPreviousNode = otherNode;
+						maxScore = currentScore;
+					}
 				}
 			}
 		}
@@ -175,6 +181,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private AlignmentNode createGraph(Document document, ShiftQueues shiftQueues) {
 		Map<Integer, AlignmentNode> openEnds = new TreeMap<>();
 		
+		System.out.println("3.1");
 		// Create graph with optimal paths:
 		while (!shiftQueues.isEmpty()) {
 			int sequenceID = shiftQueues.nextSequenceID();
@@ -184,8 +191,10 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			if (currentNode.getOptimalScore() == -1) {  // new node
 				linkNodeToOptimalOpenEnd(document, openEnds, currentNode);
 			}
+			System.out.println("3.2 " + sequenceID + " " + currentNode);
 			openEnds.put(sequenceID, currentNode);  // Must not happen before score calculation.
 		}
+		System.out.println("3.3");
 		
 		// Calculate maximum score from open ends to the end of the superalignment: 
 		int ends[] = new int[document.getAlignments().size()];
@@ -257,15 +266,29 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			throw new IllegalArgumentException("This algorithm currently only supports comparing two alignments.");
 		}
 		else {
-			ShiftQueues shiftQueues = createShiftQueues(document);
-			createCalculators(document);
-			AlignmentNode end = createGraph(document, shiftQueues);
-//			AlignmentNode node = end;
-//			while (node != null) {
-//				System.out.println(node + " ");
-//				node = node.getOptimalPreviousNode();
+//			Iterator<Integer> iterator = document.getAlignments().getValue(0).getOriginal().sequenceIDIterator();
+//			while (iterator.hasNext()) {
+//				int sequenceID = iterator.next();
+//				System.out.println(sequenceID + ": " + document.getAlignments().getValue(0).getOriginal().sequenceNameByID(sequenceID) +
+//						" " + document.getAlignments().getValue(1).getOriginal().sequenceNameByID(sequenceID));
 //			}
+			
+			
+			System.out.println(1);
+			ShiftQueues shiftQueues = createShiftQueues(document);
+			System.out.println(shiftQueues);
+			System.out.println(2);
+			createCalculators(document);
+			System.out.println(3);
+			AlignmentNode end = createGraph(document, shiftQueues);
+			System.out.println(4);
+			AlignmentNode node = end;
+			while (node != null) {
+				System.out.println(node + " ");
+				node = node.getOptimalPreviousNode();
+			}
 			createSuperAlignment(document, end);
+			System.out.println(5);
 		}
 	}
 }
