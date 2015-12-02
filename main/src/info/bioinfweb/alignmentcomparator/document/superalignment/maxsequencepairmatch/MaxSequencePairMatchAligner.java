@@ -80,11 +80,16 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		calculators[1] = new DegapedIndexCalculator<Character>(verticalModel);
 		int startColumn = 1;
 		for (int row = 1; row < scores[0].length; row++) {
-			int column = startColumn;
+			int column;
+			for (column = 0; column < startColumn; column++) {
+				directions[column][row] = UP;
+			}
+			
+			//int column = startColumn;
 			boolean beforeStart = true;
 			int score = 0;
 			calculators[0] = new DegapedIndexCalculator<Character>(horizontalModel);
-			System.out.println(column + ": ");
+			System.out.print(row + " " + column);
 			while ((column < scores.length) && ((score > 0) || beforeStart)) {
 				score = calculateScore(document, new int[]{column - 1, row - 1}, calculators);
 				if (score == -1) {
@@ -109,14 +114,14 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				if (score > 0) {
 					beforeStart = false;
 				}
-//				else if (beforeStart) {
-//					startColumn = column;  //TODO increase column before?
-//				}
 				column++;
 			}
-			System.out.println(row + " " + startColumn + " " + column);
-		}
-		
+			System.out.println(" " + column);
+
+			for (; column < directions.length; column++) {
+				directions[column][row] = LEFT;
+			}
+		}		
 		
 		// Calculate cells:
 //		DegapedIndexCalculator[] calculators = new DegapedIndexCalculator[2];
@@ -135,9 +140,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 //					directions[column][row] = UP;
 //				}
 //				
-//				System.out.print(scores[column][row] + " " + directions[column][row] + ", ");
+//				//System.out.print(scores[column][row] + " " + directions[column][row] + ", ");
 //			}
-//			System.out.println(/*column*/);
+//			System.out.println(column);
 //		}
 		
 		return directions;
