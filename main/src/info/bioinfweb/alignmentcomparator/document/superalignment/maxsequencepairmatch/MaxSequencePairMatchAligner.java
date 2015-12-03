@@ -16,6 +16,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private static final int DIAGONAL = 0;
 	private static final int UP = 1;
 	private static final int LEFT = 2;
+
+	private static final int ALL_COLUMNS_LEFT_OF_ROWS = -1;
+	private static final int ALL_COLUMNS_RIGHT_OF_ROWS = -2;
 	
 	
 	private Iterator<Integer> createSequenceIDIterator(Document alignments) {
@@ -25,7 +28,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	
 	private int calculateScore(Document document, int[] alignedIndices,	DegapedIndexCalculator[] calculators) {
 		int result = 0;
-		boolean anyMatch = false;
+		boolean allColumnsLeftOfRows = true;
+		boolean allColumnsRightOfRows = true;
 		boolean[] gaps = new boolean[2];
 		int[] degapedIndices = new int[2];
 		Iterator<Integer> idIterator = createSequenceIDIterator(document);
@@ -37,19 +41,33 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
 			}
 			
-			if (!gaps[0] && !gaps[1]) {
-				if (degapedIndices[0] == degapedIndices[1]) {
+			if (degapedIndices[0] == degapedIndices[1]) {
+				if (!gaps[0] && !gaps[1]) {
 					result++;
-					anyMatch = true;
+					
+					allColumnsLeftOfRows = false; 
+					allColumnsRightOfRows = false;
+				}
+				else if (gaps[0] && !gaps[1]) {
+					allColumnsRightOfRows = false;
+				}
+				else if (!gaps[0] && gaps[1]) {
+					allColumnsLeftOfRows = false;
 				}
 			}
-			else {
-				anyMatch = true;
+			else if (degapedIndices[0] < degapedIndices[1]) {
+				allColumnsRightOfRows = false;
+			}
+			else {  // degapedIndices[0] > degapedIndices[1]
+				allColumnsLeftOfRows = false;
 			}
 		}
-		//System.out.println("calculateScore: " + alignedIndices[0] + " " + alignedIndices[1] + " " + result);
-		if (!anyMatch) {
-			return -1;
+		
+		if (allColumnsLeftOfRows) {
+			return ALL_COLUMNS_LEFT_OF_ROWS;
+		}
+		else if (allColumnsRightOfRows) {
+			return ALL_COLUMNS_RIGHT_OF_ROWS;
 		}
 		else {
 			return result;
@@ -85,16 +103,18 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				directions[column][row] = UP;
 			}
 			
-			//int column = startColumn;
-			boolean beforeStart = true;
-			int score = 0;
+			boolean allColumnsRightOfRows = false;
 			calculators[0] = new DegapedIndexCalculator<Character>(horizontalModel);
 			System.out.print(row + " " + column);
-			while ((column < scores.length) && ((score > 0) || beforeStart)) {
-				score = calculateScore(document, new int[]{column - 1, row - 1}, calculators);
-				if (score == -1) {
-					if (beforeStart) {
-						startColumn = column + 1;  //TODO + 1 ?
+			while ((column < scores.length) && !allColumnsRightOfRows) {
+				int score = calculateScore(document, new int[]{column - 1, row - 1}, calculators);
+				
+				if (score < 0) {
+					if (score == ALL_COLUMNS_LEFT_OF_ROWS) {
+						startColumn = column /*+ 1*/;
+					}
+					else if (score == ALL_COLUMNS_RIGHT_OF_ROWS) {
+						allColumnsRightOfRows = true;
 					}
 					score = 0;
 				}
@@ -109,15 +129,10 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					scores[column][row] = scores[column][row - 1]; 
 					directions[column][row] = UP;
 				}
-				//System.out.print(scores[column][row] + " " + directions[column][row] + ", ");
-
-				if (score > 0) {
-					beforeStart = false;
-				}
 				column++;
 			}
-			System.out.println(" " + column);
-
+			System.out.println(" " + column);			
+			
 			for (; column < directions.length; column++) {
 				directions[column][row] = LEFT;
 			}
