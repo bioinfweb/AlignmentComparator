@@ -94,6 +94,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			directions[0][row] = UP;
 		}
 		
+		// Calculate cells:
 		DegapedIndexCalculator[] calculators = new DegapedIndexCalculator[2];
 		calculators[1] = new DegapedIndexCalculator<Character>(verticalModel);
 		int startColumn = 1;
@@ -111,7 +112,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				
 				if (score < 0) {
 					if (score == ALL_COLUMNS_LEFT_OF_ROWS) {
-						startColumn = column /*+ 1*/;
+						startColumn = column;
 					}
 					else if (score == ALL_COLUMNS_RIGHT_OF_ROWS) {
 						allColumnsRightOfRows = true;
