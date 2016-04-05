@@ -24,7 +24,7 @@ import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.NucleotideTokenPainter;
-import info.bioinfweb.libralign.dataarea.implementations.SequenceIndexArea;
+import info.bioinfweb.libralign.dataarea.implementations.sequenceindex.SequenceIndexArea;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
 

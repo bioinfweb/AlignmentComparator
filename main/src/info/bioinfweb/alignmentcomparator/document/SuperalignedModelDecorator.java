@@ -68,10 +68,10 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	 * A list that maps each column in this superalignment model to a column in the underlying model.
 	 * Entries for columns filled with supergaps contain {@link #SUPER_GAP_INDEX}.
 	 * 
-	 * @return the index of the according row in the underlying model of {@link #SUPER_GAP_INDEX}
+	 * @return an unmodifiable list
 	 */
-	protected List<Integer> getUnalignedIndices() {
-		return unalignedIndices;
+	public List<Integer> getUnalignedIndices() {
+		return Collections.unmodifiableList(unalignedIndices);
 	}
 	
 	
@@ -113,7 +113,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	
 	
 	public boolean containsSupergap(int column) {
-		return getUnalignedIndices().get(column) == SUPER_GAP_INDEX;
+		return unalignedIndices.get(column) == SUPER_GAP_INDEX;
 	}
 
 
