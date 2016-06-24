@@ -23,6 +23,7 @@ import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.factory.AlignmentModelFactory;
@@ -59,7 +60,7 @@ public class CompareAlignmentsAction extends DocumentAction {
   
   
   private AlignmentModel<Character> loadAlignment(File file) throws Exception {
-  	AlignmentDataReader reader = new AlignmentDataReader(new FASTAEventReader(file, true),  //TODO Support other formats. (Implement factory or GUI components in JPhyloIO that allow format selection.) 
+  	AlignmentDataReader reader = new AlignmentDataReader(new FASTAEventReader(file, new ReadWriteParameterMap()),  //TODO Support other formats. (Implement factory or GUI components in JPhyloIO that allow format selection.) 
   			alignmentModelFactory);
   	reader.readAll();
   	return (AlignmentModel<Character>)reader.getAlignmentModelReader().getCompletedModels().get(0);  //TODO Handle additional alignments read from the file or (e.g. Nexus) files without alignments.
