@@ -11,6 +11,6 @@ public interface IOConstants {
 
 	public static final String SUPER_GAP_ENTITY = "-";
 	
-	public static final String ONTOLOGY_NAMESPACE_URI = "http://bioinfweb.info/xmlns/JPhyloIO";  //TODO Add additional subfolder?
-	public static final QName UNALIGNED_INDICES_PREDICATE = new QName(ONTOLOGY_NAMESPACE_URI, "unalignedIndices");
+	public static final String ONTOLOGY_NAMESPACE_URI = "http://bioinfweb.info/xmlns/AlignmentComparator";  //TODO Add additional subfolder?
+	public static final QName PREDICATE_UNALIGNED_INDICES = new QName(ONTOLOGY_NAMESPACE_URI, "unalignedIndices");
 }
