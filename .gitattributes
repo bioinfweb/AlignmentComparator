@@ -9,11 +9,12 @@ main/include/lib/bioinfweb.commons.experimental.bio.jar -text
 main/include/lib/bioinfweb.commons.swing.jar -text
 main/include/lib/biojava3-alignment-3.0.5.jar -text
 main/include/lib/biojava3-core-3.0.5.jar -text
-main/include/lib/commons-collections4-4.0.jar -text
+main/include/lib/commons-collections4-4.1.jar -text
 main/include/lib/commons-lang3-3.1.jar -text
 main/include/lib/guava-13.0.1.jar -text
 main/include/lib/info.webinsel.wikihelp.client.jar -text
 main/include/lib/org.jdesktop.swingx.scrollpaneselector.jar -text
+main/include/lib/owlapi-XMLUtils-4.1.4.jar -text
 main/src/cmd/muscle3.8.31_i86darwin32 -text
 main/src/cmd/muscle3.8.31_i86darwin64 -text
 main/src/cmd/muscle3.8.31_i86linux32 -text
