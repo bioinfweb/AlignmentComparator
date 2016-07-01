@@ -24,6 +24,7 @@ import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.alignmentcomparator.document.comments.SequencePositionAdapter;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
+import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentDataAdapter;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
@@ -33,6 +34,8 @@ import info.bioinfweb.commons.io.Savable;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
 import info.bioinfweb.commons.swing.SwingSavable;
 import info.bioinfweb.commons.swing.SwingSaver;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 
 import java.io.File;
 import java.util.Iterator;
@@ -56,8 +59,9 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 			ListOrderedMap.listOrderedMap(new TreeMap<String, ComparedAlignment>());
 	private CommentList comments = new CommentList(new SequencePositionAdapter());
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
-	//private ResultsWriter writer = new ResultsWriter();  //TODO Move somewhere else?
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
+  private NeXMLEventWriter writer = new NeXMLEventWriter();
+  private ComparisonDocumentDataAdapter writerAdapter = new ComparisonDocumentDataAdapter(this);
   
 	
 	public Document() {
@@ -170,11 +174,12 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	@Override
 	protected void saveDataToFile(File file) {
 		try {
-			//writer.write(new BufferedOutputStream(new FileOutputStream(file)), this);
+			writer.writeDocument(writerAdapter, file, new ReadWriteParameterMap());  //TODO Specify parameters?
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "The error \"" + e.getMessage() + "\" occured when writing to the file \"" + file.getAbsolutePath() + "\"", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "The error \"" + e.getMessage() + "\" occured when writing to the file \"" + 
+					file.getAbsolutePath() + "\"", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

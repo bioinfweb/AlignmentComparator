@@ -65,7 +65,7 @@ public class CompareAlignmentsAction extends DocumentAction {
   	reader.readAll();
   	return (AlignmentModel<Character>)reader.getAlignmentModelReader().getCompletedModels().get(0);  //TODO Handle additional alignments read from the file or (e.g. Nexus) files without alignments.
   }
-
+  
   
 	@Override
 	public void actionPerformed(ActionEvent e) {

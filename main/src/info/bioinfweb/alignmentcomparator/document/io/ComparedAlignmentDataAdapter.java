@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
+import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
@@ -41,13 +42,14 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 	@Override
 	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
 		receiver.add(new LiteralMetadataEvent(getIDPrefix() + UNALIGNED_INDICES_ID_SUFFIX, null, 
-				new URIOrStringIdentifier(null, PREDICATE_UNALIGNED_INDICES), LiteralContentSequenceType.SIMPLE));
+				new URIOrStringIdentifier(null, PREDICATE_UNALIGNED_INDICES), 
+				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), LiteralContentSequenceType.SIMPLE));
 		
 		StringBuilder elementString = new StringBuilder();
 		Iterator<Integer> iterator = comparedAlignment.getSuperaligned().getUnalignedIndices().iterator();
 		while (iterator.hasNext()) {
 			if (elementString.length() >= MAX_EVENT_LENGTH) {
-				receiver.add(new LiteralMetadataContentEvent(null, elementString.toString(), iterator.hasNext()));  //TODO Where will the NeXML type attribute be defined?
+				receiver.add(new LiteralMetadataContentEvent(elementString.toString(), iterator.hasNext()));
 				elementString.delete(0, elementString.length());
 			}
 			

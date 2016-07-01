@@ -33,6 +33,7 @@ main/src/info/bioinfweb/alignmentcomparator/document/comments/SequencePositionAd
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/ComparedAlignmentDataAdapter.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/io/ComparisonDocumentDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/IOConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/results/ResultsFileFilter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/results/ResultsReader.java -text svneol=unset#text/plain
