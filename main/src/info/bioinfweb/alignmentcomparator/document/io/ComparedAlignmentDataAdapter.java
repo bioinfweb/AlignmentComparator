@@ -28,8 +28,8 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 
 	
 	public ComparedAlignmentDataAdapter(String idPrefix, String alignmentName, ComparedAlignment comparedAlignment) {
-		super(idPrefix, new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, idPrefix, alignmentName, OTUS_ID),  //TODO Should something be added to the ID prefix? 
-				comparedAlignment.getOriginal(), true);
+		super(idPrefix, new LinkedLabeledIDEvent(EventContentType.ALIGNMENT, idPrefix, alignmentName, null),  //TODO Should something be added to the ID prefix? 
+				comparedAlignment.getOriginal(), false);
 		this.comparedAlignment = comparedAlignment;
 	}
 
@@ -63,6 +63,9 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 			if (iterator.hasNext()) {
 				elementString.append(' ');
 			}
+		}
+		if (elementString.length() > 0) {
+			receiver.add(new LiteralMetadataContentEvent(elementString.toString(), false));
 		}
 		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
 	}

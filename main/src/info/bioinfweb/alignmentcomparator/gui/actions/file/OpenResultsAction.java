@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,8 @@ import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsReader;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
+import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -40,8 +42,7 @@ import javax.swing.filechooser.FileFilter;
 
 public class OpenResultsAction extends DocumentAction {
   private JFileChooser fileChooser = null;
-  private ResultsReader reader = new ResultsReader();
-
+  
   
 	public OpenResultsAction(MainFrame mainFrame) {
 		super(mainFrame);
@@ -49,8 +50,7 @@ public class OpenResultsAction extends DocumentAction {
 	  putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
 		putValue(Action.SHORT_DESCRIPTION, "Open results");
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
-		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', 
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	  loadSymbols("Open");
 	}
 
@@ -62,7 +62,7 @@ public class OpenResultsAction extends DocumentAction {
   		fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
   		fileChooser.addChoosableFileFilter(ResultsFileFilter.getInstance());
   		fileChooser.addChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
-  		//TODO zu DirModel hinzufügen
+  		//TODO zu DirModel hinzufï¿½gen
   	}
   	return fileChooser;
   }
@@ -72,8 +72,10 @@ public class OpenResultsAction extends DocumentAction {
 	public void actionPerformed(ActionEvent e) {
 		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
 			try {
-				reader.read(new BufferedInputStream(new FileInputStream(getFileChooser().getSelectedFile())), 
-						getMainFrame().getDocument());
+				//TODO Use LibrAlign reader with plugins for specific metadata to read NeXML output of AC.
+				
+//				reader.read(new BufferedInputStream(new FileInputStream(getFileChooser().getSelectedFile())), 
+//						getMainFrame().getDocument());
 				getMainFrame().getDocument().setFile(getFileChooser().getSelectedFile());
 			}
 			catch (Exception ex) {
