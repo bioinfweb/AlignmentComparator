@@ -20,23 +20,17 @@ package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
-import info.bioinfweb.alignmentcomparator.document.io.results.ResultsReader;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
-import info.bioinfweb.jphyloio.ReadWriteParameterMap;
-import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileFilter;
 
 
 
@@ -66,7 +60,7 @@ public class OpenResultsAction extends DocumentAction {
   	}
   	return fileChooser;
   }
-
+	
   
 	@Override
 	public void actionPerformed(ActionEvent e) {
