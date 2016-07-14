@@ -12,6 +12,7 @@ import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyDocumentDataAdapter;
+import info.bioinfweb.jphyloio.events.CommentEvent;
 import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
 
 
@@ -28,6 +29,9 @@ public class ComparisonDocumentDataAdapter extends EmptyDocumentDataAdapter impl
 
 	@Override
 	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
+		receiver.add(new CommentEvent(" This NeXML document contains information specific for alignment comparator and should not "
+				+ "be edited by hand or with other software. If unsupported data is added, it may get lost when the file is processed "
+				+ "by AlignmentCoparator the next time. "));
 		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "1", null, 
 				PREDICATE_FORMAT_VERSION, W3CXSConstants.DATA_TYPE_STRING, NEXML_OUTPUT_VERSION);
 		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "2", null, 
