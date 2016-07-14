@@ -190,6 +190,7 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, Main.APPLICATION_NAME);
 			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, Main.getInstance().getVersion());
+			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, Main.APPLICATION_URL);
 			writer.writeDocument(writerAdapter, file, parameters);
 		}
 		catch (Exception e) {

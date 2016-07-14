@@ -29,15 +29,15 @@ public class ComparisonDocumentDataAdapter extends EmptyDocumentDataAdapter impl
 
 	@Override
 	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-		receiver.add(new CommentEvent(" This NeXML document contains information specific for alignment comparator and should not "
-				+ "be edited by hand or with other software. If unsupported data is added, it may get lost when the file is processed "
-				+ "by AlignmentCoparator the next time. "));
+		receiver.add(new CommentEvent(" This document contains information specific for " + Main.APPLICATION_NAME + 
+				" and should not be edited by hand or with other software. If unsupported data is added, it may get lost when "
+				+ "the file is processed by " + Main.APPLICATION_NAME + " the next time. "));
 		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "1", null, 
 				PREDICATE_FORMAT_VERSION, W3CXSConstants.DATA_TYPE_TOKEN, NEXML_OUTPUT_VERSION);
 		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "2", null, 
 				PREDICATE_APPLICATION_VERSION, W3CXSConstants.DATA_TYPE_TOKEN, Main.getInstance().getVersion());
 		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "3", null, 
-				PREDICATE_TOKEN_TYPE, W3CXSConstants.DATA_TYPE_UNSIGNED_BYTE, document.getTokenType().ordinal());
+				PREDICATE_TOKEN_TYPE, W3CXSConstants.DATA_TYPE_TOKEN, document.getTokenType().name());
 		//TODO Special data types restricting the current ones could be defined.
 	}
 	// TODO Create OTU lists for alignments?
