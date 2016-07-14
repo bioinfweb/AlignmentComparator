@@ -71,7 +71,7 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 		getFileChooser().removeChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
 		getFileChooser().addChoosableFileFilter(ResultsFileFilter.getInstance());
 		getFileChooser().addChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
-  	//CurrentDirectoryModel.getInstance().addFileChooser(getFileChooser());  //TODO TG Klasse in Utils auslagern
+  	//CurrentDirectoryModel.getInstance().addFileChooser(getFileChooser());
   	setDefaultExtension(ResultsFileFilter.EXTENSION);
 		clear();
 	}

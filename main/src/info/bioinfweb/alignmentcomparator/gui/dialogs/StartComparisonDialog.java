@@ -99,7 +99,7 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 
 	@Override
 	protected boolean apply() {
-		boolean enoughFiles = (getFileListModel().size() >= 2);
+		boolean enoughFiles = (getFileListModel().size() >= 2);  //TODO Does this have to be adjusted, if multiple alignments come from one file?
 		if (!enoughFiles) {
 			JOptionPane.showMessageDialog(this, "At least two alignment files need to be selected for comparison.", 
 					"Not enough files", JOptionPane.ERROR_MESSAGE);
@@ -375,7 +375,7 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 			getTokenTypeGroup();
 			tokenTypePanel.add(getNucleotideRadioButton());
 			tokenTypePanel.add(getAminoAcidRadioButton());
-			tokenTypePanel.add(getOtherRadioButton());
+			//tokenTypePanel.add(getOtherRadioButton());  //TODO If other token types are supported, String tokens instead of chacter tokens must be used in such cases.
 		}
 		return tokenTypePanel;
 	}
@@ -386,7 +386,7 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 			tokenTypeGroup = new ButtonGroup();
 			tokenTypeGroup.add(getNucleotideRadioButton());
 			tokenTypeGroup.add(getAminoAcidRadioButton());
-			tokenTypeGroup.add(getOtherRadioButton());
+			//tokenTypeGroup.add(getOtherRadioButton());  //TODO If other token types are supported, String tokens instead of chacter tokens must be used in such cases.
 		}
 		return tokenTypeGroup;
 	}

@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
+import info.bioinfweb.alignmentcomparator.document.io.ImportedAlignmentModelFactory;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
@@ -44,8 +45,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 public class CompareAlignmentsAction extends DocumentAction {
   private StartComparisonDialog dialog = null;
-  private AlignmentModelFactory<Character> alignmentModelFactory = 
-  		new BioPolymerCharAlignmentModelFactory(new SequenceIDManager());
+  private ImportedAlignmentModelFactory alignmentModelFactory = new ImportedAlignmentModelFactory(new SequenceIDManager());
   
   
   public CompareAlignmentsAction(MainFrame mainFrame) {
@@ -59,7 +59,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 	}
   
   
-  private AlignmentModel<Character> loadAlignment(File file) throws Exception {
+  private AlignmentModel<Character> loadAlignment(File file) throws Exception {  //TODO Support loading multiple alignments from a file.
   	AlignmentDataReader reader = new AlignmentDataReader(new FASTAEventReader(file, new ReadWriteParameterMap()),  //TODO Support other formats. (Implement factory or GUI components in JPhyloIO that allow format selection.) 
   			alignmentModelFactory);
   	reader.readAll();
@@ -72,7 +72,8 @@ public class CompareAlignmentsAction extends DocumentAction {
 		if (dialog.execute()) {
 			try {
 				getDocument().setTokenType(dialog.getTokenType());
-				
+		  	alignmentModelFactory.setTokenType(dialog.getTokenType());
+		  	
 				ListOrderedMap<String, ComparedAlignment> map = getDocument().getAlignments();
 				map.clear();
 				for (int i = 0; i < dialog.getFileListModel().getSize(); i++) {
