@@ -174,7 +174,10 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	@Override
 	protected void saveDataToFile(File file) {
 		try {
-			writer.writeDocument(writerAdapter, file, new ReadWriteParameterMap());  //TODO Specify parameters?
+			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, Main.APPLICATION_NAME);
+			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, Main.getInstance().getVersion());
+			writer.writeDocument(writerAdapter, file, parameters);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -4,8 +4,10 @@ package info.bioinfweb.alignmentcomparator.document.io;
 import java.io.IOException;
 import java.util.Iterator;
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.commons.io.W3CXSConstants;
+import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
@@ -26,8 +28,10 @@ public class ComparisonDocumentDataAdapter extends EmptyDocumentDataAdapter impl
 
 	@Override
 	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
-		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, DOCUMENT_TAG_ID, null, PREDICATE_IS_COMPARISON, 
-				W3CXSConstants.DATA_TYPE_BOOLEAN, true);
+		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "1", null, 
+				PREDICATE_FORMAT_VERSION, W3CXSConstants.DATA_TYPE_STRING, NEXML_OUTPUT_VERSION);
+		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "2", null, 
+				PREDICATE_APPLICATION_VERSION, W3CXSConstants.DATA_TYPE_STRING, Main.getInstance().getVersion());
 	}
 	// TODO Create OTU lists for alignments?
 	
