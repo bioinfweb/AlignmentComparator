@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2012  Ben Stï¿½ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -20,11 +20,9 @@ package info.bioinfweb.alignmentcomparator.gui.actions;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonSelection;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.commons.swing.ExtendedAbstractAction;
-import info.bioinfweb.libralign.alignmentarea.selection.SelectionModel;
 
 
 

@@ -71,6 +71,8 @@ public class CompareAlignmentsAction extends DocumentAction {
 	public void actionPerformed(ActionEvent e) {
 		if (dialog.execute()) {
 			try {
+				getDocument().setTokenType(dialog.getTokenType());
+				
 				ListOrderedMap<String, ComparedAlignment> map = getDocument().getAlignments();
 				map.clear();
 				for (int i = 0; i < dialog.getFileListModel().getSize(); i++) {
@@ -80,15 +82,6 @@ public class CompareAlignmentsAction extends DocumentAction {
 				
 				dialog.getAlgorithm().performAlignment(getDocument());
 				getDocument().registerChange();
-				
-//				File firstFile = new File(dialog.getFirstPath());
-//				File secondFile = new File(dialog.getSecondPath());
-//				getDocument().setUnalignedData(firstFile.getAbsolutePath(), FastaReaderTools.readDNAAlignment(firstFile), 
-//				    secondFile.getAbsolutePath(), FastaReaderTools.readDNAAlignment(secondFile),
-//				    new BioJavaTokenSet(SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet(), false),  //TODO Also allow protein sequences and token sets.
-//				    dialog.getAlgorithm());
-//				getDocument().setUnalignedData(fastaReader.read(new File(dialog.getFirstPath())),
-//						fastaReader.read(new File(dialog.getSecondPath())), dialog.getAlgorithm());
 			}
 			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "An IO error occurred while loading the files.", "Error",

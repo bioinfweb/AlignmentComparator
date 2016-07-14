@@ -29,6 +29,7 @@ import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
 import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.changemonitor.ChangeMonitorable;
 import info.bioinfweb.commons.io.Savable;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
@@ -55,6 +56,7 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	public static final double ARRAY_LIST_SIZE_FACTOR = 1.3;
 	
 	
+	private CharacterStateSetType tokenType = CharacterStateSetType.DISCRETE;
 	private ListOrderedMap<String, ComparedAlignment> alignments = 
 			ListOrderedMap.listOrderedMap(new TreeMap<String, ComparedAlignment>());
 	private CommentList comments = new CommentList(new SequencePositionAdapter());
@@ -75,6 +77,17 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	}
 	
 	
+	public CharacterStateSetType getTokenType() {
+		return tokenType;
+	}
+
+
+	public void setTokenType(CharacterStateSetType tokenType) {
+		this.tokenType = tokenType;
+		//TODO Should an IllegalStateException be thrown if document is not empty? Should single alignments be modified otherwise, if the property changes?
+	}
+
+
 	public ListOrderedMap<String, ComparedAlignment> getAlignments() {
 		return alignments;
 	}

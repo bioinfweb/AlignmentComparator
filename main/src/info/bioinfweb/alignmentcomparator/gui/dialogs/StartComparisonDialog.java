@@ -19,11 +19,13 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs;
 
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.superalignment.CompareAlgorithm;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanel;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
-import info.bioinfweb.commons.swing.OkCancelApplyDialog;
+import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.wikihelp.client.OkCancelApplyWikiHelpDialog;
 
 import java.awt.Frame;
 import java.awt.GridBagLayout;
@@ -36,6 +38,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -51,10 +54,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.JRadioButton;
 
 
 
-public class StartComparisonDialog extends OkCancelApplyDialog {
+public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel jContentPane = null;
@@ -67,14 +71,20 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	private JComboBox<CompareAlgorithm> algorithmComboBox;
 	private JPanel outerPreferencesPanel;
 	private JList<File> fileList;
+	private JPanel tokenTypePanel;
+	private ButtonGroup tokenTypeGroup;
+	private JRadioButton nucleotideRadioButton;
+	private JRadioButton aminoAcidRadioButton;
+	private JRadioButton otherRadioButton;
 
 	
 	/**
 	 * @param owner
 	 */
 	public StartComparisonDialog(Frame owner) {
-		super(owner);
+		super(owner, Main.getInstance().getWikiHelp());
 		setModal(true);
+		setHelpCode(3);  //TODO Adjust help code before next release.
 		initialize();
 	}
 
@@ -95,6 +105,24 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 					"Not enough files", JOptionPane.ERROR_MESSAGE);
 		}
 		return enoughFiles;
+	}
+	
+	
+	public CharacterStateSetType getTokenType() {
+		if (nucleotideRadioButton.isSelected()) {
+			return CharacterStateSetType.NUCLEOTIDE;
+		}
+		else if (aminoAcidRadioButton.isSelected()) {
+			return CharacterStateSetType.AMINO_ACID;
+		}
+		else {
+			return CharacterStateSetType.DISCRETE;
+		}
+	}
+	
+	
+	public DefaultListModel<File> getFileListModel() {
+		return (DefaultListModel<File>)getFileList().getModel();
 	}
 	
 	
@@ -135,6 +163,7 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BoxLayout(jContentPane, BoxLayout.Y_AXIS));
+			jContentPane.add(getTokenTypePanel());
 			jContentPane.add(getAlignmentsPanel(), null);
 			jContentPane.add(getAlgorithmPanel(), null);
 			jContentPane.add(getButtonsPanel(), null);
@@ -339,7 +368,51 @@ public class StartComparisonDialog extends OkCancelApplyDialog {
 	}
 	
 	
-	public DefaultListModel<File> getFileListModel() {
-		return (DefaultListModel<File>)getFileList().getModel();
+	private JPanel getTokenTypePanel() {
+		if (tokenTypePanel == null) {
+			tokenTypePanel = new JPanel();
+			tokenTypePanel.setBorder(new TitledBorder(null, "Token type", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			getTokenTypeGroup();
+			tokenTypePanel.add(getNucleotideRadioButton());
+			tokenTypePanel.add(getAminoAcidRadioButton());
+			tokenTypePanel.add(getOtherRadioButton());
+		}
+		return tokenTypePanel;
+	}
+	
+	
+	private ButtonGroup getTokenTypeGroup() {
+		if (tokenTypeGroup == null) {
+			tokenTypeGroup = new ButtonGroup();
+			tokenTypeGroup.add(getNucleotideRadioButton());
+			tokenTypeGroup.add(getAminoAcidRadioButton());
+			tokenTypeGroup.add(getOtherRadioButton());
+		}
+		return tokenTypeGroup;
+	}
+
+
+	private JRadioButton getNucleotideRadioButton() {
+		if (nucleotideRadioButton == null) {
+			nucleotideRadioButton = new JRadioButton("Nucleotide");
+			nucleotideRadioButton.setSelected(true);
+		}
+		return nucleotideRadioButton;
+	}
+	
+	
+	private JRadioButton getAminoAcidRadioButton() {
+		if (aminoAcidRadioButton == null) {
+			aminoAcidRadioButton = new JRadioButton("Amino acid");
+		}
+		return aminoAcidRadioButton;
+	}
+	
+	
+	private JRadioButton getOtherRadioButton() {
+		if (otherRadioButton == null) {
+			otherRadioButton = new JRadioButton("Other discrete tokens");
+		}
+		return otherRadioButton;
 	}
 }

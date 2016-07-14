@@ -19,5 +19,6 @@ public interface IOConstants {
 	
 	public static final QName PREDICATE_APPLICATION_VERSION = new QName(ONTOLOGY_NAMESPACE_URI, "applicationVersion", DEFAULT_NAMESPACE_PREFIX);
 	public static final QName PREDICATE_FORMAT_VERSION = new QName(ONTOLOGY_NAMESPACE_URI, "formatVersion", DEFAULT_NAMESPACE_PREFIX);
+	public static final QName PREDICATE_TOKEN_TYPE = new QName(ONTOLOGY_NAMESPACE_URI, "tokenType", DEFAULT_NAMESPACE_PREFIX);
 	public static final QName PREDICATE_UNALIGNED_INDICES = new QName(ONTOLOGY_NAMESPACE_URI, "unalignedIndices", DEFAULT_NAMESPACE_PREFIX);
 }
