@@ -26,13 +26,14 @@ public class ComparisonDocumentReader {
 	
 	
 	public void read(InputStream stream, Document alignments) throws Exception {
-		EventForwarder forwarder = new EventForwarder(new NeXMLEventReader(stream, new ReadWriteParameterMap()));  //TODO Specify parameters?
+		NeXMLEventReader reader = new NeXMLEventReader(stream, new ReadWriteParameterMap());  //TODO Specify parameters?
+		EventForwarder forwarder = new EventForwarder();
 		AlignmentModelEventReader alignmentReader = new AlignmentModelEventReader();  //TODO Specify factory
 		forwarder.getListeners().add(alignmentReader);
 		//TODO Add listener for document metadata and superalignment metadata
 		//TODO Add data model listener for comments
 		
-		forwarder.readAll();
+		forwarder.readAll(reader);
 		
 		//TODO Edit document according to collected information. 
 	}
