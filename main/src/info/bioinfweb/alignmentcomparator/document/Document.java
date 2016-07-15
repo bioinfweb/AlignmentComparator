@@ -444,26 +444,13 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 
   
   /**
-   * Triggers that the GUI components displaying this document are updated, but does not set the changed flag to {@code true}.
-   * 
-   * @see #registerChange()
-   */
-  public void triggerUpdate() {
-		alertPositioners();  // Positioners must be alerted first
-		fireChangeHappened();
-		Main.getInstance().getMainFrame().updateTitle();
-  }
-  
-
-  /**
    * Triggers that the GUI components displaying this document are updated and sets the changed flag to {@code true}.
-   * {@link #triggerUpdate()} is called internally.
-   * 
-   * @see #triggerUpdate()
    */
   @Override
 	public void registerChange() {
 		super.registerChange();
-		triggerUpdate();
+		alertPositioners();  // Positioners must be alerted first
+		fireChangeHappened();
+		Main.getInstance().getMainFrame().updateTitle();
 	}
 }

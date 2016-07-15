@@ -70,7 +70,9 @@ public class OpenResultsAction extends DocumentAction {
 				ComparisonDocumentReader reader = new ComparisonDocumentReader();
 				reader.read(getFileChooser().getSelectedFile(), getMainFrame().getDocument());
 				getMainFrame().getDocument().setFile(getFileChooser().getSelectedFile());
-				getDocument().triggerUpdate();
+				
+				getDocument().registerChange();
+				getDocument().reset();  // Set change flag to false again.
 			}
 			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "The error \"" + ex.getMessage() + 
