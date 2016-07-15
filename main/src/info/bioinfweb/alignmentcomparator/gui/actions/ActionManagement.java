@@ -52,7 +52,7 @@ public class ActionManagement extends AbstractUndoActionManagement {
 	 */
 	protected void fillMap() {
 		put("file.compareAlignments", new CompareAlignmentsAction(mainFrame));
-		//put("file.openResults", new OpenResultsAction(mainFrame));
+		put("file.openResults", new OpenResultsAction(mainFrame));
 		put("file.save", new SaveAction(mainFrame));
 		put("file.saveAs", new SaveAsAction(mainFrame));
 		

@@ -34,7 +34,6 @@ main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentEvent.java -t
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/ComparedAlignmentDataAdapter.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/ComparisonDocumentDataAdapter.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/io/ComparisonDocumentMetadataListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/ComparisonDocumentReader.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/IOConstants.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/io/ImportedAlignmentModelFactory.java -text svneol=unset#text/plain

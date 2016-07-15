@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
+import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentReader;
 import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
@@ -56,7 +57,7 @@ public class OpenResultsAction extends DocumentAction {
   		fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
   		fileChooser.addChoosableFileFilter(ResultsFileFilter.getInstance());
   		fileChooser.addChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
-  		//TODO zu DirModel hinzuf�gen
+  		//TODO zu DirModel hinzufügen
   	}
   	return fileChooser;
   }
@@ -66,11 +67,10 @@ public class OpenResultsAction extends DocumentAction {
 	public void actionPerformed(ActionEvent e) {
 		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
 			try {
-				//TODO Use LibrAlign reader with plugins for specific metadata to read NeXML output of AC.
-				
-//				reader.read(new BufferedInputStream(new FileInputStream(getFileChooser().getSelectedFile())), 
-//						getMainFrame().getDocument());
+				ComparisonDocumentReader reader = new ComparisonDocumentReader();
+				reader.read(getFileChooser().getSelectedFile(), getMainFrame().getDocument());
 				getMainFrame().getDocument().setFile(getFileChooser().getSelectedFile());
+				getDocument().triggerUpdate();
 			}
 			catch (Exception ex) {
 				JOptionPane.showMessageDialog(getMainFrame(), "The error \"" + ex.getMessage() + 
