@@ -374,16 +374,16 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 //			return originalAlignmentProviders.values().iterator().next().getSequenceCount();
 //		}
 //	}
-//	
-//	
-//	public int getAlignedLength() {
-//		if (isEmpty()) {
-//			return 0;
-//		}
-//		else {
-//			return unalignedIndices[0].size();
-//		}
-//	}
+	
+	
+	public int getAlignedLength() {
+		if (isEmpty()) {
+			return 0;
+		}
+		else {
+			return getAlignments().getValue(0).getSuperaligned().getMaxSequenceLength();  //TODO The length of the first sequence might be sufficient and would be faster to determine. 
+		}
+	}
 
 
 	public CommentList getComments() {

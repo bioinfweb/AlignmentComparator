@@ -79,13 +79,13 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
-//	private AlignmentArea createCommentAlignmentArea() {
-//		AlignmentArea result = new AlignmentArea(this);
-//		commentArea = new CommentArea(result.getContentArea());
-//		result.getDataAreas().getBottomAreas().add(commentArea);
-//		result.setAllowVerticalScrolling(false);
-//		return result;
-//	}
+	private AlignmentArea createCommentAlignmentArea() {
+		AlignmentArea result = new AlignmentArea(this);
+		commentArea = new CommentArea(result.getContentArea());
+		result.getDataAreas().getBottomAreas().add(commentArea);
+		result.setAllowVerticalScrolling(false);
+		return result;
+	}
 	
 	
 	private AlignmentArea createComparisonPartArea(String alignmentName) {
@@ -132,7 +132,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			}
 		}
 		addSelectionListener();
-		//getAlignmentAreas().add(createCommentAlignmentArea());
+		getAlignmentAreas().add(createCommentAlignmentArea());
 	}
 	
 	

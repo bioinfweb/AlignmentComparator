@@ -61,10 +61,10 @@ public class ActionManagement extends AbstractUndoActionManagement {
 		put("edit.insertSupergap", new InsertSupergapAction(mainFrame));
 		put("edit.removeSupergapBackwards", new RemoveSupergapAction(mainFrame, true));
 		put("edit.removeSupergapForward", new RemoveSupergapAction(mainFrame, false));
-//		put("edit.addComment", new AddCommentAction(mainFrame));
-//		put("edit.moveComment", new MoveCommentAction(mainFrame));
-//		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
-//		put("edit.removeComment", new RemoveCommentAction(mainFrame));
+		put("edit.addComment", new AddCommentAction(mainFrame));
+		put("edit.moveComment", new MoveCommentAction(mainFrame));
+		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
+		put("edit.removeComment", new RemoveCommentAction(mainFrame));
 
 		put("help.about", new AboutAction());
 		put("help.website", new WebsiteAction());

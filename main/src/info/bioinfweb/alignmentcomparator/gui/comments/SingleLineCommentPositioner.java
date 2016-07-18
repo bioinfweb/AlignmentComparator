@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben St�ver
+ * Copyright (C) 2012-2016  Ben Stöver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -39,14 +39,19 @@ import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonComponent;
 import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.FontCalculator;
+import info.bioinfweb.commons.graphics.GraphicsUtils;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
+import info.bioinfweb.libralign.alignmentarea.paintsettings.PaintSettings;
+import info.bioinfweb.libralign.alignmentarea.tokenpainter.SingleColorTokenPainter;
 
 
 
 public class SingleLineCommentPositioner implements CommentPositioner {
 	public static final float MARGIN = 1f;
-	public static final Font NO_ZOOM_FONT = new Font(AlignmentArea.FONT_NAME, AlignmentArea.FONT_STYLE, 
-			Math.round(AlignmentArea.COMPOUND_WIDTH * AlignmentArea.FONT_SIZE_FACTOR));  //TODO Could become a problem if the compound width and height are changed independently which is allowed in LibrAlign. => Make sure the AC user cannot do this.
+	public static final Font NO_ZOOM_FONT = new Font(Font.SANS_SERIF, Font.PLAIN,  //TODO Determine font name and style from paint settings here or allow to customize?
+			(int)Math.round(SingleColorTokenPainter.DEFAULT_HEIGHT * SingleColorTokenPainter.FONT_SIZE_FACTOR));  //TODO Could become a problem if the compound width and height are changed independently which is allowed in LibrAlign. => Make sure the AC user cannot do this.
+	public static final Color FONT_COLOR = Color.BLACK;  //TODO Allow to customize or determine from token painter?
+	public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;  //TODO Allow to customize or determine from token painter?
 	
 	
 	private List<Comment> blockingComments;
@@ -98,8 +103,8 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	
 	
 	private int calculateLength(Comment comment) {
-		return Math.max(comment.getPosition().sequenceLength(),	Math2.roundUp((2 * MARGIN + 
-				FontCalculator.getInstance().getWidth(NO_ZOOM_FONT, comment.getText())) / AlignmentArea.COMPOUND_WIDTH));
+		return Math.max(comment.getPosition().sequenceLength(),	(int)Math2.roundUp((2 * MARGIN + 
+				FontCalculator.getInstance().getWidth(NO_ZOOM_FONT, comment.getText())) / SingleColorTokenPainter.DEFAULT_WIDTH));
 	}
 	
 	
@@ -144,33 +149,36 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		SingleLineCommentPositionData data = getData(comment);
 		CommentPosition pos = comment.getPosition();
 		AlignmentArea area = comparisonComponent.getFirstAlignmentArea();
-
+		PaintSettings paintSettings = area.getPaintSettings();
+		
 		Color fontColor;
-		SequenceColorSchema colorSchema = area.getColorSchema();
 		if (comment.equals(comparisonComponent.getSelection().getComment())) {
-			g.setColor(colorSchema.getSelectionColor());
-			fontColor = colorSchema.getSelectionFontColor();
+			g.setColor(paintSettings.getSelectionColor());
+			fontColor = GraphicsUtils.blend(FONT_COLOR, paintSettings.getSelectionColor());
 		}
 		else {
-			g.setColor(colorSchema.getDefaultBgColor());
-			fontColor = colorSchema.getFontColor();
+			g.setColor(BACKGROUND_COLOR);
+			fontColor = FONT_COLOR;
 		}
-		g.setFont(area.getCompoundFont());
 		
-		final float lineWidth = 1f;  //TODO Evtl. sinvolleren Wert (aus Stroke?)
-		float x1 = x + (pos.getFirstPos() - 1) * area.getCompoundWidth();  // BioJava indices start with 1
-		float y1 = y + data.getLine() * area.getCompoundHeight();
-		float y2 = y1 + area.getCompoundHeight() - lineWidth;
+		g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 
+				(int)Math.round(paintSettings.getTokenHeight() * SingleColorTokenPainter.FONT_SIZE_FACTOR)));
+		
+		final double tokenWidth = paintSettings.getTokenWidth(0);
+		final double lineWidth = 1f;  //TODO Evtl. sinvolleren Wert (aus Stroke?)
+		double x1 = x + (pos.getFirstPos() - 1) * tokenWidth;  //TODO Is column 0 always present?  //TODO Possible substract 1 because no BioJava indices used 
+		double y1 = y + data.getLine() * paintSettings.getTokenHeight();
+		double y2 = y1 + paintSettings.getTokenHeight() - lineWidth;
 
-		Rectangle2D.Float r = new Rectangle2D.Float(x1, y1, 
-				data.getLength() * area.getCompoundWidth() - lineWidth, y2 - y1);  // BioJava indices start with 1
+		Rectangle2D.Double r = new Rectangle2D.Double(x1, y1, 
+				data.getLength() * tokenWidth - lineWidth, y2 - y1);  // BioJava indices start with 1  //TODO Possible substract 1 because no BioJava indices used
 		g.fill(r);
 		if (pos.sequenceLength() <= data.getLength()) {
-			g.setColor(colorSchema.getSelectionFontColor());  //TODO Can this be used as the border color?
+			g.setColor(fontColor);  //TODO Is this currently always the selection color? Can this be used as the border color?
 			g.draw(r);   
 			
-			g.setColor(colorSchema.getTokenBorderColor());
-			float seqX2 = x + (pos.getLastPos()) * area.getCompoundWidth() - lineWidth;  // BioJava indices start with 1
+			g.setColor(FONT_COLOR);
+			double seqX2 = x + (pos.getLastPos()) * tokenWidth - lineWidth;  // BioJava indices start with 1  //TODO Possible substract 1 because no BioJava indices used
 			Path2D.Float path = new Path2D.Float();
 			path.moveTo(seqX2, y1);
 			path.lineTo(x1, y1);
@@ -179,12 +187,12 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			g.draw(path);
 		}
 		else {
-			g.setColor(colorSchema.getTokenBorderColor());
+			g.setColor(FONT_COLOR);
 			g.draw(r);
 		}
 		FontMetrics fm = g.getFontMetrics();
 		g.setColor(fontColor);
-		g.drawString(comment.getText(), x1 + MARGIN * area.getZoomX(), y1 + fm.getAscent());
+		g.drawString(comment.getText(), (float)(x1 + MARGIN * paintSettings.getZoomX()), (float)(y1 + fm.getAscent()));
 	}
 
 
@@ -194,12 +202,12 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		
 		Rectangle visibleRect = ((JComponent)comparisonComponent.getCommentArea().getToolkitComponent()).getVisibleRect();
 		
-		AlignmentArea area = comparisonComponent.getFirstAlignmentArea();
+		PaintSettings paintSettings = comparisonComponent.getFirstAlignmentArea().getPaintSettings();
 		Iterator<Comment> iterator = 
 				getGlobalPositionerData(comparisonComponent.getDocument()).getCommentList().getOverlappingElements(
-						Math.max(0, (int)Math.round((visibleRect.getMinX() - x) / area.getCompoundWidth()) - 1), 
+						Math.max(0, (int)Math.round((visibleRect.getMinX() - x) / paintSettings.getTokenWidth(0)) - 1), 
 						Math.min(alignmentLength - 1, 
-								(int)Math.round((visibleRect.getMaxX() - x) / area.getCompoundWidth()))).iterator();
+								(int)Math.round((visibleRect.getMaxX() - x) / paintSettings.getTokenHeight()))).iterator();
 		while (iterator.hasNext()) {
 			paintComment(comparisonComponent, g, iterator.next(), x, y);
 		}
@@ -209,9 +217,9 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	@Override
 	public Dimension getCommentDimension(AlignmentComparisonComponent comparisonComponent) {
 		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(comparisonComponent.getDocument());
-		AlignmentArea area = comparisonComponent.getFirstAlignmentArea();
-		return new Dimension(Math2.roundUp(data.getMaxColumn() * area.getCompoundWidth()),  // BioJava indices start with 1 
-				Math2.roundUp((data.getMaxLine() + 1) * area.getCompoundHeight()));
+		PaintSettings paintSettings = comparisonComponent.getFirstAlignmentArea().getPaintSettings();
+		return new Dimension((int)Math2.roundUp(data.getMaxColumn() * paintSettings.getTokenWidth(0)),  // BioJava indices start with 1   //TODO Possible substract 1 because no BioJava indices used
+				(int)Math2.roundUp((data.getMaxLine() + 1) * paintSettings.getTokenHeight()));
 	}
 
 
@@ -227,12 +235,11 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			int column = area.getContentArea().columnByPaintX(Math.round(mouseX - paintX));
 			Iterator<Comment> iterator = 
 					getGlobalPositionerData(comparisonComponent.getDocument()).getCommentList().getOverlappingElements(column, column).iterator();  // Even if the mouse position should be behind the last column, an empty iterator will be returned here.
+			double tokenHeight = area.getPaintSettings().getTokenHeight();
 			while (iterator.hasNext()) {
 				Comment comment = iterator.next();
 				SingleLineCommentPositionData data = getData(comment);
-				if (Math2.isBetween(mouseY, paintY + data.getLine() * area.getCompoundHeight(), 
-			  		paintY + (data.getLine() + 1) * area.getCompoundHeight())) {
-			  	
+				if (Math2.isBetween(mouseY, paintY + data.getLine() * tokenHeight, paintY + (data.getLine() + 1) * tokenHeight)) {
 			  	return comment;
 			  }
 			}
