@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012-2016  Ben Stöver
+ * Copyright (C) 2012 - 2016  Ben Stöver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify

@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben Stöver
+ * Copyright (C) 2014-2016  Ben StÃ¶ver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ public class SingleLinePositionAdapter implements SequenceIntervalPositionAdapte
 	
 	@Override
 	public int getLastPos(Comment o) {
-		return getFirstPos(o) + //TODO PositionData ist zum Zeitpunkt des Einfügens in die Liste nie verfügbar! (Länge wird nur von Elementen, die bereits in Liste sind berechnet. MVC-Trennung sollte wohl strikter eingehalten werden.) 
+		return getFirstPos(o) + //TODO PositionData ist zum Zeitpunkt des Einfï¿½gens in die Liste nie verfï¿½gbar! (Lï¿½nge wird nur von Elementen, die bereits in Liste sind berechnet. MVC-Trennung sollte wohl strikter eingehalten werden.) 
 				((SingleLineCommentPositionData)o.getPositionData(SingleLineCommentPositioner.class)).getLength() - 1;
 	}
 

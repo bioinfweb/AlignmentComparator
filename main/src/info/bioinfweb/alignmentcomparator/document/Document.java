@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2012  Ben St�ver
+ * Copyright (C) 2014-2016  Ben Stöver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	private ListOrderedMap<String, ComparedAlignment> alignments = 
 			ListOrderedMap.listOrderedMap(new TreeMap<String, ComparedAlignment>());
 	private CommentList comments = new CommentList(new SequencePositionAdapter());
+	
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
   private NeXMLEventWriter writer = new NeXMLEventWriter();

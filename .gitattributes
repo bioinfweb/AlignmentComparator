@@ -2,6 +2,7 @@
 main/.classpath -text svneol=unset#text/plain
 main/.project -text svneol=unset#text/plain
 main/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+main/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 main/MANIFEST.MF -text svneol=unset#text/plain
 main/include/lib/BrowserLauncher2-1_3.jar -text
 main/include/lib/bioinfweb.commons.core.jar -text
