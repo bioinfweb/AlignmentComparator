@@ -119,6 +119,7 @@ main/src/resources/symbols/Undo22.png -text
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
+test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
 test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/alignmentcomparator/CreateSequencesTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/StringBuilderTest.java -text svneol=unset#text/plain
