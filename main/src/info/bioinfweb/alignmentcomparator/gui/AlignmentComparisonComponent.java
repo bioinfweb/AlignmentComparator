@@ -56,7 +56,7 @@ import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
  */
 public class AlignmentComparisonComponent extends MultipleAlignmentsContainer implements DocumentListener {
 	public static final int FIRST_ALIGNMENT_INDEX = 1;
-	public static final int BOTTOM_AREAS_COUNT = 0 /*1*/;  // Currently only comment area.
+	public static final int BOTTOM_AREAS_COUNT = 1;  // Currently only comment area.
 
 	private final SelectionListener SELECTION_LISTENER = new SelectionListener() {
 				@Override
