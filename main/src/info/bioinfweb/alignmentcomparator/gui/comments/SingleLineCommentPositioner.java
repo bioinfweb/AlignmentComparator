@@ -51,7 +51,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	public static final Font NO_ZOOM_FONT = new Font(Font.SANS_SERIF, Font.PLAIN,  //TODO Determine font name and style from paint settings here or allow to customize?
 			(int)Math.round(SingleColorTokenPainter.DEFAULT_HEIGHT * SingleColorTokenPainter.FONT_SIZE_FACTOR));  //TODO Could become a problem if the compound width and height are changed independently which is allowed in LibrAlign. => Make sure the AC user cannot do this.
 	public static final Color FONT_COLOR = Color.BLACK;  //TODO Allow to customize or determine from token painter?
-	public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;  //TODO Allow to customize or determine from token painter?
+	public static final Color COMMENT_BACKGROUND_COLOR = Color.WHITE;  //TODO Allow to customize or determine from token painter?
 	
 	
 	private List<Comment> blockingComments;
@@ -157,7 +157,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			fontColor = GraphicsUtils.blend(FONT_COLOR, paintSettings.getSelectionColor());
 		}
 		else {
-			g.setColor(BACKGROUND_COLOR);
+			g.setColor(COMMENT_BACKGROUND_COLOR);
 			fontColor = FONT_COLOR;
 		}
 		
@@ -170,8 +170,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		double y1 = y + data.getLine() * paintSettings.getTokenHeight();
 		double y2 = y1 + paintSettings.getTokenHeight() - lineWidth;
 
-		Rectangle2D.Double r = new Rectangle2D.Double(x1, y1, 
-				data.getLength() * tokenWidth - lineWidth, y2 - y1);
+		Rectangle2D.Double r = new Rectangle2D.Double(x1, y1, data.getLength() * tokenWidth - lineWidth, y2 - y1);
 		g.fill(r);
 		if (pos.sequenceLength() <= data.getLength()) {
 			g.setColor(fontColor);  //TODO Is this currently always the selection color? Can this be used as the border color?

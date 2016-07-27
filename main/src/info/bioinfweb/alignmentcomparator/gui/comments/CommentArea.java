@@ -19,6 +19,8 @@
 package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
+import java.awt.Color;
+import java.awt.SystemColor;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -73,6 +75,8 @@ public class CommentArea extends DataArea {
 
 	@Override
 	public void paint(TICPaintEvent e) {
+		e.getGraphics().setColor(SystemColor.control);
+		e.getGraphics().fill(e.getRectangle());
 		commentPositioner.paint(getComparisonComponent(), getOwner().getOwner().getGlobalMaxSequenceLength(), e.getGraphics(), 0, 0);
 	}
 	
