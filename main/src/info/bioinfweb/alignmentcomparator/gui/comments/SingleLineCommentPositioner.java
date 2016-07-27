@@ -166,19 +166,19 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 		
 		final double tokenWidth = paintSettings.getTokenWidth(0);
 		final double lineWidth = 1f;  //TODO Evtl. sinvolleren Wert (aus Stroke?)
-		double x1 = x + (pos.getFirstPos() - 1) * tokenWidth;  //TODO Is column 0 always present?  //TODO Possible substract 1 because no BioJava indices used 
+		double x1 = x + pos.getFirstPos() * tokenWidth;  //TODO Is column 0 always present? 
 		double y1 = y + data.getLine() * paintSettings.getTokenHeight();
 		double y2 = y1 + paintSettings.getTokenHeight() - lineWidth;
 
 		Rectangle2D.Double r = new Rectangle2D.Double(x1, y1, 
-				data.getLength() * tokenWidth - lineWidth, y2 - y1);  // BioJava indices start with 1  //TODO Possible substract 1 because no BioJava indices used
+				data.getLength() * tokenWidth - lineWidth, y2 - y1);
 		g.fill(r);
 		if (pos.sequenceLength() <= data.getLength()) {
 			g.setColor(fontColor);  //TODO Is this currently always the selection color? Can this be used as the border color?
 			g.draw(r);   
 			
 			g.setColor(FONT_COLOR);
-			double seqX2 = x + (pos.getLastPos()) * tokenWidth - lineWidth;  // BioJava indices start with 1  //TODO Possible substract 1 because no BioJava indices used
+			double seqX2 = x + pos.getLastPos() * tokenWidth - lineWidth;
 			Path2D.Float path = new Path2D.Float();
 			path.moveTo(seqX2, y1);
 			path.lineTo(x1, y1);
