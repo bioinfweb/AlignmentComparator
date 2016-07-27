@@ -25,6 +25,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.SystemColor;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
@@ -50,7 +51,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	public static final float MARGIN = 1f;
 	public static final Font NO_ZOOM_FONT = new Font(Font.SANS_SERIF, Font.PLAIN,  //TODO Determine font name and style from paint settings here or allow to customize?
 			(int)Math.round(SingleColorTokenPainter.DEFAULT_HEIGHT * SingleColorTokenPainter.FONT_SIZE_FACTOR));  //TODO Could become a problem if the compound width and height are changed independently which is allowed in LibrAlign. => Make sure the AC user cannot do this.
-	public static final Color FONT_COLOR = Color.BLACK;  //TODO Allow to customize or determine from token painter?
+	public static final Color FONT_COLOR = SystemColor.controlText;  //TODO Allow to customize or determine from token painter?
 	public static final Color COMMENT_BACKGROUND_COLOR = Color.WHITE;  //TODO Allow to customize or determine from token painter?
 	
 	
@@ -200,13 +201,11 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 			Graphics2D g, float x, float y) {
 		
 		Rectangle visibleRect = ((JComponent)comparisonComponent.getCommentArea().getToolkitComponent()).getVisibleRect();
-		
-		PaintSettings paintSettings = comparisonComponent.getFirstAlignmentArea().getPaintSettings();
+		double tokenWidth = comparisonComponent.getFirstAlignmentArea().getPaintSettings().getTokenWidth(0);
 		Iterator<Comment> iterator = 
 				getGlobalPositionerData(comparisonComponent.getDocument()).getCommentList().getOverlappingElements(
-						Math.max(0, (int)Math.round((visibleRect.getMinX() - x) / paintSettings.getTokenWidth(0)) - 1), 
-						Math.min(alignmentLength - 1, 
-								(int)Math.round((visibleRect.getMaxX() - x) / paintSettings.getTokenHeight()))).iterator();
+						Math.max(0, (int)Math.round((visibleRect.getMinX() - x) / tokenWidth) - 1), 
+						Math.min(alignmentLength - 1,	(int)Math.round((visibleRect.getMaxX() - x) / tokenWidth))).iterator();
 		while (iterator.hasNext()) {
 			paintComment(comparisonComponent, g, iterator.next(), x, y);
 		}
