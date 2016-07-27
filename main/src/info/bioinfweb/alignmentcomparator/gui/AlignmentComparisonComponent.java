@@ -256,7 +256,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			updateAlignments();
 		}
 		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign (Still necessary?)
-		assignSize();  //TODO Needed?
+		assignSizeToAll();  // Necessary e.g. to resize and repaint comment area.
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 	}
 

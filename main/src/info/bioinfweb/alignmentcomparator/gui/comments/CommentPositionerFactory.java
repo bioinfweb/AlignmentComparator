@@ -51,7 +51,7 @@ public class CommentPositionerFactory {
   
   
   private void fillMap() {
-  	//map.put(SingleLineCommentPositioner.class, new SingleLineCommentPositioner());
+  	map.put(SingleLineCommentPositioner.class, new SingleLineCommentPositioner());
   }
   
   

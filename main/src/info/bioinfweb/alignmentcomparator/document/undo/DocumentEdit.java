@@ -40,7 +40,7 @@ public abstract class DocumentEdit extends AbstractDocumentEdit {
 
 	
 	@Override
-	public void registerDocumentChange() {
+	protected void registerDocumentChange() {
 		document.registerChange();
 	}
 }
