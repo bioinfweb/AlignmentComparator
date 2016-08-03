@@ -69,7 +69,8 @@ public class CommentArea extends DataArea {
 
 	@Override
 	public int getHeight() {
-		return getCommentPositioner().getCommentDimension(getComparisonComponent()).height;
+		//return getCommentPositioner().getCommentDimension(getComparisonComponent()).height;
+		return getCommentPositioner().getNeededHeight(getComparisonComponent());
 	}
 	
 
@@ -81,6 +82,12 @@ public class CommentArea extends DataArea {
 	}
 	
 	
+	@Override
+	public int getLengthAfterEnd() {
+		return getCommentPositioner().getNeededLengthAfterEnd(getComparisonComponent());
+	}
+
+
 	@Override
 	public <T> void afterSequenceChange(SequenceChangeEvent<T> e) {
 		// TODO Auto-generated method stub

@@ -212,12 +212,26 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	}
 
 
+//	@Override
+//	public Dimension getCommentDimension(AlignmentComparisonComponent comparisonComponent) {
+//		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(comparisonComponent.getDocument());
+//		PaintSettings paintSettings = comparisonComponent.getFirstAlignmentArea().getPaintSettings();
+//		return new Dimension((int)Math2.roundUp(data.getMaxColumn() * paintSettings.getTokenWidth(0)),  // BioJava indices start with 1   //TODO Possible substract 1 because no BioJava indices used
+//				(int)Math2.roundUp((data.getMaxLine() + 1) * paintSettings.getTokenHeight()));
+//	}
+
+
 	@Override
-	public Dimension getCommentDimension(AlignmentComparisonComponent comparisonComponent) {
+	public int getNeededHeight(AlignmentComparisonComponent comparisonComponent) {
 		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(comparisonComponent.getDocument());
-		PaintSettings paintSettings = comparisonComponent.getFirstAlignmentArea().getPaintSettings();
-		return new Dimension((int)Math2.roundUp(data.getMaxColumn() * paintSettings.getTokenWidth(0)),  // BioJava indices start with 1   //TODO Possible substract 1 because no BioJava indices used
-				(int)Math2.roundUp((data.getMaxLine() + 1) * paintSettings.getTokenHeight()));
+		return (int)Math2.roundUp((data.getMaxLine() + 1) * comparisonComponent.getFirstAlignmentArea().getPaintSettings().getTokenHeight());
+	}
+
+
+	@Override
+	public int getNeededLengthAfterEnd(AlignmentComparisonComponent comparisonComponent) {
+		SingleLineGlobalCommentPositionerData data = getGlobalPositionerData(comparisonComponent.getDocument());
+		return Math.max(0, (int)Math2.roundUp((data.getMaxColumn() - comparisonComponent.getDocument().getAlignedLength()) * comparisonComponent.getFirstAlignmentArea().getPaintSettings().getTokenWidth(0)));
 	}
 
 

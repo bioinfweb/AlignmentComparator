@@ -256,6 +256,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			updateAlignments();
 		}
 		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign (Still necessary?)
+		getCommentArea().getOwner().getOwner().getDataAreas().setLocalMaxLengthBeforeAfterRecalculate();  // Newly inserted comment could reach behind the end of the alignment.
 		assignSizeToAll();  // Necessary e.g. to resize and repaint comment area.
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 	}
@@ -263,4 +264,19 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 
 	@Override
 	public void namesChanged(DocumentEvent e) {}  //TODO Implement when this event can happen.
+
+
+	public boolean isSelectionSynchronized() {
+		return selectionSynchronizer.isEnabled();
+	}
+
+
+	public void setSelectionSynchronized(boolean enabled) {
+		selectionSynchronizer.setEnabled(enabled);
+	}
+
+
+	public void toggleSelectionSynchronized() {
+		selectionSynchronizer.setEnabled(!isSelectionSynchronized());
+	}
 }

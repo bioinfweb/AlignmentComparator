@@ -40,7 +40,9 @@ public interface CommentPositioner {
   public void paint(AlignmentComparisonComponent comparisonComponent, int alignmentLength, 
   		Graphics2D g, float x, float y);
   
-  public Dimension getCommentDimension(AlignmentComparisonComponent comparisonComponent);
+  public int getNeededHeight(AlignmentComparisonComponent comparisonComponent);
+  
+  public int getNeededLengthAfterEnd(AlignmentComparisonComponent comparisonComponent);
   
   /**
    * Implementing classes should return the comment painted at the specified mouse position here.

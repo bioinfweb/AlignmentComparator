@@ -65,6 +65,7 @@ public class ActionManagement extends AbstractUndoActionManagement {
 		put("edit.moveComment", new MoveCommentAction(mainFrame));
 		put("edit.changeCommentText", new ChangeCommentTextAction(mainFrame));
 		put("edit.removeComment", new RemoveCommentAction(mainFrame));
+		put("edit.syncSelection", new ToggleSynchronizeSelectionAction(mainFrame));
 
 		put("help.about", new AboutAction());
 		put("help.website", new WebsiteAction());

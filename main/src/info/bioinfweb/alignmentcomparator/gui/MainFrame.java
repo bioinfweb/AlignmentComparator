@@ -27,6 +27,7 @@ import info.bioinfweb.tic.SwingComponentFactory;
 import java.awt.BorderLayout;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -227,6 +228,8 @@ public class MainFrame extends JFrame {
 			editMenu.add(getActionManagement().get("edit.moveComment"));
 			editMenu.add(getActionManagement().get("edit.changeCommentText"));
 			editMenu.add(getActionManagement().get("edit.removeComment"));
+			editMenu.addSeparator();
+			editMenu.add(new JCheckBoxMenuItem(getActionManagement().get("edit.syncSelection")));
 		}
 		return editMenu;
 	}
