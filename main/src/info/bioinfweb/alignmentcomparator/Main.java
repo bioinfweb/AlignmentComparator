@@ -26,6 +26,7 @@ import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.commons.ProgramMainClass;
 import info.bioinfweb.commons.appversion.ApplicationType;
 import info.bioinfweb.commons.appversion.ApplicationVersion;
+import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 import info.bioinfweb.wikihelp.client.WikiHelp;
 
 
@@ -46,6 +47,7 @@ public class Main extends ProgramMainClass {
 	
 	private MainFrame mainFrame = null;
 	private WikiHelp wikiHelp = new WikiHelp(WIKI_URL);
+	private JPhyloIOReaderWriterFactory readerWriterFactory = new JPhyloIOReaderWriterFactory();
 	
 	
   private Main() {
@@ -68,6 +70,11 @@ public class Main extends ProgramMainClass {
 
 	public MainFrame getMainFrame() {
 		return mainFrame;
+	}
+
+
+	public JPhyloIOReaderWriterFactory getReaderWriterFactory() {
+		return readerWriterFactory;
 	}
 
 

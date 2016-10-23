@@ -19,16 +19,17 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.io.ImportedAlignmentModelFactory;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
+import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
 import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.factory.AlignmentModelFactory;
-import info.bioinfweb.libralign.model.factory.BioPolymerCharAlignmentModelFactory;
 import info.bioinfweb.libralign.model.implementations.SequenceIDManager;
 import info.bioinfweb.libralign.model.io.AlignmentDataReader;
 
@@ -59,9 +60,18 @@ public class CompareAlignmentsAction extends DocumentAction {
 	}
   
   
-  private AlignmentModel<Character> loadAlignment(File file) throws Exception {  //TODO Support loading multiple alignments from a file.
-  	AlignmentDataReader reader = new AlignmentDataReader(new FASTAEventReader(file, new ReadWriteParameterMap()),  //TODO Support other formats. (Implement factory or GUI components in JPhyloIO that allow format selection.) 
-  			alignmentModelFactory);
+  private AlignmentModel<Character> loadAlignment(File file, String format) throws Exception {
+  	ReadWriteParameterMap parameters = new ReadWriteParameterMap();
+  	JPhyloIOEventReader eventReader;
+		JPhyloIOReaderWriterFactory factory = Main.getInstance().getReaderWriterFactory();
+  	if (format == null) {
+  		eventReader = factory.guessReader(file, parameters);
+  	}
+  	else {
+  		eventReader = factory.getReader(format, file, parameters);
+  	}
+  	
+  	AlignmentDataReader reader = new AlignmentDataReader(eventReader, alignmentModelFactory);
   	reader.readAll();
   	return (AlignmentModel<Character>)reader.getAlignmentModelReader().getCompletedModels().get(0);  //TODO Handle additional alignments read from the file or (e.g. Nexus) files without alignments.
   }
@@ -77,8 +87,9 @@ public class CompareAlignmentsAction extends DocumentAction {
 				ListOrderedMap<String, ComparedAlignment> map = getDocument().getAlignments();
 				map.clear();
 				for (int i = 0; i < dialog.getFileListModel().getSize(); i++) {
-					File file = dialog.getFileListModel().get(i);
-					map.put(file.getAbsolutePath(), new ComparedAlignment(loadAlignment(file)));  //TODO Use shorter key?
+					StartComparisonDialog.FileSelection fileSelection = dialog.getFileListModel().get(i); 
+					map.put(fileSelection.getFile().getAbsolutePath(), 
+							new ComparedAlignment(loadAlignment(fileSelection.getFile(), fileSelection.getFormat())));  //TODO Use shorter key?
 				}
 				
 				dialog.getAlgorithm().performAlignment(getDocument());

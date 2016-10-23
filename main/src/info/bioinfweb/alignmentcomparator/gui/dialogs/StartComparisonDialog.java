@@ -25,6 +25,12 @@ import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignment
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanel;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter;
+import info.bioinfweb.commons.io.ExtensionFileFilter;
+import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
+import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
+import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.wikihelp.client.OkCancelApplyWikiHelpDialog;
 
 import java.awt.Frame;
@@ -47,7 +53,6 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.BorderFactory;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JComboBox;
 import javax.swing.BoxLayout;
 import javax.swing.JList;
@@ -56,9 +61,40 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.JRadioButton;
 
+import org.apache.commons.collections4.set.ListOrderedSet;
+
 
 
 public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
+	public static final class FileSelection {
+		private File file;
+		private String format;
+		
+		public FileSelection(File file, String format) {
+			super();
+			this.file = file;
+			this.format = format;
+		}
+
+		public File getFile() {
+			return file;
+		}
+
+		public String getFormat() {
+			return format;
+		}
+
+		@Override
+		public String toString() {
+			String formatName = "";
+			if (getFormat() != null) {
+				formatName = " (" + Main.getInstance().getReaderWriterFactory().getFormatInfo(getFormat()).getFormatName() + ")";
+			}
+			return "\"" + getFile().toString() + "\"" + formatName;
+		}
+	}
+	
+	
 	private static final long serialVersionUID = 1L;
 
 	private JPanel jContentPane = null;
@@ -70,13 +106,15 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private JPanel algorithmPanel;
 	private JComboBox<CompareAlgorithm> algorithmComboBox;
 	private JPanel outerPreferencesPanel;
-	private JList<File> fileList;
+	private JList<FileSelection> fileList;
 	private JPanel tokenTypePanel;
 	private ButtonGroup tokenTypeGroup;
 	private JRadioButton nucleotideRadioButton;
 	private JRadioButton aminoAcidRadioButton;
 	private JRadioButton otherRadioButton;
-
+	
+	private ExtensionFileFilter allFormatsFilter;
+	
 	
 	/**
 	 * @param owner
@@ -121,8 +159,8 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	}
 	
 	
-	public DefaultListModel<File> getFileListModel() {
-		return (DefaultListModel<File>)getFileList().getModel();
+	public DefaultListModel<FileSelection> getFileListModel() {
+		return (DefaultListModel<FileSelection>)getFileList().getModel();
 	}
 	
 	
@@ -147,8 +185,23 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private JFileChooser getFileChooser() {
   	if (fileChooser == null) {
   		fileChooser = new JFileChooser();
-  		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("FASTA alignment", "fasta", "fas"));
+  		
   		fileChooser.setMultiSelectionEnabled(true);
+  		fileChooser.setAcceptAllFileFilterUsed(true);
+  		
+  		JPhyloIOReaderWriterFactory factory = Main.getInstance().getReaderWriterFactory();
+  		ListOrderedSet<String> validExtensions = new ListOrderedSet<String>();
+  		for (String formatID : factory.getFormatIDsSet()) {
+  			JPhyloIOFormatInfo info = factory.getFormatInfo(formatID);
+  			if (info.isElementModeled(EventContentType.ALIGNMENT, true)) {
+  					ContentExtensionFileFilter filter = info.createFileFilter();
+  					validExtensions.addAll(filter.getExtensions());
+  					fileChooser.addChoosableFileFilter(info.createFileFilter());
+  			}
+  		}
+  		allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
+  		fileChooser.addChoosableFileFilter(allFormatsFilter);
+  		fileChooser.setFileFilter(allFormatsFilter);
   	}
   	return fileChooser;
   }
@@ -228,7 +281,11 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 						StringBuilder skippedFiles = new StringBuilder();
 						for (File file : getFileChooser().getSelectedFiles()) {
 							if (file.exists() && !getFileListModel().contains(file)) {
-								getFileListModel().addElement(file);
+								String formatID = null;
+								if (getFileChooser().getFileFilter() instanceof JPhyloIOFormatSpecificObject) {  // Otherwise one of the "all formats" filter was used and the format needs to be guessed.
+									formatID = ((JPhyloIOFormatSpecificObject)getFileChooser().getFileFilter()).getFormatID();
+								}
+								getFileListModel().addElement(new FileSelection(file, formatID));
 							}
 							else {
 								skippedFiles.append(file.getAbsolutePath() + "\n");
@@ -354,9 +411,9 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	}
 	
 	
-	private JList<File> getFileList() {
+	private JList<FileSelection> getFileList() {
 		if (fileList == null) {
-			fileList = new JList<File>(new DefaultListModel<File>());
+			fileList = new JList<FileSelection>(new DefaultListModel<FileSelection>());
 			fileList.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent event) {
 					getRemoveButton().setEnabled(getFileList().getSelectedIndex() != -1);
