@@ -36,6 +36,8 @@ import info.bioinfweb.libralign.model.io.AlignmentDataReader;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JOptionPane;
@@ -60,7 +62,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 	}
   
   
-  private AlignmentModel<Character> loadAlignment(File file, String format) throws Exception {
+  private Iterator<AlignmentModel<?>> loadAlignments(File file, String format) throws Exception {
   	ReadWriteParameterMap parameters = new ReadWriteParameterMap();
   	JPhyloIOEventReader eventReader;
 		JPhyloIOReaderWriterFactory factory = Main.getInstance().getReaderWriterFactory();
@@ -73,10 +75,11 @@ public class CompareAlignmentsAction extends DocumentAction {
   	
   	AlignmentDataReader reader = new AlignmentDataReader(eventReader, alignmentModelFactory);
   	reader.readAll();
-  	return (AlignmentModel<Character>)reader.getAlignmentModelReader().getCompletedModels().get(0);  //TODO Handle additional alignments read from the file or (e.g. Nexus) files without alignments.
+  	return reader.getAlignmentModelReader().getCompletedModels().iterator();  // The returned iterator maybe empty.
   }
   
   
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (dialog.execute()) {
@@ -86,10 +89,28 @@ public class CompareAlignmentsAction extends DocumentAction {
 		  	
 				ListOrderedMap<String, ComparedAlignment> map = getDocument().getAlignments();
 				map.clear();
+		  	StringBuffer warningMessage = new StringBuffer();
 				for (int i = 0; i < dialog.getFileListModel().getSize(); i++) {
-					StartComparisonDialog.FileSelection fileSelection = dialog.getFileListModel().get(i); 
-					map.put(fileSelection.getFile().getAbsolutePath(), 
-							new ComparedAlignment(loadAlignment(fileSelection.getFile(), fileSelection.getFormat())));  //TODO Use shorter key?
+					StartComparisonDialog.FileSelection fileSelection = dialog.getFileListModel().get(i);
+					Iterator<AlignmentModel<?>> iterator = loadAlignments(fileSelection.getFile(), fileSelection.getFormat());
+					int index = 0;
+					if (iterator.hasNext()) {
+						do {
+							//TODO Am besten evtl. Namen aus Datei laden.
+							map.put(fileSelection.getFile().getAbsolutePath() + " [" + index + "]", 
+									new ComparedAlignment((AlignmentModel<Character>)iterator.next()));  //TODO Use shorter key?
+							index++;
+						} while (iterator.hasNext());
+					}
+					else {
+						warningMessage.append("\n- ");
+						warningMessage.append(fileSelection.getFile());
+					}
+				}
+				
+				if (warningMessage.length() > 0) {
+					JOptionPane.showMessageDialog(getMainFrame(), "The following files did not contain any alignments:\n" + 
+							warningMessage.toString(), "Empty file(s)", JOptionPane.WARNING_MESSAGE);
 				}
 				
 				dialog.getAlgorithm().performAlignment(getDocument());

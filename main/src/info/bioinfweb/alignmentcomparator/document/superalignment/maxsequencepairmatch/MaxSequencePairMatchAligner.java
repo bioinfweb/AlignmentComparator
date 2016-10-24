@@ -39,7 +39,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private static final int ALL_COLUMNS_RIGHT_OF_ROWS = -2;
 	
 	
-	private Iterator<Integer> createSequenceIDIterator(Document alignments) {
+	private Iterator<String> createSequenceIDIterator(Document alignments) {
 		return alignments.getAlignments().getValue(0).getOriginal().sequenceIDIterator();
 	}
 
@@ -50,9 +50,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		boolean allColumnsRightOfRows = true;
 		boolean[] gaps = new boolean[2];
 		int[] degapedIndices = new int[2];
-		Iterator<Integer> idIterator = createSequenceIDIterator(document);
+		Iterator<String> idIterator = createSequenceIDIterator(document);
 		while (idIterator.hasNext()) {
-			int sequenceID = idIterator.next();
+			String sequenceID = idIterator.next();
 			for (int i = 0; i < gaps.length; i++) {
 				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();
 				gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedIndices[i]));

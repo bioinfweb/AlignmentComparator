@@ -45,10 +45,10 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 
 		// Save degaped length:
 		double[] degapedLengths = new double[model.getSequenceCount()];
-		Iterator<Integer> seqIDIterator = model.sequenceIDIterator();  // This iterator may have a alignment dependent order. That is not problematic, since degapedLengths is only used for the current alignment. 
+		Iterator<String> seqIDIterator = model.sequenceIDIterator();  // This iterator may have a alignment dependent order. That is not problematic, since degapedLengths is only used for the current alignment. 
 		int sequenceIndex = 0;
 		while (seqIDIterator.hasNext()) {
-			int id = seqIDIterator.next();
+			String id = seqIDIterator.next();
 			degapedLengths[sequenceIndex] = calculator.degapedIndex(id, model.getSequenceLength(id) - 1);
 			sequenceIndex++;
 		}
@@ -61,7 +61,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			seqIDIterator = model.sequenceIDIterator();
 			sequenceIndex = 0;
 			while (seqIDIterator.hasNext()) {
-				int id = seqIDIterator.next();
+				String id = seqIDIterator.next();
 				averageIndex += (double)calculator.degapedIndex(id, column) / degapedLengths[sequenceIndex];
 				sequenceIndex++;
 			}

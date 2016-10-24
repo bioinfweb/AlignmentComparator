@@ -50,7 +50,7 @@ public class ImportedAlignmentModelFactory extends AbstractAlignmentModelFactory
 
 
 	@Override
-	public AlignmentModel<Character> createNewModel(NewAlignmentModelParameterMap parameterMap) {
+	public AlignmentModel<Character> doCreateNewModel(NewAlignmentModelParameterMap parameterMap) {
 		TokenSet<Character> tokenSet;
 		switch (tokenType) {
 			case NUCLEOTIDE:

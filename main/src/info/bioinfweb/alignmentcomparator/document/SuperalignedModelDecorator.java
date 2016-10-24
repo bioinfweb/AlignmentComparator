@@ -101,7 +101,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 		
 		// Fire change events:
 		Collection<Character> addedTokens = createTokenCollection(length);
-		Iterator<Integer> iterator = sequenceIDIterator();
+		Iterator<String> iterator = sequenceIDIterator();
 		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
 			fireAfterTokenChange(TokenChangeEvent.newInsertInstance(this, iterator.next(), start, addedTokens));
 		}
@@ -123,7 +123,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 		
 		// Fire change events:
 		Collection<Character> removedTokens = createTokenCollection(length);
-		Iterator<Integer> iterator = sequenceIDIterator();
+		Iterator<String> iterator = sequenceIDIterator();
 		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
 			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
 		}
@@ -153,7 +153,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public int getSequenceLength(int sequenceID) {
+	public int getSequenceLength(String sequenceID) {
 		return unalignedIndices.size();
 	}
 
@@ -165,7 +165,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public Character getTokenAt(int sequenceID, int index) {
+	public Character getTokenAt(String sequenceID, int index) {
 		int unalignedIndex = unalignedIndices.get(index);
 		if (unalignedIndex == SUPER_GAP_INDEX) {
 			return SUPER_ALIGNMENT_GAP;
@@ -189,7 +189,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public String renameSequence(int sequenceID, String newSequenceName) throws AlignmentSourceNotWritableException,
+	public String renameSequence(String sequenceID, String newSequenceName) throws AlignmentSourceNotWritableException,
 			DuplicateSequenceNameException, SequenceNotFoundException {
 
 		throw new AlignmentSourceNotWritableException(this);
@@ -197,13 +197,13 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public void setTokenAt(int sequenceID, int index, Character token) throws AlignmentSourceNotWritableException {
+	public void setTokenAt(String sequenceID, int index, Character token) throws AlignmentSourceNotWritableException {
 		throw new AlignmentSourceNotWritableException(this);
 	}
 
 
 	@Override
-	public void setTokensAt(int sequenceID, int beginIndex,	Collection<? extends Character> tokens)
+	public void setTokensAt(String sequenceID, int beginIndex,	Collection<? extends Character> tokens)
 			throws AlignmentSourceNotWritableException {
 
 		throw new AlignmentSourceNotWritableException(this);
@@ -211,27 +211,13 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public void appendToken(int sequenceID, Character token) throws AlignmentSourceNotWritableException {
+	public void appendToken(String sequenceID, Character token) throws AlignmentSourceNotWritableException {
 		throw new AlignmentSourceNotWritableException(this);
 	}
 
 
 	@Override
-	public void appendTokens(int sequenceID, Collection<? extends Character> tokens)
-			throws AlignmentSourceNotWritableException {
-		
-		throw new AlignmentSourceNotWritableException(this);
-	}
-
-
-	@Override
-	public void insertTokenAt(int sequenceID, int index, Character token)	throws AlignmentSourceNotWritableException {
-		throw new AlignmentSourceNotWritableException(this);
-	}
-
-
-	@Override
-	public void insertTokensAt(int sequenceID, int beginIndex, Collection<? extends Character> tokens)
+	public void appendTokens(String sequenceID, Collection<? extends Character> tokens)
 			throws AlignmentSourceNotWritableException {
 		
 		throw new AlignmentSourceNotWritableException(this);
@@ -239,13 +225,27 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public void removeTokenAt(int sequenceID, int index) throws AlignmentSourceNotWritableException {
+	public void insertTokenAt(String sequenceID, int index, Character token)	throws AlignmentSourceNotWritableException {
 		throw new AlignmentSourceNotWritableException(this);
 	}
 
 
 	@Override
-	public void removeTokensAt(int sequenceID, int beginIndex, int endIndex) throws AlignmentSourceNotWritableException {
+	public void insertTokensAt(String sequenceID, int beginIndex, Collection<? extends Character> tokens)
+			throws AlignmentSourceNotWritableException {
+		
+		throw new AlignmentSourceNotWritableException(this);
+	}
+
+
+	@Override
+	public void removeTokenAt(String sequenceID, int index) throws AlignmentSourceNotWritableException {
+		throw new AlignmentSourceNotWritableException(this);
+	}
+
+
+	@Override
+	public void removeTokensAt(String sequenceID, int beginIndex, int endIndex) throws AlignmentSourceNotWritableException {
 		throw new AlignmentSourceNotWritableException(this);
 	}
 }
