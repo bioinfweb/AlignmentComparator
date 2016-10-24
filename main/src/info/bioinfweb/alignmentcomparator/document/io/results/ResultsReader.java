@@ -20,8 +20,7 @@ package info.bioinfweb.alignmentcomparator.document.io.results;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.alignmentcomparator.document.SuperAlignmentCompoundSet;
-import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
+import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
 import info.bioinfweb.commons.bio.biojava3.core.sequence.compound.AlignmentAmbiguityNucleotideCompoundSet;
 import info.bioinfweb.commons.appversion.AppVersionXMLConstants;
@@ -78,11 +77,11 @@ public class ResultsReader implements ResultsXMLConstants {
   
   
   public static ArrayList<Integer> decodeGapPattern(String gapPattern) {
-  	int unalignedPos = 1;  // BioJava indes starts with 1
+  	int unalignedPos = 1;  // BioJava indes starts with 1  //TODO Adjustements needed?
   	ArrayList<Integer> result = new ArrayList<Integer>((int)(gapPattern.length() * Document.ARRAY_LIST_SIZE_FACTOR));
   	for (int alignedPos = 0; alignedPos < gapPattern.length(); alignedPos++) {
 			if (gapPattern.charAt(alignedPos) == TOKEN_GAP) {
-				result.add(SuperAlignmentSequenceView.GAP_INDEX);
+				result.add(SuperalignedModelDecorator.SUPER_GAP_INDEX);
 			}
 			else {
 				result.add(unalignedPos);
@@ -215,13 +214,14 @@ public class ResultsReader implements ResultsXMLConstants {
         else if (element.getName().equals(TAG_COMMENTS)) {
         	readComments(alignments.getComments());
         }
-        else {  // evtl. zus�tzlich vorhandenes Element, dass nicht gelesen wird
+        else {  // evtl. zusätzlich vorhandenes Element, dass nicht gelesen wird
           XMLUtils.reachElementEnd(reader);  
         }
       }
       event = reader.nextEvent();
     }
     
+    //alignments.getAlignments().put(, value)
     alignments.setAlignedData("First", createAlignmentMap(0, names),  //TODO Save correct names into file
     		"Second", createAlignmentMap(1, names),
     		new BioJava3TokenSet(SuperAlignmentCompoundSet.getSuperAlignmentCompoundSet(), false),  //TODO Also allow protein sequences and token sets. 
