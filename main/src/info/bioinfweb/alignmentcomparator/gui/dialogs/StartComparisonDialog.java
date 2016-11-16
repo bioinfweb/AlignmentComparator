@@ -26,6 +26,7 @@ import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmP
 import info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels.AlgorithmPreferencesPanelFactory;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter.TestStrategy;
 import info.bioinfweb.commons.io.ExtensionFileFilter;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
@@ -194,9 +195,9 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
   		for (String formatID : factory.getFormatIDsSet()) {
   			JPhyloIOFormatInfo info = factory.getFormatInfo(formatID);
   			if (info.isElementModeled(EventContentType.ALIGNMENT, true)) {
-  					ContentExtensionFileFilter filter = info.createFileFilter();
+  					ContentExtensionFileFilter filter = info.createFileFilter(TestStrategy.BOTH);
   					validExtensions.addAll(filter.getExtensions());
-  					fileChooser.addChoosableFileFilter(info.createFileFilter());
+  					fileChooser.addChoosableFileFilter(filter);
   			}
   		}
   		allFormatsFilter = new ExtensionFileFilter("All supported formats", false, validExtensions.asList());
