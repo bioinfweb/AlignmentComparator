@@ -15,11 +15,11 @@
 	<classpathentry kind="lib" path="/info.bioinfweb.wikihelp.client/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.tic.swing/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.libralign.io/bin" sourcepath="/info.bioinfweb.libralign.io/src"/>
-	<classpathentry kind="lib" path="/JPhyloIO/bin" sourcepath="/JPhyloIO/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.experimental/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.libralign.biojava3/bin" sourcepath="/info.bioinfweb.libralign.biojava3/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.bio/bin"/>
 	<classpathentry kind="lib" path="include/lib/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="include/lib/owlapi-XMLUtils-4.1.4.jar"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/bin" sourcepath="/info.bioinfweb.jphyloio.core/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

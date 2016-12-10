@@ -28,7 +28,6 @@ import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
-import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.implementations.SequenceIDManager;
 import info.bioinfweb.libralign.model.io.AlignmentDataReader;
@@ -37,7 +36,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.JOptionPane;
@@ -73,9 +71,14 @@ public class CompareAlignmentsAction extends DocumentAction {
   		eventReader = factory.getReader(format, file, parameters);
   	}
   	
-  	AlignmentDataReader reader = new AlignmentDataReader(eventReader, alignmentModelFactory);
-  	reader.readAll();
-  	return reader.getAlignmentModelReader().getCompletedModels().iterator();  // The returned iterator maybe empty.
+  	try {
+	  	AlignmentDataReader reader = new AlignmentDataReader(eventReader, alignmentModelFactory);
+	  	reader.readAll();
+	  	return reader.getAlignmentModelReader().getCompletedModels().iterator();  // The returned iterator maybe empty.
+  	}
+  	finally {
+  		eventReader.close();
+  	}
   }
   
   
