@@ -14,10 +14,10 @@
 	<classpathentry kind="lib" path="/info.bioinfweb.libralign.core/bin" sourcepath="/info.bioinfweb.libralign.core/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.libralign.io/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.libralign.swing/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.tic.core/bin"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.tic.core/bin" sourcepath="/info.bioinfweb.tic.core/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.tic.swing/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.wikihelp.client/bin"/>
-	<classpathentry kind="lib" path="/JPhyloIO/bin" sourcepath="/JPhyloIO/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.testing/bin"/>
+	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/bin" sourcepath="/info.bioinfweb.jphyloio.core/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
