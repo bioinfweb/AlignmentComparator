@@ -20,7 +20,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
+import info.bioinfweb.alignmentcomparator.document.comments.SingleCommentAnchor;
 
 
 
@@ -60,8 +60,8 @@ public class AlignmentComparisonSelection {
 	}
 	
 	
-	public CommentPosition getCommentPosition() {
-		return new CommentPosition(getFirstPos(), getLastPos());
+	public SingleCommentAnchor getCommentPosition() {
+		return new SingleCommentAnchor(getFirstPos(), getLastPos());
 	}
 	
 	

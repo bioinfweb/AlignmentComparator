@@ -20,23 +20,25 @@ package info.bioinfweb.alignmentcomparator.document.comments;
 
 
 
-public class CommentPosition implements Comparable<CommentPosition> {
+public class SingleCommentAnchor implements Comparable<SingleCommentAnchor>, CommentAnchor {
   private int firstPos;
   private int lastPos;
   
   
-	public CommentPosition(int firstPos, int lastPos) {
+	public SingleCommentAnchor(int firstPos, int lastPos) {
 		super();
 		this.firstPos = firstPos;
 		this.lastPos = lastPos;
 	}
 	
 	
+	@Override
 	public int getFirstPos() {
 		return firstPos;
 	}
 	
 	
+	@Override
 	public int getLastPos() {
 		return lastPos;
 	}
@@ -58,7 +60,7 @@ public class CommentPosition implements Comparable<CommentPosition> {
 
 
 	@Override
-	public int compareTo(CommentPosition other) {
+	public int compareTo(SingleCommentAnchor other) {
 		int result = getFirstPos() - other.getFirstPos();
 		if (result == 0) {
 			result = getLastPos() - other.getLastPos();
@@ -69,8 +71,8 @@ public class CommentPosition implements Comparable<CommentPosition> {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof CommentPosition) {
-			return compareTo((CommentPosition)other) == 0;
+		if (other instanceof SingleCommentAnchor) {
+			return compareTo((SingleCommentAnchor)other) == 0;
 		}
 		else {
 			return false;

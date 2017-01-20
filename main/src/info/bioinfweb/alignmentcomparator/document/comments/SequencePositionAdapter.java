@@ -26,25 +26,25 @@ import info.bioinfweb.commons.collections.SequenceIntervalPositionAdapter;
 public class SequencePositionAdapter implements SequenceIntervalPositionAdapter<Comment> {
 	@Override
 	public int getFirstPos(Comment comment) {
-		return comment.getPosition().getFirstPos();
+		return comment.getAnchors().getFirstPos();
 	}
 
 	
 	@Override
 	public int getLastPos(Comment comment) {
-  	return comment.getPosition().getLastPos();
+  	return comment.getAnchors().getLastPos();
 	}
 
 
 	@Override
 	public void setFirstPos(Comment comment, int newFirstPos) {
-		comment.getPosition().setFirstPos(newFirstPos);
+		comment.getAnchors().setFirstPos(newFirstPos);
 	}
 
 
 	@Override
 	public void setLastPos(Comment comment, int newLastPos) {
-		comment.getPosition().setLastPos(newLastPos);
+		comment.getAnchors().setLastPos(newLastPos);
 	}
 
 

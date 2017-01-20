@@ -43,11 +43,11 @@ public class CommentList extends SequenceIntervalList<Comment> {
 
 
 	public boolean add(int firstPos, int lastPos, String text) {
-		return add(new CommentPosition(firstPos, lastPos), text);
+		return add(new SingleCommentAnchor(firstPos, lastPos), text);
 	}
 	
 	
-	public boolean add(CommentPosition position, String text) {
+	public boolean add(SingleCommentAnchor position, String text) {
 		return add(new Comment(position, text));
 	}
 	

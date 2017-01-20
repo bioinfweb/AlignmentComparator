@@ -24,16 +24,16 @@ import javax.swing.undo.CannotUndoException;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
+import info.bioinfweb.alignmentcomparator.document.comments.SingleCommentAnchor;
 
 
 
 public class MoveCommentEdit extends CommentEdit {
-  private CommentPosition newPosition = null;
-  private CommentPosition oldPosition = null;
+  private SingleCommentAnchor newPosition = null;
+  private SingleCommentAnchor oldPosition = null;
 
   
-	public MoveCommentEdit(Document document, Comment comment, CommentPosition newPosition) {
+	public MoveCommentEdit(Document document, Comment comment, SingleCommentAnchor newPosition) {
 		super(document, comment);
 		this.newPosition = newPosition;
 		oldPosition = getComment().getPosition();

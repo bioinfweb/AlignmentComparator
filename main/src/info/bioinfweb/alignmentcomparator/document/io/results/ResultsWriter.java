@@ -24,7 +24,7 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperAlignmentSequenceView;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
 import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
+import info.bioinfweb.alignmentcomparator.document.comments.SingleCommentAnchor;
 import info.bioinfweb.commons.appversion.AppVersionXMLReadWrite;
 import info.bioinfweb.commons.io.XMLUtils;
 
@@ -113,7 +113,7 @@ public class ResultsWriter implements ResultsXMLConstants {
 		Iterator<Comment> iterator = list.iterator();
 		while (iterator.hasNext()) {
 			Comment comment = iterator.next();
-			CommentPosition pos = comment.getPosition();
+			SingleCommentAnchor pos = comment.getPosition();
 			writer.writeStartElement(TAG_COMMENT.getLocalPart());
 			writer.writeAttribute(ATTR_COMMENT_FIRST_POS.getLocalPart(), "" + pos.getFirstPos());
 			writer.writeAttribute(ATTR_COMMENT_LAST_POS.getLocalPart(), "" + pos.getLastPos());

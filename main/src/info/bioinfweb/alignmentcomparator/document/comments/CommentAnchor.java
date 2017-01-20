@@ -19,23 +19,8 @@
 package info.bioinfweb.alignmentcomparator.document.comments;
 
 
-import java.util.Comparator;
-
-
-
-/**
- * Compares two comment positions by their position in the super alignment.
- * 
- * @author Ben St&ouml;ver
- */
-public class CommentPositionComparator implements Comparator<CommentAnchor> {
-	@Override
-	public int compare(CommentAnchor pos1, CommentAnchor pos2) {
-		if (pos1.getFirstPos() == pos2.getFirstPos()) {
-			return pos1.getLastPos() - pos2.getLastPos(); 
- 		}
-		else {
-			return pos1.getFirstPos() - pos2.getFirstPos(); 
-		}
-	}
+public interface CommentAnchor {
+	public int getFirstPos();
+	
+	public int getLastPos();
 }

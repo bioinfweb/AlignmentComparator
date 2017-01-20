@@ -27,22 +27,14 @@ import java.util.Map;
 
 
 public class Comment implements Comparable<Comment> {
-  private CommentPosition position;
+  private CommentAnchorList anchors = new CommentAnchorList();
   private String text;
   private Map<Class<? extends CommentPositioner>, Object> positionData = new HashMap<Class<? extends CommentPositioner>, Object>();
   
   
-	public Comment(int firstPos, int lastPos, String text) {
+	public Comment(String text) {
 		super();
 		this.text = text;
-		this.position = new CommentPosition(firstPos, lastPos);
-	}
-
-
-	public Comment(CommentPosition position, String text) {
-		super();
-		this.text = text;
-		this.position = position;
 	}
 
 
@@ -56,14 +48,9 @@ public class Comment implements Comparable<Comment> {
 	}
 
 
-	public CommentPosition getPosition() {
-		return position;
-	}
-	
-	
-	public void setPosition(CommentPosition position) {
-		this.position = position;
-		//TODO Sicherstellen, dass Kommentar entsprechend der neue Position in CommentList neu eingeordnet wird
+	public CommentAnchorList getAnchors() {
+		return anchors;
+		//TODO Sicherstellen, dass Kommentar entsprechend der neuen Position in CommentList neu eingeordnet wird, wenn ein Anker (Eintrag in der Map) verändert wird.
 	}
 
 
@@ -79,7 +66,7 @@ public class Comment implements Comparable<Comment> {
 
 	@Override
 	public int compareTo(Comment other) {
-		int result = getPosition().compareTo(other.getPosition());
+		int result = new CommentPositionComparator().compare(this.getAnchors(), other.getAnchors());
 		if (result == 0) {
 			result = getText().compareTo(getText());
 		}
@@ -92,7 +79,7 @@ public class Comment implements Comparable<Comment> {
 		boolean result = (other instanceof Comment);
 		if (result) {
 			Comment c = (Comment)other;
-			result = getPosition().equals(c.getPosition()) && getText().equals(c.getText());
+			result = getAnchors().equals(c.getAnchors()) && getText().equals(c.getText());
 		}
 		return result;
 	}
@@ -100,6 +87,6 @@ public class Comment implements Comparable<Comment> {
 
 	@Override
 	public int hashCode() {
-		return getPosition().hashCode() * 13 + getText().hashCode();
+		return getAnchors().hashCode() * 13 + getText().hashCode();
 	}
 }

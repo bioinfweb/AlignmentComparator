@@ -20,7 +20,6 @@ package info.bioinfweb.alignmentcomparator.gui.comments;
 
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -36,7 +35,7 @@ import javax.swing.JComponent;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentPosition;
+import info.bioinfweb.alignmentcomparator.document.comments.SingleCommentAnchor;
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonComponent;
 import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.FontCalculator;
@@ -148,7 +147,7 @@ public class SingleLineCommentPositioner implements CommentPositioner {
 	
 	private void paintComment(AlignmentComparisonComponent comparisonComponent, Graphics2D g, Comment comment, float x, float y) {
 		SingleLineCommentPositionData data = getData(comment);
-		CommentPosition pos = comment.getPosition();
+		SingleCommentAnchor pos = comment.getPosition();
 		AlignmentArea area = comparisonComponent.getFirstAlignmentArea();
 		PaintSettings paintSettings = area.getPaintSettings();
 		
