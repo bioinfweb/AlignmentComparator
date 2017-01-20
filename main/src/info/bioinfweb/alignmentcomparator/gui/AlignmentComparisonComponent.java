@@ -35,7 +35,6 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
-import info.bioinfweb.alignmentcomparator.gui.comments.CommentArea;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionChangeEvent;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
@@ -69,7 +68,6 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	private MainFrame owner;
 	private SelectionSynchronizer selectionSynchronizer = new SelectionSynchronizer();
 	private AlignmentComparisonSelection selection = new AlignmentComparisonSelection(this);
-	private CommentArea commentArea;
 
 	
 	public AlignmentComparisonComponent(MainFrame owner) {
@@ -92,15 +90,6 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	private AlignmentArea createIndexArea() {
 		AlignmentArea result = new AlignmentArea(this);
 		result.getDataAreas().getTopAreas().add(new SequenceIndexArea(result.getContentArea()));
-		result.setAllowVerticalScrolling(false);
-		return result;
-	}
-	
-	
-	private AlignmentArea createCommentAlignmentArea() {
-		AlignmentArea result = new AlignmentArea(this);
-		commentArea = new CommentArea(result.getContentArea());
-		result.getDataAreas().getBottomAreas().add(commentArea);
 		result.setAllowVerticalScrolling(false);
 		return result;
 	}
@@ -150,7 +139,6 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 			}
 		}
 		addSelectionListener();
-		getAlignmentAreas().add(createCommentAlignmentArea());
 	}
 	
 	
@@ -245,18 +233,12 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
-	public CommentArea getCommentArea() {
-		return commentArea;
-	}
-
-
 	@Override
 	public void changeHappened(DocumentEvent e) {
 		if (updateNeeded()) {
 			updateAlignments();
 		}
 		((JComponent)getToolkitComponent()).revalidate();  //TODO Move to LibrAlign (Still necessary?)
-		getCommentArea().getOwner().getOwner().getDataAreas().setLocalMaxLengthBeforeAfterRecalculate();  // Newly inserted comment could reach behind the end of the alignment.
 		assignSizeToAll();  // Necessary e.g. to resize and repaint comment area.
 		Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 	}

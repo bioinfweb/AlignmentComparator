@@ -20,7 +20,6 @@ package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
 import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentReader;
-import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 
@@ -55,7 +54,7 @@ public class OpenResultsAction extends DocumentAction {
   		fileChooser = new JFileChooser();
   		fileChooser.setDialogTitle("Open comparison results");
   		fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
-  		fileChooser.addChoosableFileFilter(ResultsFileFilter.getInstance());
+  		//fileChooser.addChoosableFileFilter(ResultsFileFilter.getInstance());  //TODO Add NeXML filter here?
   		fileChooser.addChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
   		//TODO zu DirModel hinzufügen
   	}

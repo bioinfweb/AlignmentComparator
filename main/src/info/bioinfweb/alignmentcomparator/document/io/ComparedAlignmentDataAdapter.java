@@ -85,6 +85,6 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 		if (elementString.length() > 0) {
 			receiver.add(new LiteralMetadataContentEvent(elementString.toString(), false));
 		}
-		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.META_LITERAL));
+		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
 	}
 }

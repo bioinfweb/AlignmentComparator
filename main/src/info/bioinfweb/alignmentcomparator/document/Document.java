@@ -20,15 +20,10 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import info.bioinfweb.alignmentcomparator.Main;
-import info.bioinfweb.alignmentcomparator.document.comments.CommentList;
-import info.bioinfweb.alignmentcomparator.document.comments.SequencePositionAdapter;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentDataAdapter;
-import info.bioinfweb.alignmentcomparator.document.io.results.ResultsFileFilter;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
-import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositioner;
-import info.bioinfweb.alignmentcomparator.gui.comments.CommentPositionerFactory;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.changemonitor.ChangeMonitorable;
 import info.bioinfweb.commons.io.Savable;
@@ -59,7 +54,6 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	private CharacterStateSetType tokenType = CharacterStateSetType.DISCRETE;
 	private ListOrderedMap<String, ComparedAlignment> alignments = 
 			ListOrderedMap.listOrderedMap(new TreeMap<String, ComparedAlignment>());
-	private CommentList comments = new CommentList(new SequencePositionAdapter());
 	
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
@@ -69,11 +63,12 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	
 	public Document() {
 		super(DEFAULT_DOCUMENT_NAME);
+		//TODO Does it make sense anymore that this class implements SwingSavable? If so, which filters should be used here?
 		getFileChooser().removeChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
-		getFileChooser().addChoosableFileFilter(ResultsFileFilter.getInstance());
+		//getFileChooser().addChoosableFileFilter(ResultsFileFilter.getInstance());
 		getFileChooser().addChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
   	//CurrentDirectoryModel.getInstance().addFileChooser(getFileChooser());
-  	setDefaultExtension(ResultsFileFilter.EXTENSION);
+  	//setDefaultExtension(ResultsFileFilter.EXTENSION);
 		clear();
 	}
 	
@@ -228,7 +223,6 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 //		superAlignmentProviders.clear();
 //		unalignedIndices = new ArrayList[0];
 		alignments.clear();
-		comments.clear();
 	}
 	
 	
@@ -387,11 +381,6 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	}
 
 
-	public CommentList getComments() {
-		return comments;
-	}
-	
-	
   public AccessibleUndoManager getUndoManager() {
 		return undoManager;
 	}
@@ -435,22 +424,12 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
   }
 
   
-  /** Alerts all comment positioners to reposition the comments because of made changes. */
-  private void alertPositioners() {
-  	Iterator<CommentPositioner> iterator = CommentPositionerFactory.getInstance().getAllPositioners().iterator();
-  	while (iterator.hasNext()) {
-  		iterator.next().position(this);
-  	}
-  }
-
-  
   /**
    * Triggers that the GUI components displaying this document are updated and sets the changed flag to {@code true}.
    */
   @Override
 	public void registerChange() {
 		super.registerChange();
-		alertPositioners();  // Positioners must be alerted first
 		fireChangeHappened();
 		Main.getInstance().getMainFrame().updateTitle();
 	}

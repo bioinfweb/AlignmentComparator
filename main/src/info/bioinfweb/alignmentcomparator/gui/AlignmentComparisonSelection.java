@@ -19,10 +19,6 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import info.bioinfweb.alignmentcomparator.document.comments.Comment;
-import info.bioinfweb.alignmentcomparator.document.comments.SingleCommentAnchor;
-
-
 
 /**
  * Represents the selection in a {@link AlignmentComparisonPanel}.
@@ -31,7 +27,6 @@ import info.bioinfweb.alignmentcomparator.document.comments.SingleCommentAnchor;
  */
 public class AlignmentComparisonSelection {
   private AlignmentComparisonComponent owner;
-  private Comment comment = null;
   
   
 	public AlignmentComparisonSelection(AlignmentComparisonComponent owner) {
@@ -60,39 +55,12 @@ public class AlignmentComparisonSelection {
 	}
 	
 	
-	public SingleCommentAnchor getCommentPosition() {
-		return new SingleCommentAnchor(getFirstPos(), getLastPos());
-	}
-	
-	
 	public boolean isSequenceSelected() {
 		return (getOwner().getFirstAlignmentArea() != null) && !getOwner().getFirstAlignmentArea().getSelection().isEmpty();
 	}
 	
 	
-	public Comment getComment() {
-		return comment;
-	}
-	
-	
-	public void setComment(Comment comment) {
-		this.comment = comment;
-		//getOwner().fireColumnSelectionChanged();  //TODO reimplement
-	}
-	
-	
-	public void clearCommentSelection() {
-		setComment(null);
-	}
-	
-	
-	public boolean isCommentSelected() {
-		return getComment() != null;
-	}
-	
-	
 	public void clear() {
-		comment  = null;  // avoid firing two events
 		if (getOwner().getFirstAlignmentArea() != null) {
 			getOwner().getFirstAlignmentArea().getSelection().clear();
 		}

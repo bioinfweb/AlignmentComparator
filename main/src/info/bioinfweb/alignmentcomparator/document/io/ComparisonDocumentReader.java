@@ -60,7 +60,7 @@ public class ComparisonDocumentReader implements IOConstants {
 	private String readSimpleLiteralContent(QName predicate) throws IOException {
 		if (reader.hasNextEvent()) {
 			JPhyloIOEvent event = reader.peek();
-			if (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+			if (event.getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
 				LiteralMetadataContentEvent contentEvent = event.asLiteralMetadataContentEvent();
 				if (contentEvent.isContinuedInNextEvent()) {  //TODO Could this be a problem, if single events are very short on some platforms in some situations. => Possibly use tool method that concatenates part events until a maximum length.
 					throw new IOException("The content of the literal metadata element \"" + predicate + 
@@ -134,7 +134,7 @@ public class ComparisonDocumentReader implements IOConstants {
 			result = new ArrayList<Integer>();
 			String remainingCharacters = "";
 			JPhyloIOEvent event = reader.next();
-			while (event.getType().getContentType().equals(EventContentType.META_LITERAL_CONTENT)) {
+			while (event.getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
 				Scanner scanner = new Scanner(remainingCharacters + event.asLiteralMetadataContentEvent().getStringValue());
 				try {
 					scanner.useDelimiter("\\s+");
@@ -181,7 +181,7 @@ public class ComparisonDocumentReader implements IOConstants {
 			JPhyloIOEvent event = reader.peek();   
 			while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {
 				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
-					if (event.getType().getContentType().equals(EventContentType.META_LITERAL) && 
+					if (event.getType().getContentType().equals(EventContentType.LITERAL_META) && 
 							PREDICATE_UNALIGNED_INDICES.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
 						
 						if (unalignedIndices == null) {
@@ -233,7 +233,7 @@ public class ComparisonDocumentReader implements IOConstants {
 		while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				switch (event.getType().getContentType()) {
-					case META_LITERAL:
+					case LITERAL_META:
 						readDocumentMetadata();
 						break;
 					//TODO Read comments, when they are written (maybe from according resource meta).
