@@ -99,7 +99,6 @@ test/lib/junit-4.9b1.jar -text
 test/src/info/bioinfweb/alignmentcomparator/CreateSequencesTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/StringBuilderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/document/io/results/FastaReaderTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/alignmentcomparator/document/io/results/ResultsReaderWriterTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/document/superalignment/AverageDegapedPositionAlignerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/Hirschberg.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/NeedlemanWunsch.java -text svneol=unset#text/plain
