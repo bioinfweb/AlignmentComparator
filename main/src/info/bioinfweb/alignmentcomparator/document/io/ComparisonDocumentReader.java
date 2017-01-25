@@ -169,8 +169,8 @@ public class ComparisonDocumentReader implements IOConstants {
 	
 	private void readAlignment() throws Exception {
 		if (document.getTokenType() == null) {
-			throw new IOException("An alignment was found in the document although not " + Main.APPLICATION_NAME 
-					+ " token type was specified in the document metadata.");
+			throw new IOException("An alignment was found in the document although no " + Main.APPLICATION_NAME 
+					+ " token type was specified in the document metadata.");  //TODO Edit text
 		}
 		else {
 			// Read compared alignment:

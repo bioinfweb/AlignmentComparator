@@ -58,7 +58,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				
 				//TODO Problem: LibrAlign sequence IDs are not equal in both alignments. 
 				//     1) Do matching in a different way?
-				//     2) Assign different (matching) IDs?
+				//     2) Assign different (matching) IDs? What about the shared ID manager in LibrAlign?
 				System.out.println("calculateScore() seqCount: " + model.getSequenceCount());
 				Iterator<String> iterator = model.sequenceIDIterator();
 				while (iterator.hasNext()) {
