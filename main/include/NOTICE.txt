@@ -1,4 +1,4 @@
-AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
+AlignmentComparator - An application to efficiently visualize and annotate differences between alternative multiple sequence alignments
 Copyright (C) 2014-2017  Ben Stöver
 <http://bioinfweb.info/AlignmentComparator>
 
