@@ -16,6 +16,9 @@ main/include/lib/guava-13.0.1.jar -text
 main/include/lib/info.webinsel.wikihelp.client.jar -text
 main/include/lib/org.jdesktop.swingx.scrollpaneselector.jar -text
 main/include/lib/owlapi-XMLUtils-4.1.4.jar -text
+main/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
+main/src/GPL.txt -text svneol=unset#text/plain
+main/src/NOTICE.txt -text svneol=unset#text/plain
 main/src/cmd/muscle3.8.31_i86darwin32 -text
 main/src/cmd/muscle3.8.31_i86darwin64 -text
 main/src/cmd/muscle3.8.31_i86linux32 -text

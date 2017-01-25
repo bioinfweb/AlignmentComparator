@@ -1,7 +1,7 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2014-2016  Ben Stöver
- * <http://bioinfweb.info/Software>
+ * Copyright (C) 2014-2017  Ben Stöver
+ * <http://bioinfweb.info/AlignmentComparator>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,18 +26,17 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.JScrollPane;
-import javax.swing.JEditorPane;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 
 
