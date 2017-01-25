@@ -53,19 +53,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		Iterator<String> idIterator = createSequenceIDIterator(document);
 		while (idIterator.hasNext()) {
 			String sequenceID = idIterator.next();
+			//TODO The sequence ID for all alignments is only identical, if all alignments contained the same sequence names. That should be checked when loading the alignments.
 			for (int i = 0; i < gaps.length; i++) {
 				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();
-				
-				//TODO Problem: LibrAlign sequence IDs are not equal in both alignments. 
-				//     1) Do matching in a different way?
-				//     2) Assign different (matching) IDs? What about the shared ID manager in LibrAlign?
-				System.out.println("calculateScore() seqCount: " + model.getSequenceCount());
-				Iterator<String> iterator = model.sequenceIDIterator();
-				while (iterator.hasNext()) {
-					System.out.print(iterator.next() + " ");
-				}
-				System.out.println();
-				
 				gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedIndices[i]));
 				degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
 			}
