@@ -44,7 +44,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 
 	
-	private int calculateScore(Document document, int[] alignedIndices,	DegapedIndexCalculator[] calculators) {
+	private int calculateScore(Document document, int[] alignedIndices,	DegapedIndexCalculator<?>[] calculators) {
 		int result = 0;
 		boolean allColumnsLeftOfRows = true;
 		boolean allColumnsRightOfRows = true;
@@ -55,6 +55,17 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			String sequenceID = idIterator.next();
 			for (int i = 0; i < gaps.length; i++) {
 				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();
+				
+				//TODO Problem: LibrAlign sequence IDs are not equal in both alignments. 
+				//     1) Do matching in a different way?
+				//     2) Assign different (matching) IDs?
+				System.out.println("calculateScore() seqCount: " + model.getSequenceCount());
+				Iterator<String> iterator = model.sequenceIDIterator();
+				while (iterator.hasNext()) {
+					System.out.print(iterator.next() + " ");
+				}
+				System.out.println();
+				
 				gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedIndices[i]));
 				degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
 			}
@@ -124,7 +135,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			
 			boolean allColumnsRightOfRows = false;
 			calculators[0] = new DegapedIndexCalculator<Character>(horizontalModel);
-			System.out.print(row + " " + column);
+			//System.out.print(row + " " + column);
 			while ((column < scores.length) && !allColumnsRightOfRows) {
 				int score = calculateScore(document, new int[]{column - 1, row - 1}, calculators);
 				
