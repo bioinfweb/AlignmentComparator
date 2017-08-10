@@ -6,7 +6,7 @@ More information can be found at http://bioinfweb.info/AlignmentComparator/.
 
 ## Source code
 
-This GitHub repository in a synchronized mirror of the master repository at [bioinfweb](http://bioinfweb.info/Code/sventon/repos/AlignmentComparator/list/). Feedback and pull requests are welcome.
+This GitHub repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/AlignmentComparator/list/). Feedback and pull requests are welcome.
 
 ## License
 
