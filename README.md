@@ -10,7 +10,7 @@ This GitHub repository in a synchronized mirror of the [master repository at bio
 
 ## Feedback
 
-If you have questions, feel free to ask a question on our [ResearchGate project page](http://r.bioinfweb.info/RGAlignmentComparator) or support@bioinfweb.info.
+If you have questions, feel free to ask one on our [ResearchGate project page](http://r.bioinfweb.info/RGAlignmentComparator) or contact support@bioinfweb.info.
 
 ## License
 
