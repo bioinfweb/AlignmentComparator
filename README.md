@@ -8,6 +8,10 @@ More information can be found at http://bioinfweb.info/AlignmentComparator/.
 
 This GitHub repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/AlignmentComparator/list/). Feedback and pull requests are welcome.
 
+## Feedback
+
+If you have questions, feel free to ask a question on our [ResearchGate project page](http://r.bioinfweb.info/RGAlignmentComparator) or support@bioinfweb.info.
+
 ## License
 
 *AlignmentComparator* is distrubuted under [GNU General Public License Version 3](http://bioinfweb.info/AlignmentComparator/License). See [NOTICE.txt](https://github.com/bioinfweb/AlignmentComparator/blob/master/main/src/NOTICE.txt) fur further details.
