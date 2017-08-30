@@ -14,7 +14,7 @@ If you have questions, feel free to ask one on our [ResearchGate project page](h
 
 ## License
 
-*AlignmentComparator* is distrubuted under [GNU General Public License Version 3](http://bioinfweb.info/AlignmentComparator/License). See [NOTICE.txt](https://github.com/bioinfweb/AlignmentComparator/blob/master/main/src/NOTICE.txt) fur further details.
+*AlignmentComparator* is distrubuted under [GNU General Public License Version 3](http://bioinfweb.info/AlignmentComparator/License). See [NOTICE.txt](https://github.com/bioinfweb/AlignmentComparator/blob/master/main/src/NOTICE.txt) for further details.
 
 This product includes dependencies developed by the [Apache Software Foundation](http://www.apache.org/) distributed under the terms of the [Apache License Version 2.0](https://github.com/bioinfweb/AlignmentComparator/blob/master/main/src/APACHE-LICENSE.txt).
 
