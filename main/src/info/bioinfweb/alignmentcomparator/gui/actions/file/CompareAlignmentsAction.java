@@ -46,7 +46,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 public class CompareAlignmentsAction extends DocumentAction {
   private StartComparisonDialog dialog = null;
-  private ImportedAlignmentModelFactory alignmentModelFactory = new ImportedAlignmentModelFactory(new SequenceIDManager());
+  private ImportedAlignmentModelFactory alignmentModelFactory = new ImportedAlignmentModelFactory();
   
   
   public CompareAlignmentsAction(MainFrame mainFrame) {

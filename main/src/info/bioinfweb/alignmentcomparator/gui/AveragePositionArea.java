@@ -101,9 +101,9 @@ public class AveragePositionArea extends DataArea {
 
 	
 	@Override
-	public int getHeight() {
+	public double getHeight() {
 		Font font = getPaintSettings().getTokenHeightFont();
-		return Math2.roundUp(FontCalculator.getInstance().getWidth(font, format.format(0.0))) + 2 * BORDER_WIDTH;
+		return FontCalculator.getInstance().getWidth(font, format.format(0.0)) + 2 * BORDER_WIDTH;
 	}
 	
 

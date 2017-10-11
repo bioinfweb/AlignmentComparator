@@ -258,7 +258,7 @@ public class ComparisonDocumentReader implements IOConstants {
 	
 	private void createAlignmentReaderClasses(CharacterStateSetType tokenType) {
 		forwarder = new EventForwarder();
-		ImportedAlignmentModelFactory factory = new ImportedAlignmentModelFactory(new SequenceIDManager());
+		ImportedAlignmentModelFactory factory = new ImportedAlignmentModelFactory();
 		factory.setTokenType(tokenType);
 		alignmentReader = new AlignmentModelEventReader(factory);
 		forwarder.getListeners().add(alignmentReader);

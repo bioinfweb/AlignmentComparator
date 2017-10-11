@@ -34,8 +34,8 @@ public class ImportedAlignmentModelFactory extends AbstractAlignmentModelFactory
 	private CharacterStateSetType tokenType = CharacterStateSetType.NUCLEOTIDE;
 	
 	
-	public ImportedAlignmentModelFactory(SequenceIDManager sharedIDManager) {
-		super(sharedIDManager);
+	public ImportedAlignmentModelFactory() {
+		super(new SequenceIDManager(), true);  // Reusing IDs is set to true in order to have equal IDs in all alignments for sequences with the same name.
 	}
 
 
@@ -63,6 +63,6 @@ public class ImportedAlignmentModelFactory extends AbstractAlignmentModelFactory
 			default:
 				throw new InternalError("An unsupported token type was specified for this comparison. Please inform the AlignmentComparator developers on this error.");
 		}
-		return new PackedAlignmentModel<Character>(tokenSet, getSharedIDManager(), tokenSet.size());
+		return new PackedAlignmentModel<Character>(tokenSet, getSharedIDManager(), true, tokenSet.size());
 	}
 }

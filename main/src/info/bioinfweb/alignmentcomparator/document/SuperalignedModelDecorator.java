@@ -19,26 +19,25 @@
 package info.bioinfweb.alignmentcomparator.document;
 
 
+import info.bioinfweb.libralign.model.AlignmentModelWriteType;
+import info.bioinfweb.libralign.model.events.TokenChangeEvent;
+import info.bioinfweb.libralign.model.exception.AlignmentSourceNotWritableException;
+import info.bioinfweb.libralign.model.exception.SequenceNotFoundException;
+import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignmentModelDecorator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import info.bioinfweb.libralign.model.AlignmentModelWriteType;
-import info.bioinfweb.libralign.model.events.TokenChangeEvent;
-import info.bioinfweb.libralign.model.exception.AlignmentSourceNotWritableException;
-import info.bioinfweb.libralign.model.exception.DuplicateSequenceNameException;
-import info.bioinfweb.libralign.model.exception.SequenceNotFoundException;
-import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignmentModelDecorator;
-
 
 
 /**
  * Alignment model decorator that provides the superaligned version of another alignment model.
  * <p>
- * Instances of this class do not provide direct editing of sequences or tokens. The only allowed
- * modification is changing the index mapping but inserting or removing super gaps from
+ * Instances of this class do not allow direct editing of sequences or tokens. The only valid
+ * modification is changing the index mapping by inserting or removing super gaps from
  * {@link #getUnalignedIndices()}. 
  * 
  * @author Ben St&ouml;ver
@@ -190,7 +189,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 	@Override
 	public String renameSequence(String sequenceID, String newSequenceName) throws AlignmentSourceNotWritableException,
-			DuplicateSequenceNameException, SequenceNotFoundException {
+			SequenceNotFoundException {
 
 		throw new AlignmentSourceNotWritableException(this);
 	}
