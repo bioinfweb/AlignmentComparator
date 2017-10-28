@@ -35,7 +35,7 @@ public class ImportedAlignmentModelFactory extends AbstractAlignmentModelFactory
 	
 	
 	public ImportedAlignmentModelFactory() {
-		super(new SequenceIDManager(), true);  // Reusing IDs is set to true in order to have equal IDs in all alignments for sequences with the same name.
+		super(new SequenceIDManager(), true, '?');  // Reusing IDs is set to true in order to have equal IDs in all alignments for sequences with the same name.
 	}
 
 
@@ -54,10 +54,10 @@ public class ImportedAlignmentModelFactory extends AbstractAlignmentModelFactory
 		TokenSet<Character> tokenSet;
 		switch (tokenType) {
 			case NUCLEOTIDE:
-				tokenSet = CharacterTokenSet.newNucleotideInstance();
+				tokenSet = CharacterTokenSet.newNucleotideInstance(false);  //TODO Should lower case tokens be supported?
 				break;
 			case AMINO_ACID:
-				tokenSet = CharacterTokenSet.newAminoAcidInstance();
+				tokenSet = CharacterTokenSet.newAminoAcidInstance(false);  //TODO Should lower case tokens be supported?
 				break;
 			//TODO Support other types in future versions.
 			default:

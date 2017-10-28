@@ -7,19 +7,19 @@
 	<classpathentry kind="lib" path="include/lib/guava-13.0.1.jar"/>
 	<classpathentry kind="lib" path="include/lib/biojava3-alignment-3.0.5.jar"/>
 	<classpathentry kind="lib" path="include/lib/biojava3-core-3.0.5.jar"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.commons.core/bin" sourcepath="/info.bioinfweb.commons.core/src"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.commons.swing/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.libralign.core/bin" sourcepath="/info.bioinfweb.libralign.core/src"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.tic.core/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.libralign.swing/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.wikihelp.client/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.tic.swing/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.libralign.io/bin" sourcepath="/info.bioinfweb.libralign.io/src"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.commons.experimental/bin"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.libralign.biojava3/bin" sourcepath="/info.bioinfweb.libralign.biojava3/src"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.commons.bio/bin"/>
 	<classpathentry kind="lib" path="include/lib/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="include/lib/owlapi-XMLUtils-4.1.4.jar"/>
-	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/bin" sourcepath="/info.bioinfweb.jphyloio.core/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.bio"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.experimental"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.swing"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.jphyloio.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.libralign.biojava3"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.libralign.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.libralign.io"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.libralign.swing"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.tic.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.tic.swing"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.wikihelp.client"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

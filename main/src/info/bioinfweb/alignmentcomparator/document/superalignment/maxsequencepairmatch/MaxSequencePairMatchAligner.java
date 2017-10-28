@@ -26,7 +26,7 @@ import java.util.Iterator;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.utils.DegapedIndexCalculator;
+import info.bioinfweb.libralign.model.utils.indextranslation.SequentialAccessIndexTranslator;
 
 
 
@@ -44,7 +44,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 
 	
-	private int calculateScore(Document document, int[] alignedIndices,	DegapedIndexCalculator<?>[] calculators) {
+	private int calculateScore(Document document, int[] alignedIndices,	SequentialAccessIndexTranslator<?>[] calculators) {
 		int result = 0;
 		boolean allColumnsLeftOfRows = true;
 		boolean allColumnsRightOfRows = true;
@@ -57,7 +57,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			for (int i = 0; i < gaps.length; i++) {
 				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();
 				gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedIndices[i]));
-				degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
+				//degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
+				degapedIndices[i] = calculators[i].getUnalignedIndex(sequenceID, alignedIndices[i]).getCorresponding();  //TODO Could GAP or OUT_OF_RANGE be returned here?
 			}
 			
 			if (degapedIndices[0] == degapedIndices[1]) {
@@ -114,8 +115,10 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		}
 		
 		// Calculate cells:
-		DegapedIndexCalculator[] calculators = new DegapedIndexCalculator[2];
-		calculators[1] = new DegapedIndexCalculator<Character>(verticalModel);
+		//DegapedIndexCalculator[] calculators = new DegapedIndexCalculator[2];
+		//calculators[1] = new DegapedIndexCalculator<Character>(verticalModel);
+		SequentialAccessIndexTranslator<Character>[] calculators = new SequentialAccessIndexTranslator[2];
+		calculators[1] = new SequentialAccessIndexTranslator<Character>(verticalModel);
 		int startColumn = 1;
 		for (int row = 1; row < scores[0].length; row++) {
 			int column;
@@ -124,7 +127,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 			
 			boolean allColumnsRightOfRows = false;
-			calculators[0] = new DegapedIndexCalculator<Character>(horizontalModel);
+			calculators[0] = new SequentialAccessIndexTranslator<Character>(horizontalModel);
 			//System.out.print(row + " " + column);
 			while ((column < scores.length) && !allColumnsRightOfRows) {
 				int score = calculateScore(document, new int[]{column - 1, row - 1}, calculators);
