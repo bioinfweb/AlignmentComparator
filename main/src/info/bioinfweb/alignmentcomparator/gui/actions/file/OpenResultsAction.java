@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.gui.actions.file;
 import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentReader;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -74,8 +75,14 @@ public class OpenResultsAction extends DocumentAction {
 				getDocument().reset();  // Set change flag to false again.
 			}
 			catch (Exception ex) {
+				String position = "";
+				if (ex instanceof JPhyloIOReaderException) {
+					position = " (line " + ((JPhyloIOReaderException)ex).getLineNumber() + ", column " + 
+							((JPhyloIOReaderException)ex).getColumnNumber() + ")";
+				}
+				
 				JOptionPane.showMessageDialog(getMainFrame(), "The error \"" + ex.getMessage() + 
-						"\" occured, while trying to read from the file \"" + getFileChooser().getSelectedFile() + "\".", 
+						"\" occured, while trying to read from the file \"" + getFileChooser().getSelectedFile() + "\"" + position + ".", 
 						"Error", JOptionPane.ERROR_MESSAGE);
 				ex.printStackTrace();
 			}
