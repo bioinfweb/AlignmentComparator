@@ -27,10 +27,16 @@ import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.changemonitor.ChangeMonitorable;
 import info.bioinfweb.commons.io.Savable;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter.TestStrategy;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
 import info.bioinfweb.commons.swing.SwingSavable;
 import info.bioinfweb.commons.swing.SwingSaver;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
+import info.bioinfweb.jphyloio.ReadWriteParameterNames;
+import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.factory.JPhyloIOContentExtensionFileFilter;
+import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventWriter;
 
 import java.io.File;
@@ -63,12 +69,21 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	
 	public Document() {
 		super(DEFAULT_DOCUMENT_NAME);
-		//TODO Does it make sense anymore that this class implements SwingSavable? If so, which filters should be used here?
+		JPhyloIOContentExtensionFileFilter filter = 
+				new JPhyloIOReaderWriterFactory().getFormatInfo(JPhyloIOFormatIDs.NEXML_FORMAT_ID).createFileFilter(TestStrategy.BOTH);
+		//TODO Possibly do not extend SwingSavable in the future as use a method similar to PhyDE 2 and the LibrAlign Swing demo application.
 		getFileChooser().removeChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
-		//getFileChooser().addChoosableFileFilter(ResultsFileFilter.getInstance());
+		getFileChooser().addChoosableFileFilter(filter);
 		getFileChooser().addChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
   	//CurrentDirectoryModel.getInstance().addFileChooser(getFileChooser());
-  	//setDefaultExtension(ResultsFileFilter.EXTENSION);
+  	setDefaultExtension(filter.getDefaultExtension());
+  	Iterator<String> iterator = filter.getExtensions().iterator();
+  	if (iterator.hasNext()) {
+	  	iterator.next();  // Skip default extension, which was already added.
+	  	while (iterator.hasNext()) {
+	  		addFileExtension(iterator.next());
+	  	}
+  	}
 		clear();
 	}
 	
@@ -184,15 +199,23 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	protected void saveDataToFile(File file) {
 		try {
 			ReadWriteParameterMap parameters = new ReadWriteParameterMap();
-			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_NAME, Main.APPLICATION_NAME);
-			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_VERSION, Main.getInstance().getVersion());
-			parameters.put(ReadWriteParameterMap.KEY_APPLICATION_URL, Main.APPLICATION_URL);
+			parameters.put(ReadWriteParameterNames.KEY_APPLICATION_NAME, Main.APPLICATION_NAME);
+			parameters.put(ReadWriteParameterNames.KEY_APPLICATION_VERSION, Main.getInstance().getVersion());
+			parameters.put(ReadWriteParameterNames.KEY_APPLICATION_URL, Main.APPLICATION_URL);
+			parameters.put(ReadWriteParameterNames.KEY_LOGGER, Main.getInstance().getMainFrame().getReadWriteLogDialog());
 			writer.writeDocument(writerAdapter, file, parameters);
+			Main.getInstance().getMainFrame().getReadWriteLogDialog().display();  //TODO Showing this dialog should be removed, if NeXML warnings in the future are always the same and intended.
 		}
 		catch (Exception e) {
+			String position = "";
+			if (e instanceof JPhyloIOReaderException) {
+				position = " (line " + ((JPhyloIOReaderException)e).getLineNumber() + ", column " + 
+						((JPhyloIOReaderException)e).getColumnNumber() + ")";
+			}
+			
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "The error \"" + e.getMessage() + "\" occured when writing to the file \"" + 
-					file.getAbsolutePath() + "\"", "Error", JOptionPane.ERROR_MESSAGE);
+					file.getAbsolutePath() + "\"" + position + ".", "Error", JOptionPane.ERROR_MESSAGE);  //TODO The GUI output should be given somewhere else, since this method could also be called in response to a command line call in future versions.
 		}
 	}
 

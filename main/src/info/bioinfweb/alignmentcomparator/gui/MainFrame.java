@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.gui.actions.ActionManagement;
+import info.bioinfweb.commons.log.ApplicationLoggerDialog;
 import info.bioinfweb.libralign.multiplealignments.SwingMultipleAlignmentsContainer;
 import info.bioinfweb.tic.SwingComponentFactory;
 
@@ -65,6 +66,7 @@ public class MainFrame extends JFrame {
 	private JMenu helpMenu = null;
 	private JMenu undoMenu = null;
 	private JMenu redoMenu = null;
+	private ApplicationLoggerDialog readWriteLogDialog;
 
 	
 	/**
@@ -72,6 +74,9 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		super();
+		readWriteLogDialog = new ApplicationLoggerDialog(this);
+		readWriteLogDialog.setTitle("I/O log messages");
+		
 		initialize();
 		addWindowListener(getWindowListener());
 	}
@@ -86,6 +91,11 @@ public class MainFrame extends JFrame {
 	}
 	
 	
+	public ApplicationLoggerDialog getReadWriteLogDialog() {
+		return readWriteLogDialog;
+	}
+
+
 	/**
 	 * This method initializes this
 	 * 
