@@ -76,12 +76,12 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 		getFileChooser().addChoosableFileFilter(filter);
 		getFileChooser().addChoosableFileFilter(getFileChooser().getAcceptAllFileFilter());
   	//CurrentDirectoryModel.getInstance().addFileChooser(getFileChooser());
-  	setDefaultExtension(filter.getDefaultExtension());
+  	setDefaultExtension("." + filter.getDefaultExtension());
   	Iterator<String> iterator = filter.getExtensions().iterator();
   	if (iterator.hasNext()) {
 	  	iterator.next();  // Skip default extension, which was already added.
 	  	while (iterator.hasNext()) {
-	  		addFileExtension(iterator.next());
+	  		addFileExtension("." + iterator.next());
 	  	}
   	}
 		clear();
