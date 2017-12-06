@@ -35,9 +35,10 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
+import info.bioinfweb.commons.events.GenericEventObject;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
-import info.bioinfweb.libralign.alignmentarea.selection.SelectionChangeEvent;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
+import info.bioinfweb.libralign.alignmentarea.selection.SelectionModel;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.NucleotideTokenPainter;
@@ -57,9 +58,9 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	public static final int FIRST_ALIGNMENT_INDEX = 1;
 	public static final int BOTTOM_AREAS_COUNT = 0;
 
-	private final SelectionListener SELECTION_LISTENER = new SelectionListener() {
+	private final SelectionListener<GenericEventObject<SelectionModel>> SELECTION_LISTENER = new SelectionListener<GenericEventObject<SelectionModel>>() {
 				@Override
-				public void selectionChanged(SelectionChangeEvent event) {  //TODO Check if this implementation needs to changed due to update and object recreation strategies.
+				public void selectionChanged(GenericEventObject<SelectionModel> event) {  //TODO Check if this implementation needs to changed due to update and object recreation strategies.
 					Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 				}
 			}; 
@@ -163,6 +164,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	private void updateAlignments() {
 		// Backup current GUI components:
 		List<AlignmentArea> topAreas = new ArrayList<AlignmentArea>(getAlignmentAreas().size());

@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import info.bioinfweb.alignmentcomparator.Main;
-import info.bioinfweb.commons.Math2;
 import info.bioinfweb.commons.graphics.FontCalculator;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
 import info.bioinfweb.libralign.alignmentarea.content.AlignmentContentArea;
@@ -86,7 +85,7 @@ public class AveragePositionArea extends DataArea {
 
 	
 	@Override
-	public <T, U> void afterProviderChanged(AlignmentModel<T> previous,	AlignmentModel<U> current) {}
+	public <T, U> void afterModelChanged(AlignmentModel<T> previous, AlignmentModel<U> current) {}
 
 	
 	@Override
