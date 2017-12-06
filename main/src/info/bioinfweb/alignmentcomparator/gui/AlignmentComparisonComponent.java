@@ -67,6 +67,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	
 	private MainFrame owner;
+	private VerticalScrollingSynchronizer verticalScrollingSynchronizer = new VerticalScrollingSynchronizer(this);
 	private SelectionSynchronizer selectionSynchronizer = new SelectionSynchronizer();
 	private AlignmentComparisonSelection selection = new AlignmentComparisonSelection(this);
 
@@ -111,6 +112,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		//TODO Add consensus sequence area on bottom
 		//TODO Link vertical scrolling
 		result.setAllowVerticalScrolling(true);
+		result.getScrollListeners().add(verticalScrollingSynchronizer);
 		
 		result.getContentArea().getActionMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), 
 				getOwner().getActionManagement().get("edit.insertSupergap"));
@@ -232,6 +234,18 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		else {
 			return getAlignmentAreas().get(FIRST_ALIGNMENT_INDEX);
 		}
+	}
+	
+	
+	/**
+	 * Returns a list with all alignment areas that display one compared alignment. In contrast to
+	 * {@link #getAlignmentAreas()} this list does not contain additional areas that display data
+	 * areas like the column index area.
+	 * 
+	 * @return a list of alignment areas that may be empty
+	 */
+	public List<AlignmentArea> getComparisonAlignmentAreas() {
+		return getAlignmentAreas().subList(FIRST_ALIGNMENT_INDEX, getAlignmentAreas().size() - BOTTOM_AREAS_COUNT);
 	}
 	
 	

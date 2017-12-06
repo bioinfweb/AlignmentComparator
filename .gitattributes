@@ -57,6 +57,7 @@ main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonPanelListener
 main/src/info/bioinfweb/alignmentcomparator/gui/AlignmentComparisonSelection.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/AveragePositionArea.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/MainFrame.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/gui/VerticalScrollingSynchronizer.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/ActionManagement.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/DocumentAction.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/actions/edit/InsertSupergapAction.java -text svneol=unset#text/plain
