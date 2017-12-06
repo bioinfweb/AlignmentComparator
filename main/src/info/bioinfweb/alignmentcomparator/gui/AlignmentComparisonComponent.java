@@ -194,6 +194,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		}
 		getAlignmentAreas().clear();
 		selectionSynchronizer.clear();
+		// Vertical scrolling synchronizer does not have to be removed from removed AlignmentAreas, since these should not trigger events anymore.
 		
 		// Repopulate area list:
 		getAlignmentAreas().addAll(topAreas);
