@@ -19,8 +19,8 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 
-import info.bioinfweb.alignmentcomparator.document.superalignment.MuscleProfileAligner;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
+import info.bioinfweb.alignmentcomparator.document.superalignment.profile.MuscleProfileAligner;
 
 import javax.swing.JPanel;
 

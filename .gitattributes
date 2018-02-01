@@ -12,8 +12,6 @@ main/include/lib/BrowserLauncher2-1_3.jar -text
 main/include/lib/bioinfweb.commons.core.jar -text
 main/include/lib/bioinfweb.commons.experimental.bio.jar -text
 main/include/lib/bioinfweb.commons.swing.jar -text
-main/include/lib/biojava3-alignment-3.0.5.jar -text
-main/include/lib/biojava3-core-3.0.5.jar -text
 main/include/lib/commons-collections4-4.1.jar -text
 main/include/lib/commons-lang3-3.1.jar -text
 main/include/lib/guava-13.0.1.jar -text
@@ -23,6 +21,7 @@ main/include/lib/owlapi-XMLUtils-4.1.4.jar -text
 main/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 main/src/GPL.txt -text svneol=unset#text/plain
 main/src/NOTICE.txt -text svneol=unset#text/plain
+main/src/cmd/LICENSE.txt -text svneol=unset#text/plain
 main/src/cmd/muscle3.8.31_i86darwin32 -text
 main/src/cmd/muscle3.8.31_i86darwin64 -text
 main/src/cmd/muscle3.8.31_i86linux32 -text
@@ -43,11 +42,12 @@ main/src/info/bioinfweb/alignmentcomparator/document/io/ImportedAlignmentModelFa
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/AverageDegapedPositionAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/CompareAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/ExternalProgramAligner.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/MuscleProfileAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/AlignmentNode.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/MaxSequencePairMatchAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/ShiftQueues.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/profile/IndexNamePrefixDecorator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/profile/MuscleProfileAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/DocumentEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/InsertGapEdit.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/undo/InsertRemoveGapEdit.java -text svneol=unset#text/plain

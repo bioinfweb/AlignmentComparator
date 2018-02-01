@@ -388,12 +388,10 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 							setPereferencesPanel((CompareAlgorithm)getAlgorithmComboBox().getSelectedItem());
 						}
 					});
-			algorithmComboBox.addItem(CompareAlgorithm.MAX_SEQUENCE_PAIR_MATCH);
-			algorithmComboBox.addItem(CompareAlgorithm.AVERAGE_UNGAPED_POSITION);
-//			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
-//			for (int i = 0; i < algorithms.length; i++) {
-//		    algorithmComboBox.addItem(algorithms[i]);
-//		  }
+			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
+			for (int i = 0; i < algorithms.length; i++) {
+		    algorithmComboBox.addItem(algorithms[i]);
+		  }
 		}
 		return algorithmComboBox;
 	}

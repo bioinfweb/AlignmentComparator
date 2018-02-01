@@ -5,8 +5,6 @@
 	<classpathentry kind="lib" path="include/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="include/lib/org.jdesktop.swingx.scrollpaneselector.jar"/>
 	<classpathentry kind="lib" path="include/lib/guava-13.0.1.jar"/>
-	<classpathentry kind="lib" path="include/lib/biojava3-alignment-3.0.5.jar"/>
-	<classpathentry kind="lib" path="include/lib/biojava3-core-3.0.5.jar"/>
 	<classpathentry kind="lib" path="include/lib/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="include/lib/owlapi-XMLUtils-4.1.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.bio"/>
