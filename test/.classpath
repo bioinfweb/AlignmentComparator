@@ -4,8 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="/AlignmentComparator/bin" sourcepath="/AlignmentComparator/src"/>
 	<classpathentry kind="lib" path="lib/junit-4.9b1.jar"/>
-	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/biojava3-alignment-3.0.5.jar"/>
-	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/biojava3-core-3.0.5.jar"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.bio/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.core/bin" sourcepath="/info.bioinfweb.commons.core/src"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.experimental/bin"/>
@@ -19,5 +17,7 @@
 	<classpathentry kind="lib" path="/info.bioinfweb.wikihelp.client/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.commons.testing/bin"/>
 	<classpathentry kind="lib" path="/info.bioinfweb.jphyloio.core/bin" sourcepath="/info.bioinfweb.jphyloio.core/src"/>
+	<classpathentry kind="lib" path="lib/biojava3-alignment-3.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/biojava3-core-3.0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

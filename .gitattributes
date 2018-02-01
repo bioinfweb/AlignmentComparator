@@ -103,6 +103,8 @@ test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.ui.prefs -text svneol=unset#text/plain
+test/lib/biojava3-alignment-3.0.5.jar -text
+test/lib/biojava3-core-3.0.5.jar -text
 test/lib/junit-4.9b1.jar -text
 test/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 test/src/GPL.txt -text svneol=unset#text/plain
