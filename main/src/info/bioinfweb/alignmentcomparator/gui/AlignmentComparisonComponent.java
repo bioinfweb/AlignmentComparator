@@ -106,11 +106,10 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
 		result.getPaintSettings().getTokenPainterList().set(0, painter);  //TODO Set amino acid painter, when necessary.
 		
-		//TODO Link order objects
+		result.getSequenceOrder().setAlphabeticalSequenceOrder(true);  //TODO Use order of first alignment instead (or allow th user to choose between this and the alphabetical order)
 		result.getSelection().setType(SelectionType.COLUMN_ONLY);
 		selectionSynchronizer.add(result.getSelection());  //TODO Do instances need to be removed, when a new comparison is loaded?
 		//TODO Add consensus sequence area on bottom
-		//TODO Link vertical scrolling
 		result.setAllowVerticalScrolling(true);
 		result.getScrollListeners().add(verticalScrollingSynchronizer);
 		

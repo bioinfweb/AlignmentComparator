@@ -110,7 +110,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 						warningMessage.append(fileSelection.getFile());
 					}
 				}
-				
+
 				if (warningMessage.length() > 0) {
 					JOptionPane.showMessageDialog(getMainFrame(), "The following files did not contain any alignments:\n" + 
 							warningMessage.toString(), "Empty file(s)", JOptionPane.WARNING_MESSAGE);
@@ -120,8 +120,8 @@ public class CompareAlignmentsAction extends DocumentAction {
 				getDocument().registerChange();
 			}
 			catch (Exception ex) {
-				JOptionPane.showMessageDialog(getMainFrame(), "An IO error occurred while loading the files.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(getMainFrame(), "An error occurred while loading the files.\n" + ex.getLocalizedMessage(), 
+						"Error", JOptionPane.ERROR_MESSAGE);
 				ex.printStackTrace();
 			}
 		}
