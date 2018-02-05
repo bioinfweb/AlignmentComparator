@@ -135,26 +135,29 @@ public class ComparisonDocumentReader implements IOConstants {
 			String remainingCharacters = "";
 			JPhyloIOEvent event = reader.next();
 			while (event.getType().getContentType().equals(EventContentType.LITERAL_META_CONTENT)) {
-				Scanner scanner = new Scanner(remainingCharacters + event.asLiteralMetadataContentEvent().getStringValue());
+				String currentCharacters = event.asLiteralMetadataContentEvent().getStringValue();
+				boolean endsWithWhitespace = (currentCharacters.length() > 0) && Character.isWhitespace(currentCharacters.charAt(currentCharacters.length() - 1));
+				Scanner scanner = new Scanner(remainingCharacters + currentCharacters);
 				try {
 					scanner.useDelimiter("\\s+");
 					while (scanner.hasNext()) {
-						//TODO Make sure not to process incomplete last token.
 						String token = scanner.next();
 						if (scanner.hasNext()) {
 							addUnlignedIndex(result, token);
 						}
 						else {
 							remainingCharacters = token;
+							if (endsWithWhitespace) {  // This needs to be done to avoid that two subsequent numbers are concatenated, e.g. "1986 " and "1987" to "19861987", since the scanner already deleted the trailing whitespace.
+								remainingCharacters += " ";
+							}
 						}
 					}
 				}
 				finally {
 					scanner.close();
 				}
-				
 				event = reader.next();
-			}  //TODO Should additionally be checked, whether the last event was really the according end event?
+			}  //TODO Should additionally be checked, whether the last event was really the respective end event?
 			
 			if (remainingCharacters.length() > 0) {
 				addUnlignedIndex(result, remainingCharacters);
