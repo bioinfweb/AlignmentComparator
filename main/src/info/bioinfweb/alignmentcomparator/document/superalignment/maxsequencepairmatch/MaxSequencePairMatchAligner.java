@@ -55,7 +55,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			String sequenceID = idIterator.next();
 			//TODO The sequence ID for all alignments is only identical, if all alignments contained the same sequence names. That should be checked when loading the alignments.
 			for (int i = 0; i < gaps.length; i++) {
-				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();
+				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();  //TODO i should not be used as the alignment index here, since horizontalModelIndex and verticalModelIndex could not be set to 0 and 1 in the future.
 				gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedIndices[i]));
 				//degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
 				degapedIndices[i] = calculators[i].getUnalignedIndex(sequenceID, alignedIndices[i]).getCorresponding();  //TODO Could GAP or OUT_OF_RANGE be returned here?
@@ -188,7 +188,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	
 	
 	private void createSuperAlignment(Document document, byte[][] matrix) {
-		ArrayDeque[] unalignedIndexLists = new ArrayDeque[document.getAlignments().size()];  //TODO Does inserting on the left really happen in contant time or are all other elements moved in each call?
+		ArrayDeque[] unalignedIndexLists = new ArrayDeque[document.getAlignments().size()];  //TODO Does inserting on the left really happen in constant time or are all other elements moved in each call?
 		int[] unalignedIndex = new int[2];
 		for (int i = 0; i < unalignedIndexLists.length; i++) {
 			int length = document.getAlignments().getValue(i).getOriginal().getMaxSequenceLength(); 
