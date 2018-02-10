@@ -18,15 +18,17 @@
  */
 package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-
-public class AlignmentNode {
+public class MaxSeqPairMatchNode {
 	private int[] positions = new int[2];
-	private AlignmentNode optimalPreviousNode = null;
-	private int optimalScore = -1;
+	private List<MaxSeqPairMatchNode> previousNodes = new ArrayList<>();
+	private long score = -1;
 	
 	
-	public AlignmentNode(int[] positions) {
+	public MaxSeqPairMatchNode(int[] positions) {
 		super();
 		this.positions = positions;
 	}
@@ -57,28 +59,39 @@ public class AlignmentNode {
 	}
 	
 	
-	public AlignmentNode getOptimalPreviousNode() {
-		return optimalPreviousNode;
+	public List<MaxSeqPairMatchNode> getPreviousNodes() {
+		return previousNodes;
+	}
+
+	
+	public MaxSeqPairMatchNode optimalPreviousNode() {
+		MaxSeqPairMatchNode optimalNode = null;
+		if (!previousNodes.isEmpty()) {
+			Iterator<MaxSeqPairMatchNode> iterator = previousNodes.iterator();
+			optimalNode = iterator.next();
+			while (iterator.hasNext()) {
+				MaxSeqPairMatchNode currentNode = iterator.next();
+				if (optimalNode.getScore() < currentNode.getScore()) {  // Alternative optimal superalignments could be handled here of scores are equal.
+					optimalNode = currentNode;
+				}
+			}
+		}
+		return optimalNode;
+	}
+	
+	
+	public void setScore(long score) {
+		this.score = score;
 	}
 
 
-	public void setOptimalPreviousNode(AlignmentNode optimalPreviousNode) {
-		this.optimalPreviousNode = optimalPreviousNode;
-	}
-
-
-	public void setOptimalScore(int optimalScore) {
-		this.optimalScore = optimalScore;
-	}
-
-
-	public int getOptimalScore() {
-		return optimalScore;
+	public long getScore() {
+		return score;
 	}
 
 
 	@Override
 	public String toString() {
-		return "(" + getPosition(0) + ", " + getPosition(1) + "):" + getOptimalScore();  //TODO Refactor method, if more than two indices should be supported in the future.
+		return "(" + getPosition(0) + ", " + getPosition(1) + "):" + getScore();  //TODO Refactor method, if more than two indices should be supported in the future.
 	}
 }

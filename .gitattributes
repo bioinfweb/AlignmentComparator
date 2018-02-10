@@ -43,7 +43,8 @@ main/src/info/bioinfweb/alignmentcomparator/document/superalignment/AverageDegap
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/CompareAlgorithm.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/ExternalProgramAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/SuperAlignmentAlgorithm.java -text svneol=unset#text/plain
-main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/AlignmentNode.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/MaxSeqPairMatchGraph.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/MaxSeqPairMatchNode.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/MaxSequencePairMatchAligner.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/maxsequencepairmatch/ShiftQueues.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/superalignment/profile/IndexNamePrefixDecorator.java -text svneol=unset#text/plain
