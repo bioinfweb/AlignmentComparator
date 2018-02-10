@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - An application to efficiently visualize and annotate differences between alternative multiple sequence alignments
- * Copyright (C) 2014-2017  Ben Stöver
+ * Copyright (C) 2014-2018  Ben Stöver
  * <http://bioinfweb.info/AlignmentComparator>
  * 
  * This program is free software: you can redistribute it and/or modify
