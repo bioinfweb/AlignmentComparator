@@ -19,37 +19,69 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.TreeMap;
 
 
 
-public class MaxSeqPairMatchGraph {
-	public static final int DEFAULT_NODES_PER_COLUMN = 4;
+public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
+	// Using the array directly as the key instead of creating a separate class with an array property and 
+	// a compare method saves a pointer and therefore 8 bytes per node.
+	//TODO Using two int properties instead of an array would work as well.
+	
+	private static final int[] END_NODE_KEY = {Integer.MAX_VALUE, Integer.MAX_VALUE};
 	
 	
-	private List<List<MaxSeqPairMatchNode>> nodes;
-	private ArrayList<MaxSeqPairMatchNode> previousNodesToEnd;
-
-	
-	public MaxSeqPairMatchGraph(int firstColumnCount) {
-		super();
+	public MaxSeqPairMatchGraph() {
+		super(new Comparator<int[]>() {
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				int result = o1[0] - o2[0];
+				if (result == 0) {
+					result = o1[1] - o2[1];
+				}
+				return result;
+			}
+		});
 		
-		nodes = new ArrayList<>(firstColumnCount);
-		for (int column = 0; column < firstColumnCount; column++) {
-			nodes.add(new ArrayList<MaxSeqPairMatchNode>(DEFAULT_NODES_PER_COLUMN));
+		addEndNode();
+	}
+	
+	
+	private void addEndNode() {
+		add(new MaxSeqPairMatchNode(END_NODE_KEY));
+	}
+
+
+	@Override
+	public MaxSeqPairMatchNode put(int[] key, MaxSeqPairMatchNode value) {
+		if (key.length == 2) {
+			return super.put(key, value);
 		}
-		
-		previousNodesToEnd = new ArrayList<>(DEFAULT_NODES_PER_COLUMN);
+		else {
+			throw new IllegalArgumentException("A key array must contain exactly two values.");
+		}
+	}
+	
+
+	@Override
+	public void clear() {
+		super.clear();
+		addEndNode();
 	}
 
 
-	public List<List<MaxSeqPairMatchNode>> getNodes() {
-		return nodes;
+	public void add(MaxSeqPairMatchNode node) {
+		put(node.getPositions(), node);
 	}
-
-
-	public ArrayList<MaxSeqPairMatchNode> getPreviousNodesToEnd() {
-		return previousNodesToEnd;
+	
+	
+	public MaxSeqPairMatchNode getEndNode() {
+		return get(END_NODE_KEY);
+	}
+	
+	
+	public boolean isEndNode(MaxSeqPairMatchNode node) {
+		return (node.getPosition(0) == Integer.MAX_VALUE) && (node.getPosition(0) == Integer.MAX_VALUE);
 	}
 }

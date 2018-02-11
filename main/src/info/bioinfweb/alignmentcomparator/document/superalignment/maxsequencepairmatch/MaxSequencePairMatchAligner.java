@@ -19,11 +19,14 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
+import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.utils.indextranslation.SequentialAccessIndexTranslator;
@@ -31,206 +34,90 @@ import info.bioinfweb.libralign.model.utils.indextranslation.SequentialAccessInd
 
 
 public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
-	private static final int DIAGONAL = 0;
-	private static final int UP = 1;
-	private static final int LEFT = 2;
-
-	private static final int ALL_COLUMNS_LEFT_OF_ROWS = -1;
-	private static final int ALL_COLUMNS_RIGHT_OF_ROWS = -2;
-	
-	
-	private Iterator<String> createSequenceIDIterator(Document alignments) {
-		return alignments.getAlignments().getValue(0).getOriginal().sequenceIDIterator();
-	}
-
-	
-	private int calculateScore(Document document, int[] alignedIndices,	SequentialAccessIndexTranslator<?>[] calculators) {
-		int result = 0;
-		boolean allColumnsLeftOfRows = true;
-		boolean allColumnsRightOfRows = true;
-		boolean[] gaps = new boolean[2];
-		int[] degapedIndices = new int[2];
-		Iterator<String> idIterator = createSequenceIDIterator(document);
-		while (idIterator.hasNext()) {
-			String sequenceID = idIterator.next();
-			//TODO The sequence ID for all alignments is only identical, if all alignments contained the same sequence names. That should be checked when loading the alignments.
-			for (int i = 0; i < gaps.length; i++) {
-				AlignmentModel<Character> model = document.getAlignments().getValue(i).getOriginal();  //TODO i should not be used as the alignment index here, since horizontalModelIndex and verticalModelIndex could not be set to 0 and 1 in the future.
-				gaps[i] = model.getTokenSet().isGapToken(model.getTokenAt(sequenceID, alignedIndices[i]));
-				//degapedIndices[i] = calculators[i].degapedIndex(sequenceID, alignedIndices[i]);
-				degapedIndices[i] = calculators[i].getUnalignedIndex(sequenceID, alignedIndices[i]).getCorresponding();  //TODO Could GAP or OUT_OF_RANGE be returned here?
-			}
-			
-			if (degapedIndices[0] == degapedIndices[1]) {
-				if (!gaps[0] && !gaps[1]) {
-					result++;
-					
-					allColumnsLeftOfRows = false; 
-					allColumnsRightOfRows = false;
-				}
-				else if (gaps[0] && !gaps[1]) {
-					allColumnsRightOfRows = false;
-				}
-				else if (!gaps[0] && gaps[1]) {
-					allColumnsLeftOfRows = false;
-				}
-			}
-			else if (degapedIndices[0] < degapedIndices[1]) {
-				allColumnsRightOfRows = false;
-			}
-			else {  // degapedIndices[0] > degapedIndices[1]
-				allColumnsLeftOfRows = false;
-			}
-		}
+	private void createSuperAlignment(ComparedAlignment[] alignments) {
+		final MaxSeqPairMatchGraph graph = new MaxSeqPairMatchGraph();
+		final AlignmentModel<Character> firstAlignment = alignments[0].getOriginal();
+		final AlignmentModel<Character> secondAlignment = alignments[1].getOriginal();
+		final int columnCountInFirst = firstAlignment.getMaxSequenceLength();
 		
-		if (allColumnsLeftOfRows) {
-			return ALL_COLUMNS_LEFT_OF_ROWS;
-		}
-		else if (allColumnsRightOfRows) {
-			return ALL_COLUMNS_RIGHT_OF_ROWS;
-		}
-		else {
-			return result;
-		}
-	}
-	
-	
-	private byte[][] createDPMatrix(Document document, int horizontalModelIndex, int verticalModelIndex) {
-		// Initialize matrix:
-		AlignmentModel<Character> horizontalModel = document.getAlignments().getValue(horizontalModelIndex).getOriginal(); 
-		AlignmentModel<Character> verticalModel = document.getAlignments().getValue(verticalModelIndex).getOriginal(); 
-		int matrixWidth = horizontalModel.getMaxSequenceLength() + 1;
-		int matrixHeight = verticalModel.getMaxSequenceLength() + 1;
-		int[][] scores = new int[matrixWidth][];
-		byte[][] directions = new byte[matrixWidth][];
-		for (int column = 0; column < scores.length; column++) {
-			scores[column] = new int[matrixHeight];
-			scores[column][0] = 0;
-			directions[column] = new byte[matrixHeight];
-			directions[column][0] = LEFT;
-		}
-		for (int row = 1; row < scores[0].length; row++) {
-			scores[0][row] = 0;
-			directions[0][row] = UP;
-		}
-		
-		// Calculate cells:
-		//DegapedIndexCalculator[] calculators = new DegapedIndexCalculator[2];
-		//calculators[1] = new DegapedIndexCalculator<Character>(verticalModel);
+		// Create score nodes:
+		@SuppressWarnings("unchecked")
 		SequentialAccessIndexTranslator<Character>[] calculators = new SequentialAccessIndexTranslator[2];
-		calculators[1] = new SequentialAccessIndexTranslator<Character>(verticalModel);
-		int startColumn = 1;
-		for (int row = 1; row < scores[0].length; row++) {
-			int column;
-			for (column = 0; column < startColumn; column++) {
-				directions[column][row] = UP;
-			}
-			
-			boolean allColumnsRightOfRows = false;
-			calculators[0] = new SequentialAccessIndexTranslator<Character>(horizontalModel);
-			//System.out.print(row + " " + column);
-			while ((column < scores.length) && !allColumnsRightOfRows) {
-				int score = calculateScore(document, new int[]{column - 1, row - 1}, calculators);
-				
-				if (score < 0) {
-					if (score == ALL_COLUMNS_LEFT_OF_ROWS) {
-						startColumn = column;
-					}
-					else if (score == ALL_COLUMNS_RIGHT_OF_ROWS) {
-						allColumnsRightOfRows = true;
-					}
-					score = 0;
-				}
-				
-				scores[column][row] = scores[column - 1][row - 1] + score;
-				directions[column][row] = DIAGONAL;
-				if (scores[column - 1][row] > scores[column][row]) {
-					scores[column][row] = scores[column - 1][row]; 
-					directions[column][row] = LEFT;
-				}
-				if (scores[column][row - 1] > scores[column][row]) {  // Compares with the maximum of the other two.
-					scores[column][row] = scores[column][row - 1]; 
-					directions[column][row] = UP;
-				}
-				column++;
-			}
-			System.out.println(" " + column);			
-			
-			for (; column < directions.length; column++) {
-				directions[column][row] = LEFT;
-			}
-		}		
+		for (int i = 0; i < calculators.length; i++) {
+			calculators[i] = new SequentialAccessIndexTranslator<Character>(alignments[i].getOriginal());
+		}
 		
-		// Calculate cells:
-//		DegapedIndexCalculator[] calculators = new DegapedIndexCalculator[2];
-//		calculators[0] = new DegapedIndexCalculator<Character>(horizontalModel);
-//		for (int column = 1; column < scores.length; column++) {  // horizontal
-//			calculators[1] = new DegapedIndexCalculator<Character>(verticalModel);
-//			for (int row = 1; row < scores[column].length; row++) {  // vertical
-//				scores[column][row] = scores[column - 1][row - 1] + calculateScore(document, new int[]{column - 1, row - 1}, calculators);
-//				directions[column][row] = DIAGONAL;
-//				if (scores[column - 1][row] > scores[column][row]) {
-//					scores[column][row] = scores[column - 1][row]; 
-//					directions[column][row] = LEFT;
-//				}
-//				if (scores[column][row - 1] > scores[column][row]) {  // Compares with the maximum of the other two.
-//					scores[column][row] = scores[column][row - 1]; 
-//					directions[column][row] = UP;
-//				}
-//				
-//				//System.out.print(scores[column][row] + " " + directions[column][row] + ", ");
-//			}
-//			System.out.println(column);
-//		}
+		for (int columnInFirst = 0; columnInFirst < columnCountInFirst; columnInFirst++) {
+			Iterator<String> iterator = firstAlignment.sequenceIDIterator();
+			while (iterator.hasNext()) {
+				String seqIDInFirst = iterator.next();
+				if (!firstAlignment.getTokenSet().isGapToken(firstAlignment.getTokenAt(seqIDInFirst, columnInFirst))) {
+					String seqName = firstAlignment.sequenceNameByID(seqIDInFirst);
+					String seqIDInSecond = secondAlignment.sequenceIDsByName(seqName).iterator().next();
+					
+					int unalignedIndex = calculators[0].getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
+					if (unalignedIndex >= 0) {
+						int columnInSecond = calculators[1].getAlignedIndex(seqIDInSecond, unalignedIndex);
+						int[] columnPair = new int[]{columnInFirst, columnInSecond};
+						MaxSeqPairMatchNode node = graph.get(columnPair);
+						if (node == null) {
+							node = new MaxSeqPairMatchNode(columnPair);
+							graph.add(node);
+						}
+						node.increaseScore();
+					}
+					else {
+						throw new InternalError("Unexpected error: Index (" + columnInFirst + " -> " + unalignedIndex + 
+								") was at a gap or out of range. Contact support@bioinfweb.info if you see this message.");
+					}
+				}
+			}
+		}
 		
-		return directions;
+		// Calculate scores and connect nodes:
+		for (int[] columnPair : graph.keySet()) {
+			MaxSeqPairMatchNode currentNode = graph.get(columnPair);
+			currentNode.setScore(currentNode.getScore() + currentNode.optimalPreviousNode().getScore());
+			
+			MaxSeqPairMatchNode nextNode = graph.higherEntry(columnPair).getValue();
+			int nextColumn = nextNode.getPosition(0);
+			while ((nextNode != null) && (nextNode.getPosition(0) == nextColumn)) {  // Should only happen before the first iteration in case of the end node.
+				nextNode.getPreviousNodes().add(currentNode);
+				nextNode = graph.higherEntry(nextNode.getPositions()).getValue();
+			}
+		}
+		
+		// Extract optimal path:
+		List<MaxSeqPairMatchNode> optimalPath = new LinkedList<>();
+		MaxSeqPairMatchNode optimalNode = graph.getEndNode().optimalPreviousNode();  //TODO Speed up implementation by avoiding to call this method twice (here and above).
+		while (optimalNode != null) {
+			optimalPath.add(0, optimalNode);
+			optimalNode = optimalNode.optimalPreviousNode();
+		}
+		
+		// Create superalignment:
+		List<Integer> firstUnalignedIndices = new ArrayList<>(columnCountInFirst);  //TODO Possibly use factor
+		List<Integer> secondUnalignedIndices = new ArrayList<>(columnCountInFirst);  //TODO Possibly use factor
+		int currentColumnInFirst = 0;
+		int currentColumnInSecond = 0;
+		for (MaxSeqPairMatchNode node : optimalPath) {
+			while (currentColumnInFirst < node.getPosition(0)) {
+				firstUnalignedIndices.add(currentColumnInFirst++);
+			}
+			while (currentColumnInSecond < node.getPosition(1)) {
+				secondUnalignedIndices.add(currentColumnInSecond++);
+			}
+			while (firstUnalignedIndices.size() < secondUnalignedIndices.size()) {
+				firstUnalignedIndices.add(SuperalignedModelDecorator.SUPER_GAP_INDEX);
+			}
+			while (secondUnalignedIndices.size() < firstUnalignedIndices.size()) {
+				secondUnalignedIndices.add(SuperalignedModelDecorator.SUPER_GAP_INDEX);
+			}
+		}
+		alignments[0].createSuperaligned(firstUnalignedIndices);
+		alignments[1].createSuperaligned(secondUnalignedIndices);
 	}
 	
-	
-	private void createSuperAlignment(Document document, byte[][] matrix) {
-		ArrayDeque[] unalignedIndexLists = new ArrayDeque[document.getAlignments().size()];  //TODO Does inserting on the left really happen in constant time or are all other elements moved in each call?
-		int[] unalignedIndex = new int[2];
-		for (int i = 0; i < unalignedIndexLists.length; i++) {
-			int length = document.getAlignments().getValue(i).getOriginal().getMaxSequenceLength(); 
-			unalignedIndexLists[i] = new ArrayDeque<Integer>(length);  //TODO Possibly multiply by factor.
-			unalignedIndex[i] = length - 1;
-		}
-
-		int column = matrix.length - 1;
-		int row = matrix[column].length - 1;
-		while ((column > 0) || (row > 0)) {
-			if (matrix[column][row] == UP) {
-				// Align vertical alignment with horizontal supergap 
-				unalignedIndexLists[0].addFirst(Document.GAP_INDEX);
-				unalignedIndexLists[1].addFirst(unalignedIndex[1]);
-				unalignedIndex[1]--;
-				row--;
-			}
-			else if (matrix[column][row] == LEFT) {
-				// Align horizontal alignment with vertical supergap 
-				unalignedIndexLists[0].addFirst(unalignedIndex[0]);
-				unalignedIndex[0]--;
-				unalignedIndexLists[1].addFirst(Document.GAP_INDEX);
-				column--;
-			}
-			else {
-				// Align both positions without supergaps
-				unalignedIndexLists[0].addFirst(unalignedIndex[0]);
-				unalignedIndex[0]--;
-				unalignedIndexLists[1].addFirst(unalignedIndex[1]);
-				unalignedIndex[1]--;
-				row--;
-				column--;
-			}
-		}
-		
-		// Create superalignment decorators:
-		for (int alignmentIndex = 0; alignmentIndex < unalignedIndexLists.length; alignmentIndex++) {
-			document.getAlignments().getValue(alignmentIndex).createSuperaligned(new ArrayList(unalignedIndexLists[alignmentIndex]));
-			unalignedIndexLists[alignmentIndex] = null;  // Allow removing copy of list from memory.
-		}
-	}
-
 	
 	@Override
 	public void performAlignment(Document document) throws Exception {
@@ -238,7 +125,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			throw new IllegalArgumentException("This algorithm currently only supports comparing two alignments.");
 		}
 		else {
-			createSuperAlignment(document, createDPMatrix(document, 0, 1));
+			createSuperAlignment(
+					new ComparedAlignment[]{document.getAlignments().getValue(0), document.getAlignments().getValue(1)});
 		}
 	}
 }

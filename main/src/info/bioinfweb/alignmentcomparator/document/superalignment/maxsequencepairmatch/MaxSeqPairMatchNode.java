@@ -18,14 +18,17 @@
  */
 package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
+
 public class MaxSeqPairMatchNode {
 	private int[] positions = new int[2];
 	private List<MaxSeqPairMatchNode> previousNodes = new ArrayList<>();
-	private long score = -1;
+	private long score = 0;
 	
 	
 	public MaxSeqPairMatchNode(int[] positions) {
@@ -89,6 +92,11 @@ public class MaxSeqPairMatchNode {
 		return score;
 	}
 
+	
+	public long increaseScore() {
+		return ++score;
+	}
+	
 
 	@Override
 	public String toString() {
