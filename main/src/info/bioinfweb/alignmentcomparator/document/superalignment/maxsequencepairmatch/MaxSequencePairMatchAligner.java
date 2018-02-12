@@ -19,17 +19,17 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.utils.indextranslation.SequentialAccessIndexTranslator;
+import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 
@@ -42,10 +42,11 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		
 		// Create score nodes:
 		@SuppressWarnings("unchecked")
-		SequentialAccessIndexTranslator<Character>[] calculators = new SequentialAccessIndexTranslator[2];
+		RandomAccessIndexTranslator<Character>[] calculators = new RandomAccessIndexTranslator[2];
 		for (int i = 0; i < calculators.length; i++) {
-			calculators[i] = new SequentialAccessIndexTranslator<Character>(alignments[i].getOriginal());
+			calculators[i] = new RandomAccessIndexTranslator<Character>(alignments[i].getOriginal());
 		}
+
 		
 		for (int columnInFirst = 0; columnInFirst < columnCountInFirst; columnInFirst++) {
 			Iterator<String> iterator = firstAlignment.sequenceIDIterator();

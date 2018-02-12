@@ -19,6 +19,10 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.libralign.model.AlignmentModel;
+import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -30,10 +34,6 @@ import java.util.TreeMap;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 
-import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.utils.indextranslation.SequentialAccessIndexTranslator;
-
 
 
 public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
@@ -41,8 +41,8 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	
 	private Deque<Double> calculateAverageIndices(AlignmentModel<Character> model) {
-		SequentialAccessIndexTranslator<Character> calculator = new SequentialAccessIndexTranslator<>(model);
-		//DegapedIndexCalculator<Character> calculator = new DegapedIndexCalculator<Character>(model);
+		//SequentialAccessIndexTranslator<Character> calculator = new SequentialAccessIndexTranslator<>(model);
+		RandomAccessIndexTranslator<Character> calculator = new RandomAccessIndexTranslator<>(model);
 
 		// Save degaped length:
 		double[] degapedLengths = new double[model.getSequenceCount()];
@@ -50,7 +50,6 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		int sequenceIndex = 0;
 		while (seqIDIterator.hasNext()) {
 			String id = seqIDIterator.next();
-			//degapedLengths[sequenceIndex] = calculator.degapedIndex(id, model.getSequenceLength(id) - 1);
 			degapedLengths[sequenceIndex] = calculator.getUnalignedIndex(id, model.getSequenceLength(id) - 1).getCorresponding();  //TODO Could GAP or OUT_OF_RANGE be returned here?
 			sequenceIndex++;
 		}
