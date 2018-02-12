@@ -35,10 +35,11 @@ import java.util.List;
 
 public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private void createSuperAlignment(ComparedAlignment[] alignments) {
-		final MaxSeqPairMatchGraph graph = new MaxSeqPairMatchGraph();
 		final AlignmentModel<Character> firstAlignment = alignments[0].getOriginal();
 		final AlignmentModel<Character> secondAlignment = alignments[1].getOriginal();
 		final int columnCountInFirst = firstAlignment.getMaxSequenceLength();
+		final int columnCountInSecond = secondAlignment.getMaxSequenceLength();
+		final MaxSeqPairMatchGraph graph = new MaxSeqPairMatchGraph(columnCountInFirst, columnCountInSecond);
 		
 		// Create score nodes:
 		@SuppressWarnings("unchecked")
@@ -86,7 +87,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 			
 			// Connect node:
-			MaxSeqPairMatchNode nextNode = graph.higherValue(columnPair);
+			MaxSeqPairMatchNode nextNode = graph.rightSeqPairValue(columnPair);
 			if (nextNode != null) {
 				int nextColumn = nextNode.getPosition(0);
 				do {
@@ -98,10 +99,10 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		
 		// Extract optimal path:
 		List<MaxSeqPairMatchNode> optimalPath = new LinkedList<>();
-		MaxSeqPairMatchNode optimalNode = graph.getEndNode().optimalPreviousNode();  //TODO Speed up implementation by avoiding to call this method twice (here and above).
+		MaxSeqPairMatchNode optimalNode = graph.getEndNode();
 		while (optimalNode != null) {
 			optimalPath.add(0, optimalNode);
-			optimalNode = optimalNode.optimalPreviousNode();
+			optimalNode = optimalNode.optimalPreviousNode();  //TODO Speed up implementation by avoiding to call this method twice (here and above).
 		}
 		
 		// Create superalignment:

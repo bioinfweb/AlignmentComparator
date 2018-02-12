@@ -33,7 +33,7 @@ public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
 	private static final int[] END_NODE_KEY = {Integer.MAX_VALUE, Integer.MAX_VALUE};
 	
 	
-	public MaxSeqPairMatchGraph() {
+	public MaxSeqPairMatchGraph(int firstSize, int secondSize) {
 		super(new Comparator<int[]>() {
 			@Override
 			public int compare(int[] o1, int[] o2) {
@@ -45,15 +45,10 @@ public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
 			}
 		});
 		
-		addEndNode();
+		add(new MaxSeqPairMatchNode(new int[]{firstSize, secondSize}));  // End node connects both alignments behind their last column to finish the optimal path.
 	}
 	
 	
-	private void addEndNode() {
-		add(new MaxSeqPairMatchNode(END_NODE_KEY));
-	}
-
-
 	@Override
 	public MaxSeqPairMatchNode put(int[] key, MaxSeqPairMatchNode value) {
 		if (key.length == 2) {
@@ -64,13 +59,6 @@ public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
 		}
 	}
 	
-
-	@Override
-	public void clear() {
-		super.clear();
-		addEndNode();
-	}
-
 
 	public void add(MaxSeqPairMatchNode node) {
 		put(node.getPositions(), node);
@@ -88,12 +76,23 @@ public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
 	}
 	
 	
-	public MaxSeqPairMatchNode getEndNode() {
-		return get(END_NODE_KEY);
+	public MaxSeqPairMatchNode rightSeqPairValue(int[] key) {
+		Map.Entry<int[], MaxSeqPairMatchNode> entry = ceilingEntry(new int[]{key[0] + 1, key[1] + 1});
+		if (entry != null) {
+			return entry.getValue();
+		}
+		else {
+			return null;
+		}
 	}
 	
 	
-	public boolean isEndNode(MaxSeqPairMatchNode node) {
-		return (node.getPosition(0) == Integer.MAX_VALUE) && (node.getPosition(0) == Integer.MAX_VALUE);
+	public MaxSeqPairMatchNode getEndNode() {
+		if (isEmpty()) {
+			return null;
+		}
+		else {
+			return lastEntry().getValue();
+		}
 	}
 }
