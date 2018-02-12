@@ -96,8 +96,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		}
 		
 		// Create superalignment:
-		List<Integer> firstUnalignedIndices = new ArrayList<>(columnCountInFirst);  //TODO Possibly use factor
-		List<Integer> secondUnalignedIndices = new ArrayList<>(columnCountInFirst);  //TODO Possibly use factor
+		List<Integer> firstUnalignedIndices = new ArrayList<>(columnCountInFirst);  //TODO Possibly use factor for initial size
+		List<Integer> secondUnalignedIndices = new ArrayList<>(columnCountInFirst);  //TODO Possibly use factor for initial size
 		int currentColumnInFirst = 0;
 		int currentColumnInSecond = 0;
 		for (MaxSeqPairMatchNode node : optimalPath) {
