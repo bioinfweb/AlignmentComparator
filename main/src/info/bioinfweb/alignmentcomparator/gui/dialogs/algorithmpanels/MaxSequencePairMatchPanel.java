@@ -19,8 +19,8 @@
 package info.bioinfweb.alignmentcomparator.gui.dialogs.algorithmpanels;
 
 
+import info.bioinfweb.alignmentcomparator.document.superalignment.MaxSequencePairMatchAligner;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
-import info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepairmatch.MaxSequencePairMatchAligner;
 
 import javax.swing.JPanel;
 
