@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.document.superalignment.maxsequencepa
 
 
 import java.util.Comparator;
+import java.util.Map;
 import java.util.TreeMap;
 
 
@@ -73,6 +74,17 @@ public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
 
 	public void add(MaxSeqPairMatchNode node) {
 		put(node.getPositions(), node);
+	}
+	
+	
+	public MaxSeqPairMatchNode higherValue(int[] key) {
+		Map.Entry<int[], MaxSeqPairMatchNode> entry = higherEntry(key);
+		if (entry != null) {
+			return entry.getValue();
+		}
+		else {
+			return null;
+		}
 	}
 	
 	

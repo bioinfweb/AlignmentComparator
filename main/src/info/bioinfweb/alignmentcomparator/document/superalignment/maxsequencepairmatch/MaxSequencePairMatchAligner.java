@@ -78,13 +78,21 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		// Calculate scores and connect nodes:
 		for (int[] columnPair : graph.keySet()) {
 			MaxSeqPairMatchNode currentNode = graph.get(columnPair);
-			currentNode.setScore(currentNode.getScore() + currentNode.optimalPreviousNode().getScore());
 			
-			MaxSeqPairMatchNode nextNode = graph.higherEntry(columnPair).getValue();
-			int nextColumn = nextNode.getPosition(0);
-			while ((nextNode != null) && (nextNode.getPosition(0) == nextColumn)) {  // Should only happen before the first iteration in case of the end node.
-				nextNode.getPreviousNodes().add(currentNode);
-				nextNode = graph.higherEntry(nextNode.getPositions()).getValue();
+			// Calculate score:
+			MaxSeqPairMatchNode optimalNode = currentNode.optimalPreviousNode();
+			if (optimalNode != null) {
+				currentNode.setScore(currentNode.getScore() + optimalNode.getScore());
+			}
+			
+			// Connect node:
+			MaxSeqPairMatchNode nextNode = graph.higherValue(columnPair);
+			if (nextNode != null) {
+				int nextColumn = nextNode.getPosition(0);
+				do {
+					nextNode.getPreviousNodes().add(currentNode);
+					nextNode = graph.higherValue(nextNode.getPositions());
+				} while ((nextNode != null) && (nextNode.getPosition(0) == nextColumn));
 			}
 		}
 		
