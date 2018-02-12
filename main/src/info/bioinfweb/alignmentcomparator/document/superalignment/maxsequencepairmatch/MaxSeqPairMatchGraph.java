@@ -30,9 +30,7 @@ public class MaxSeqPairMatchGraph extends TreeMap<int[], MaxSeqPairMatchNode> {
 	// a compare method saves a pointer and therefore 8 bytes per node.
 	//TODO Using two int properties instead of an array would work as well.
 	
-	private static final int[] END_NODE_KEY = {Integer.MAX_VALUE, Integer.MAX_VALUE};
-	
-	
+
 	public MaxSeqPairMatchGraph(int firstSize, int secondSize) {
 		super(new Comparator<int[]>() {
 			@Override
