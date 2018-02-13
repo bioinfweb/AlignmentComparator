@@ -96,12 +96,18 @@ main/src/resources/symbols/Open16.png -text
 main/src/resources/symbols/Open22.png -text
 main/src/resources/symbols/Redo16.png -text
 main/src/resources/symbols/Redo22.png -text
+main/src/resources/symbols/ResearchGate16.png -text
+main/src/resources/symbols/ResearchGate22.png -text
 main/src/resources/symbols/Save16.png -text
 main/src/resources/symbols/Save22.png -text
 main/src/resources/symbols/SaveAs16.png -text
 main/src/resources/symbols/SaveAs22.png -text
+main/src/resources/symbols/Twitter16.png -text
+main/src/resources/symbols/Twitter22.png -text
 main/src/resources/symbols/Undo16.png -text
 main/src/resources/symbols/Undo22.png -text
+main/src/resources/symbols/bioinfweb16.png -text
+main/src/resources/symbols/bioinfweb22.png -text
 test/.classpath -text svneol=unset#text/plain
 test/.project -text svneol=unset#text/plain
 test/.settings/org.eclipse.jdt.core.prefs -text svneol=unset#text/plain
