@@ -107,38 +107,40 @@ public class AboutDialog extends JDialog {
 						"<head><link rel='stylesheet' type='text/css' href='" + 
 						    getResourcePath("Style.css") + "'></head>" +
 						"<body>" +
-						"<h1>AlignmentComparator " + Main.getInstance().getVersion().toString() + "</h1>" +
+						"<h1><i>AlignmentComparator</i> " + Main.getInstance().getVersion().toString() + "</h1>" +
 						"<p>Copyright (C) 2012-2017 <a href='http://bioinfweb.info/People/Stoever'>Ben St&ouml;ver</a>. All rights reserved.<br>" +
-						"Website: <a href='http://bioinfweb.info/AlignmentComparator/'>http://bioinfweb.info/AlignmentComparator</a></p>" +
+						"Website: <a href='http://bioinfweb.info/AlignmentComparator/'>http://bioinfweb.info/AlignmentComparator</a><br>" +
+						"ResearchGate: <a href='http://r.bioinfweb.info/RGAlignmentComparator'>http://r.bioinfweb.info/RGAlignmentComparator</a></p>" +
 						
 						"<p>This program is free software: you can redistribute it and/or modify it " +
-						"under the terms of the GNU General Public License as published by the Free Software " +
-						"Foundation, either version 3 of the License, or (at your option) any later version.</p>" +
+						"under the terms of the <i>GNU General Public License</i> as published by the <i>Free Software " +
+						"Foundation</i>, either version 3 of the License, or (at your option) any later version.</p>" +
 						
 						"<p>This program is distributed in the hope that it will be useful, but " +
 						"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY " +
 						"or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for " +
 						"more details.</p>" +
 						
-						"<p>You should have received a copy of the GNU General Public License " +
+						"<p>You should have received a copy of the <i>GNU General Public License</i> " +
 						"along with this program. If not, see " +
 						"<a href='http://bioinfweb.info/AlignmentComparator/License'>http://bioinfweb.info/AlignmentComparator/License</a> " +
 						"or <a href='http://www.gnu.org/licenses/'>http://www.gnu.org/licenses/</a>.</p>" +
 						
-						"<p>This product includes software developed by the Apache Software Foundation " +
+						"<p>This product includes software developed by the <i>Apache Software Foundation</i> " +
 						"<a href='http://apache.org/'>http://apache.org/</a> distributed under the terms of the " +
-						"Apache License Version 2.0. Google guava-libraries are also distributed under Apache License Version 2.0. " +
+						"<i>Apache License</i> Version 2.0. <i>Google guava-libraries</i> are also distributed under <i>Apache License</i> Version 2.0. " +
 						"(<a href='http://www.apache.org/licenses/LICENSE-2.0'>http://www.apache.org/licenses/LICENSE-2.0</a>)</p>" +
 						
 						"<p><b>The following libraries and software packages are used by AlignmentComparator:</b></p>" +
 						"<ul>" +
-    				  "<li>bioinfweb.commons.java (<a href='http://commons.bioinfweb.info/Java/'>http://commons.bioinfweb.info/Java/</a>)</li>" +
-    				  //"<li>LibrAlign (<a href='http://bioinfweb.info/LibrAlign/'>http://bioinfweb.info/LibrAlign/</a>)</li>" +
-    				  "<li>MUSCLE (<a href='http://www.drive5.com/muscle/'>http://www.drive5.com/muscle/</a>)</li>" +
-  					  "<li>BioJava (<a href='http://biojava.org/'>http://biojava.org/</a>)</li>" +
-						  "<li>Apache commons Lang (<a href='http://commons.apache.org/proper/commons-lang/'>http://commons.apache.org/proper/commons-lang/</a>)</li>" +
-						  "<li>guava-libraries (<a href='https://code.google.com/p/guava-libraries/'>https://code.google.com/p/guava-libraries/</a>)</li>" +
-						  "<li>Browser Launcher (<a href='http://browserlaunch2.sourceforge.net/'>http://browserlaunch2.sourceforge.net/</a>)</li>" +
+    				  "<li><i>bioinfweb.commons.java</i> (<a href='http://commons.bioinfweb.info/Java/'>http://commons.bioinfweb.info/Java/</a>)</li>" +
+    				  "<li><i>LibrAlign</i> (<a href='http://bioinfweb.info/LibrAlign/'>http://bioinfweb.info/LibrAlign/</a>)</li>" +
+    				  "<li><i>JPhyloIO</i> (<a href='http://bioinfweb.info/JPhyloIO/'>http://bioinfweb.info/JPhyloIO/</a>)</li>" +
+    				  "<li><i>TIC</i> (<a href='http://bioinfweb.info/TIC/'>http://bioinfweb.info/TIC/</a>)</li>" +
+    				  "<li><i>MUSCLE</i> (<a href='http://www.drive5.com/muscle/'>http://www.drive5.com/muscle/</a>)</li>" +
+						  "<li><i>Apache commons</i> (<a href='http://commons.apache.org/'>http://commons.apache.org/</a>)</li>" +
+						  "<li><i>guava-libraries</i> (<a href='https://github.com/google/guava'>https://github.com/google/guava</a>)</li>" +
+						  "<li><i>OWL API</i> (<a href='http://owlcs.github.io/owlapi/'>http://owlcs.github.io/owlapi/</a>)</li>" +
 						"</ul>" +
 						"</body></html>");			
 				infoPane.setCaretPosition(0);
