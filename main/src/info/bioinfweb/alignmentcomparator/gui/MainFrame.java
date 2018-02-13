@@ -264,6 +264,11 @@ public class MainFrame extends JFrame {
 		if (helpMenu == null) {
 			helpMenu = new JMenu("Help");
 			helpMenu.add(getActionManagement().get("help.website"));
+			helpMenu.add(getActionManagement().get("help.researchGate"));
+			helpMenu.addSeparator();
+			helpMenu.add(getActionManagement().get("help.biwMainPage"));
+			helpMenu.add(getActionManagement().get("help.twitter"));
+			helpMenu.addSeparator();
 			helpMenu.add(getActionManagement().get("help.about"));
 		}
 		return helpMenu;

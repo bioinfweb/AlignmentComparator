@@ -32,6 +32,8 @@ import info.bioinfweb.alignmentcomparator.gui.actions.file.*;
 import info.bioinfweb.alignmentcomparator.gui.actions.help.*;
 import info.bioinfweb.commons.swing.AbstractUndoActionManagement;
 import info.bioinfweb.commons.swing.AccessibleUndoManager;
+import info.bioinfweb.commons.swing.actions.BioinfwebMainPageAction;
+import info.bioinfweb.commons.swing.actions.TwitterAction;
 
 
 
@@ -64,7 +66,10 @@ public class ActionManagement extends AbstractUndoActionManagement {
 		put("edit.syncSelection", new ToggleSynchronizeSelectionAction(mainFrame));
 
 		put("help.about", new AboutAction());
-		put("help.website", new WebsiteAction());
+		put("help.website", new ACMainPageAction());
+		put("help.biwMainPage", new BioinfwebMainPageAction());
+		put("help.twitter", new TwitterAction());
+		put("help.researchGate", new ResearchGateAction());
 	}
 	
 	
