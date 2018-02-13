@@ -108,7 +108,7 @@ public class AboutDialog extends JDialog {
 						    getResourcePath("Style.css") + "'></head>" +
 						"<body>" +
 						"<h1><i>AlignmentComparator</i> " + Main.getInstance().getVersion().toString() + "</h1>" +
-						"<p>Copyright (C) 2012-2017 <a href='http://bioinfweb.info/People/Stoever'>Ben St&ouml;ver</a>. All rights reserved.<br>" +
+						"<p>Copyright (C) 2012-2018 <a href='http://bioinfweb.info/People/Stoever'>Ben St&ouml;ver</a>. All rights reserved.<br>" +
 						"Website: <a href='http://bioinfweb.info/AlignmentComparator/'>http://bioinfweb.info/AlignmentComparator</a><br>" +
 						"ResearchGate: <a href='http://r.bioinfweb.info/RGAlignmentComparator'>http://r.bioinfweb.info/RGAlignmentComparator</a></p>" +
 						
