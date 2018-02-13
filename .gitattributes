@@ -8,16 +8,21 @@ main/MANIFEST.MF -text svneol=unset#text/plain
 main/include/APACHE-LICENSE.txt -text svneol=unset#text/plain
 main/include/GPL.txt -text svneol=unset#text/plain
 main/include/NOTICE.txt -text svneol=unset#text/plain
-main/include/lib/BrowserLauncher2-1_3.jar -text
-main/include/lib/bioinfweb.commons.core.jar -text
-main/include/lib/bioinfweb.commons.experimental.bio.jar -text
-main/include/lib/bioinfweb.commons.swing.jar -text
+main/include/lib/bioinfweb-commons-java-bio-3.0.0.jar -text
+main/include/lib/bioinfweb-commons-java-core-3.0.0.jar -text
+main/include/lib/bioinfweb-commons-java-swing-3.0.0.jar -text
 main/include/lib/commons-collections4-4.1.jar -text
 main/include/lib/commons-lang3-3.1.jar -text
 main/include/lib/guava-13.0.1.jar -text
 main/include/lib/info.webinsel.wikihelp.client.jar -text
+main/include/lib/jphyloio-core-0.5.1.jar -text
+main/include/lib/libralign-core-0.6.0.jar -text
+main/include/lib/libralign-io-0.6.0.jar -text
+main/include/lib/libralign-swing-0.5.0.jar -text
 main/include/lib/org.jdesktop.swingx.scrollpaneselector.jar -text
 main/include/lib/owlapi-XMLUtils-4.1.4.jar -text
+main/include/lib/tic-core-3.0.1.jar -text
+main/include/lib/tic-swing-3.0.0.jar -text
 main/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 main/src/GPL.txt -text svneol=unset#text/plain
 main/src/NOTICE.txt -text svneol=unset#text/plain
