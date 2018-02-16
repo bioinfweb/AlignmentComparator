@@ -131,7 +131,7 @@ public class AboutDialog extends JDialog {
 						"<i>Apache License</i> Version 2.0. <i>Google guava-libraries</i> are also distributed under <i>Apache License</i> Version 2.0. " +
 						"(<a href='http://www.apache.org/licenses/LICENSE-2.0'>http://www.apache.org/licenses/LICENSE-2.0</a>)</p>" +
 						
-						"<p><b>The following libraries and software packages are used by AlignmentComparator:</b></p>" +
+						"<p><b>The following libraries and software packages are used by <i>AlignmentComparator</i>:</b></p>" +
 						"<ul>" +
     				  "<li><i>bioinfweb.commons.java</i> (<a href='http://commons.bioinfweb.info/Java/'>http://commons.bioinfweb.info/Java/</a>)</li>" +
     				  "<li><i>LibrAlign</i> (<a href='http://bioinfweb.info/LibrAlign/'>http://bioinfweb.info/LibrAlign/</a>)</li>" +
