@@ -13,6 +13,7 @@ main/include/lib/bioinfweb-commons-java-core-3.0.0.jar -text
 main/include/lib/bioinfweb-commons-java-swing-3.1.0.jar -text
 main/include/lib/commons-collections4-4.1.jar -text
 main/include/lib/commons-lang3-3.1.jar -text
+main/include/lib/forester.jar -text
 main/include/lib/guava-13.0.1.jar -text
 main/include/lib/info.webinsel.wikihelp.client.jar -text
 main/include/lib/jphyloio-core-0.5.1.jar -text

@@ -17,5 +17,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.tic.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.tic.swing"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.wikihelp.client"/>
+	<classpathentry kind="lib" path="include/lib/forester.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
