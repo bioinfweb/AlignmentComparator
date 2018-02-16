@@ -115,12 +115,12 @@ test/lib/junit-4.9b1.jar -text
 test/src/APACHE-LICENSE.txt -text svneol=unset#text/plain
 test/src/GPL.txt -text svneol=unset#text/plain
 test/src/NOTICE.txt -text svneol=unset#text/plain
-test/src/info/bioinfweb/alignmentcomparator/CreateSequencesTest.java -text svneol=unset#text/plain
-test/src/info/bioinfweb/alignmentcomparator/StringBuilderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/document/io/results/FastaReaderTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/document/superalignment/AverageDegapedPositionAlignerTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/Hirschberg.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/NeedlemanWunsch.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/NeedlemanWunschTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/runtime/Exec.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/alignmentcomparator/test/CreateSequencesTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/test/NJForesterTest.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/alignmentcomparator/test/StringBuilderTest.java -text svneol=unset#text/plain
