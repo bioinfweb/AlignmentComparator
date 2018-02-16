@@ -123,3 +123,4 @@ test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/Hirschberg.j
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/NeedlemanWunsch.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/alignment/NeedlemanWunschTest.java -text svneol=unset#text/plain
 test/src/info/bioinfweb/alignmentcomparator/externaltests/runtime/Exec.java -text svneol=unset#text/plain
+test/src/info/bioinfweb/alignmentcomparator/test/NJForesterTest.java -text svneol=unset#text/plain

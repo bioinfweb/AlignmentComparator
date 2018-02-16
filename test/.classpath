@@ -19,5 +19,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.wikihelp.client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.libralign.biojava3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.experimental"/>
+	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/forester.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
