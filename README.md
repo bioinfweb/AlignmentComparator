@@ -20,4 +20,4 @@ This product includes dependencies developed by the [Apache Software Foundation]
 
 ## Binary releases
 
-Binary releases can be found at http://bioinfweb.info/AlignmentComparator/.
+Binary releases can be found at http://bioinfweb.info/AlignmentComparator/Download.
