@@ -21,12 +21,13 @@ package info.bioinfweb.alignmentcomparator.document;
 
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.implementations.decorate.DelegatedAlignmentModelView;
+import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
 
 
 
 public class OriginalAlignment extends DelegatedAlignmentModelView<Character> {
-	private RandomAccessIndexTranslator<Character> indexTranslator;
+	private IndexTranslator<Character> indexTranslator;
 	
 	
 	public OriginalAlignment(AlignmentModel<Character> underlyingModel) {
@@ -35,7 +36,7 @@ public class OriginalAlignment extends DelegatedAlignmentModelView<Character> {
 	}
 
 
-	public RandomAccessIndexTranslator<Character> getIndexTranslator() {
+	public IndexTranslator<Character> getIndexTranslator() {
 		return indexTranslator;
 	}
 }
