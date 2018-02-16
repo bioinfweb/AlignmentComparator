@@ -26,18 +26,18 @@ import info.bioinfweb.libralign.model.AlignmentModel;
 
 
 public class ComparedAlignment {
-	private AlignmentModel<Character> original;
+	private OriginalAlignment original;
 	private SuperalignedModelDecorator superAligned = null;
 	private List<Double> averagePositions = null;
 	
 	
 	public ComparedAlignment(AlignmentModel<Character> original) {
 		super();
-		this.original = original;
+		this.original = new OriginalAlignment(original);
 	}
 
 
-	public AlignmentModel<Character> getOriginal() {
+	public OriginalAlignment getOriginal() {
 		return original;
 	}
 	

@@ -19,15 +19,14 @@
 package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
+import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
+import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.OriginalAlignment;
+import info.bioinfweb.commons.collections.PackedObjectArrayList;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
-import info.bioinfweb.alignmentcomparator.document.Document;
-import info.bioinfweb.commons.collections.PackedObjectArrayList;
-import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
 
 
 
@@ -38,19 +37,13 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	
 	
 	private byte[][] createDirectionMatrix(ComparedAlignment[] alignments) {
-		final AlignmentModel<Character> firstAlignment = alignments[0].getOriginal();
-		final AlignmentModel<Character> secondAlignment = alignments[1].getOriginal();
+		final OriginalAlignment firstAlignment = alignments[0].getOriginal();
+		final OriginalAlignment secondAlignment = alignments[1].getOriginal();
 		final int columnCountInFirst = firstAlignment.getMaxSequenceLength();
 		final int columnCountInSecond = secondAlignment.getMaxSequenceLength();
 		final long[][] scoreMatrix = new long[columnCountInFirst + 1][columnCountInSecond + 1];  // Values are initialized with 0.
 		
 		// Write local scores into matrix:
-		@SuppressWarnings("unchecked")
-		RandomAccessIndexTranslator<Character>[] calculators = new RandomAccessIndexTranslator[2];
-		for (int i = 0; i < calculators.length; i++) {
-			calculators[i] = new RandomAccessIndexTranslator<Character>(alignments[i].getOriginal());
-		}
-		
 		for (int columnInFirst = 0; columnInFirst < columnCountInFirst; columnInFirst++) {
 			Iterator<String> iterator = firstAlignment.sequenceIDIterator();
 			while (iterator.hasNext()) {
@@ -59,9 +52,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					String seqName = firstAlignment.sequenceNameByID(seqIDInFirst);
 					String seqIDInSecond = secondAlignment.sequenceIDsByName(seqName).iterator().next();
 					
-					int unalignedIndex = calculators[0].getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
+					int unalignedIndex = firstAlignment.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
 					if (unalignedIndex >= 0) {
-						scoreMatrix[columnInFirst + 1][calculators[1].getAlignedIndex(seqIDInSecond, unalignedIndex) + 1]++;
+						scoreMatrix[columnInFirst + 1][secondAlignment.getIndexTranslator().getAlignedIndex(seqIDInSecond, unalignedIndex) + 1]++;
 								// + 1 because the first column and row in the matrix refer to the position before the first alignment column.
 					}
 					else {
@@ -105,6 +98,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private void createSuperAlignment(ComparedAlignment[] alignments) {
 		byte[][] matrix = createDirectionMatrix(alignments);
 		int[] unalignedIndex = new int[2];
+		@SuppressWarnings("unchecked")
 		List<Integer>[] unalignedIndexLists = new List[2];
 		for (int i = 0; i < unalignedIndexLists.length; i++) {
 			int length = alignments[i].getOriginal().getMaxSequenceLength();

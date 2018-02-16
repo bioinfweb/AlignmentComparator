@@ -35,6 +35,7 @@ main/src/cmd/muscle3.8.31_i86win32.exe -text
 main/src/info/bioinfweb/alignmentcomparator/Main.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/ComparedAlignment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/OriginalAlignment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperalignedModelDecorator.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/UnlignedIndicesChangeListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentEvent.java -text svneol=unset#text/plain
