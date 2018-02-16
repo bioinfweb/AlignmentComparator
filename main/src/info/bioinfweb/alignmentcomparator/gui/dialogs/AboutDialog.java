@@ -140,7 +140,8 @@ public class AboutDialog extends JDialog {
     				  "<li><i>MUSCLE</i> (<a href='http://www.drive5.com/muscle/'>http://www.drive5.com/muscle/</a>)</li>" +
 						  "<li><i>Apache commons</i> (<a href='http://commons.apache.org/'>http://commons.apache.org/</a>)</li>" +
 						  "<li><i>guava-libraries</i> (<a href='https://github.com/google/guava'>https://github.com/google/guava</a>)</li>" +
-						  "<li><i>OWL API</i> (<a href='http://owlcs.github.io/owlapi/'>http://owlcs.github.io/owlapi/</a>)</li>" +
+						  "<li><i>Forester</i> (<a href='http://owlcs.github.io/owlapi/'>http://owlcs.github.io/owlapi/</a>)</li>" +
+						  "<li><i>OWL API</i> (<a href='https://sites.google.com/site/cmzmasek/home/software/forester'>https://sites.google.com/site/cmzmasek/home/software/forester</a>)</li>" +
 						"</ul>" +
 						"</body></html>");			
 				infoPane.setCaretPosition(0);
