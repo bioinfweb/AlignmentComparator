@@ -20,23 +20,10 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.implementations.decorate.DelegatedAlignmentModelView;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
-import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
 
 
 
-public class OriginalAlignment extends DelegatedAlignmentModelView<Character> implements TranslatableAlignment {
-	private IndexTranslator<Character> indexTranslator;
-	
-	
-	public OriginalAlignment(AlignmentModel<Character> underlyingModel) {
-		super(underlyingModel);
-		indexTranslator = new RandomAccessIndexTranslator<Character>(underlyingModel);  // "this" could as well be used.
-	}
-
-
-	public IndexTranslator<Character> getIndexTranslator() {
-		return indexTranslator;
-	}
+public interface TranslatableAlignment extends AlignmentModel<Character> {
+	public IndexTranslator<Character> getIndexTranslator();
 }

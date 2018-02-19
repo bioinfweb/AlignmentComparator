@@ -38,6 +38,8 @@ main/src/info/bioinfweb/alignmentcomparator/document/ComparedAlignment.java -tex
 main/src/info/bioinfweb/alignmentcomparator/document/Document.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/OriginalAlignment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/SuperalignedModelDecorator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/SuperalingedModelIndexTranslator.java -text svneol=unset#text/plain
+main/src/info/bioinfweb/alignmentcomparator/document/TranslatableAlignment.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/UnlignedIndicesChangeListener.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentEvent.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/document/event/DocumentListener.java -text svneol=unset#text/plain

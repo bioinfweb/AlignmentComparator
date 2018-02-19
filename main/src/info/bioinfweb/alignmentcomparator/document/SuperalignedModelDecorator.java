@@ -1,5 +1,5 @@
 /*
- * AlignmentComparator - An application to efficiently visualize and annotate differences between alternative multiple sequence alignments
+	 * AlignmentComparator - An application to efficiently visualize and annotate differences between alternative multiple sequence alignments
  * Copyright (C) 2014-2018  Ben Stöver
  * <http://bioinfweb.info/AlignmentComparator>
  * 
@@ -24,6 +24,7 @@ import info.bioinfweb.libralign.model.events.TokenChangeEvent;
 import info.bioinfweb.libralign.model.exception.AlignmentSourceNotWritableException;
 import info.bioinfweb.libralign.model.exception.SequenceNotFoundException;
 import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignmentModelDecorator;
+import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,13 +44,14 @@ import java.util.List;
  * @author Ben St&ouml;ver
  * @since 0.1.0
  */
-public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<Character, Character> {
+public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<Character, Character> implements TranslatableAlignment {
 	public static final char SUPER_ALIGNMENT_GAP = '.';
 	public static final int SUPER_GAP_INDEX = -1;
 	
 	
 	private ComparedAlignment owner;
 	private List<Integer> unalignedIndices;
+	private SuperalingedModelIndexTranslator translator;
 	
 	
 	public SuperalignedModelDecorator(ComparedAlignment owner, List<Integer> unalignedIndices) {
@@ -57,9 +59,16 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 		this.owner = owner;
 		this.unalignedIndices = unalignedIndices;
 		getTokenSet().add(SUPER_ALIGNMENT_GAP);
+		translator = new SuperalingedModelIndexTranslator(this, unalignedIndices);
 	}
 	
 	
+	@Override
+	public OriginalAlignment getUnderlyingModel() {
+		return (OriginalAlignment)super.getUnderlyingModel();
+	}
+
+
 	private Collection<Character> createTokenCollection(int size) {
 		Collection<Character> result = new ArrayList<Character>();
 		for (int column = 0; column < size; column++) {
@@ -246,5 +255,11 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	@Override
 	public void removeTokensAt(String sequenceID, int beginIndex, int endIndex) throws AlignmentSourceNotWritableException {
 		throw new AlignmentSourceNotWritableException(this);
+	}
+
+
+	@Override
+	public IndexTranslator<Character> getIndexTranslator() {
+		return translator;
 	}
 }

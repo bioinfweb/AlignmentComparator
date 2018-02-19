@@ -246,6 +246,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		if (document.getAlignments().size() > 2) {
 			Phylogeny tree = calculateGuideTree(document);
 //			printNode(tree.getRoot(), "");
+			
+			
 		}
 		else {
 			createSuperAlignment(
