@@ -28,15 +28,105 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.map.ListOrderedMap;
+import org.forester.evoinference.distance.NeighborJoining;
+import org.forester.evoinference.matrix.distance.BasicSymmetricalDistanceMatrix;
+import org.forester.phylogeny.Phylogeny;
+import org.forester.phylogeny.PhylogenyNode;
+
 
 
 public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	private static final byte DIAGONAL = 0;
 	private static final byte UP = 1;
 	private static final byte LEFT = 2;	
+
+	
+	private static class Matrix {
+		byte[][] directionMatrix;
+		long score;
+		
+		public Matrix(byte[][] directionMatrix, long score) {
+			super();
+			this.directionMatrix = directionMatrix;
+			this.score = score;
+		}
+	}
 	
 	
-	private byte[][] createDirectionMatrix(ComparedAlignment[] alignments) {
+	/**
+	 * Calculates the maximal score a superalignment could have, which is equal to the number of non-gap tokens in
+	 * one alignment. (It is assumed that all alignments in {@code document} contain the same non-gap tokens in each
+	 * sequence.)
+	 * 
+	 * @param document the document containing the alignments to be compared
+	 */
+	private long calculateMaxScore(Document document) {
+		long result = 0;
+		if (!document.getAlignments().isEmpty()) {  // This method assumes that all alignments contain the same non-gap tokens in each sequence.
+			OriginalAlignment alignment = document.getAlignments().getValue(0).getOriginal();
+			Iterator<String> iterator = alignment.sequenceIDIterator();
+			while (iterator.hasNext()) {
+				result += alignment.getIndexTranslator().getUnalignedLength(iterator.next());
+			}
+		}
+		return result;
+	}
+	
+	
+	private PhylogenyNode findLongestBranch(PhylogenyNode parent, PhylogenyNode result, double length) {
+		for (PhylogenyNode child : parent.getDescendants()) {
+			if (child.getDistanceToParent() > length) {
+				result = child;
+				length = child.getDistanceToParent();
+			}
+			result = findLongestBranch(child, result, length);
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Makes sure the tree is rooted on its longest branch.
+	 * 
+	 * @param tree the tree to be possibly rerooted
+	 */
+	private void reroot(Phylogeny tree) {
+		PhylogenyNode root = tree.getRoot();
+		if (root.getDescendants().size() != 2) {
+			throw new InternalError("Unexpected NJ tree.");
+		}
+		
+		double length = root.getChildNode(0).getDistanceToParent() + root.getChildNode(1).getDistanceToParent();  // Assumes that there are always two nodes under the root.
+		root = findLongestBranch(root, null, length);  // The direct children of root will not be selected, since they must have a samller distance than their combined branches.
+		if (root != null) {
+			tree.reRoot(root);
+		}
+	}
+	
+	
+	private Phylogeny calculateGuideTree(Document document) {
+		long maxScore = calculateMaxScore(document);
+		ListOrderedMap<String, ComparedAlignment> alignments = document.getAlignments();
+		BasicSymmetricalDistanceMatrix matrix = new BasicSymmetricalDistanceMatrix(alignments.size());
+		for (int column = 0; column < alignments.size(); column++) {
+			matrix.setIdentifier(column, alignments.get(column));
+			for (int row = column; row < alignments.size(); row++) {
+				matrix.setValue(column, row, maxScore - calculateDirectionMatrix(
+						new ComparedAlignment[]{alignments.getValue(column), alignments.getValue(row)}).score);
+				//TODO Path could already be extracted from matrix here for later reuse or using memory for matrix could be avoided here, when it's not used.
+			}
+		}
+
+		Phylogeny result = NeighborJoining.createInstance().execute(matrix);
+		reroot(result);
+		return result;
+	}
+	
+	
+	private Matrix calculateDirectionMatrix(ComparedAlignment[] alignments) {
+		//TODO Refactor to use only one row of the score matrix at a time.
+		
 		final OriginalAlignment firstAlignment = alignments[0].getOriginal();
 		final OriginalAlignment secondAlignment = alignments[1].getOriginal();
 		final int columnCountInFirst = firstAlignment.getMaxSequenceLength();
@@ -91,12 +181,12 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 
-		return directionMatrix;
+		return new Matrix(directionMatrix, scoreMatrix[columnCountInFirst][columnCountInSecond]);
 	}
 	
 	
 	private void createSuperAlignment(ComparedAlignment[] alignments) {
-		byte[][] matrix = createDirectionMatrix(alignments);
+		byte[][] matrix = calculateDirectionMatrix(alignments).directionMatrix;
 		int[] unalignedIndex = new int[2];
 		@SuppressWarnings("unchecked")
 		List<Integer>[] unalignedIndexLists = new List[2];
@@ -143,10 +233,19 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
+//	private static void printNode(PhylogenyNode node, String prefix) {
+//		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
+//		for (PhylogenyNode child : node.getDescendants()) {
+//			printNode(child, prefix + "  ");
+//		}
+//	}
+	
+	
 	@Override
 	public void performAlignment(Document document) throws Exception {
-		if (document.getAlignments().size() != 2) {
-			throw new IllegalArgumentException("This algorithm currently only supports comparing two alignments.");
+		if (document.getAlignments().size() > 2) {
+			Phylogeny tree = calculateGuideTree(document);
+//			printNode(tree.getRoot(), "");
 		}
 		else {
 			createSuperAlignment(
