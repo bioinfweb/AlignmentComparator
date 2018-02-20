@@ -205,7 +205,6 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					if (unalignedIndexList.get(i) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
 						((SuperalignedModelDecorator)alignment).insertSupergap(i, 1);
 					}
-					
 				}
 			}
 		}
