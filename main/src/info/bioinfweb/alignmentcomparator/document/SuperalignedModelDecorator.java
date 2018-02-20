@@ -24,13 +24,14 @@ import info.bioinfweb.libralign.model.events.TokenChangeEvent;
 import info.bioinfweb.libralign.model.exception.AlignmentSourceNotWritableException;
 import info.bioinfweb.libralign.model.exception.SequenceNotFoundException;
 import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignmentModelDecorator;
+import info.bioinfweb.libralign.model.utils.indextranslation.IndexRelation;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 
@@ -46,7 +47,7 @@ import java.util.List;
  */
 public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<Character, Character> implements TranslatableAlignment {
 	public static final char SUPER_ALIGNMENT_GAP = '.';
-	public static final int SUPER_GAP_INDEX = -1;
+	public static final int SUPER_GAP_INDEX = -1;  //TODO Replace by IndexRelation.GAP
 	
 	
 	private ComparedAlignment owner;
@@ -58,8 +59,24 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 		super(owner.getOriginal().getTokenSet().clone(), owner.getOriginal());
 		this.owner = owner;
 		this.unalignedIndices = unalignedIndices;
+		convertUnalignedIndices();
 		getTokenSet().add(SUPER_ALIGNMENT_GAP);
 		translator = new SuperalingedModelIndexTranslator(this, unalignedIndices);
+	}
+	
+	
+	private void convertUnalignedIndices() {
+		ListIterator<Integer> iterator = unalignedIndices.listIterator();
+		int lastPosition = IndexRelation.OUT_OF_RANGE;
+		while (iterator.hasNext()) {
+			int currentPosition = iterator.next();
+			if (currentPosition == SUPER_GAP_INDEX) {
+				iterator.set(lastPosition);
+			}
+			else {
+				lastPosition = currentPosition;
+			}
+		}
 	}
 	
 	
@@ -69,16 +86,6 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	}
 
 
-	private Collection<Character> createTokenCollection(int size) {
-		Collection<Character> result = new ArrayList<Character>();
-		for (int column = 0; column < size; column++) {
-			result.add(SUPER_ALIGNMENT_GAP);
-		}
-		result = Collections.unmodifiableCollection(result);
-		return result;
-	}
-	
-	
 	public ComparedAlignment getOwner() {
 		return owner;
 	}
@@ -92,7 +99,8 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 	/**
 	 * A list that maps each column in this superalignment model to a column in the underlying model.
-	 * Entries for columns filled with supergaps contain {@link #SUPER_GAP_INDEX}.
+	 * Subsequent entries refering to the same column, indicate that all but the first entry are part
+	 * of a supergap.
 	 * 
 	 * @return an unmodifiable list
 	 */
@@ -102,44 +110,49 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	
 	
 	public void insertSupergap(int start, int length) {
-		// Add super gap:
-		for (int pos = start; pos <= start + length - 1; pos++) {
-			unalignedIndices.add(pos,	SuperalignedModelDecorator.SUPER_GAP_INDEX);
-		}
+		throw new InternalError("Currently not supported.");
 		
-		// Fire change events:
-		Collection<Character> addedTokens = createTokenCollection(length);
-		Iterator<String> iterator = sequenceIDIterator();
-		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
-			fireAfterTokenChange(TokenChangeEvent.newInsertInstance(this, iterator.next(), start, addedTokens));
-		}
+//		// Add super gap:
+//		for (int pos = start; pos <= start + length - 1; pos++) {
+//			unalignedIndices.add(pos,	SuperalignedModelDecorator.SUPER_GAP_INDEX);
+//		}
+//		
+//		// Fire change events:
+//		Collection<Character> addedTokens = createTokenCollection(length);
+//		Iterator<String> iterator = sequenceIDIterator();
+//		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
+//			fireAfterTokenChange(TokenChangeEvent.newInsertInstance(this, iterator.next(), start, addedTokens));
+//		}
 	}
 
 
 	public void removeSupergap(int start, int length) {
-		// Add super gap:
-		for (int pos = start; pos <= start + length - 1; pos++) {
-			if (unalignedIndices.get(start) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
-				unalignedIndices.remove(start);
-			}
-			else {
-				throw new IllegalArgumentException("Removing a supergap from index " + start + 
-						" is not possible, because there is no supergap present at this position, but a reference to position " + 
-						unalignedIndices.get(start) + " in the underlying alignment.");
-			}
-		}
-		
-		// Fire change events:
-		Collection<Character> removedTokens = createTokenCollection(length);
-		Iterator<String> iterator = sequenceIDIterator();
-		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
-			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
-		}
+		throw new InternalError("Currently not supported.");
+
+//		// Add super gap:
+//		for (int pos = start; pos <= start + length - 1; pos++) {
+//			if (unalignedIndices.get(start) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
+//				unalignedIndices.remove(start);
+//			}
+//			else {
+//				throw new IllegalArgumentException("Removing a supergap from index " + start + 
+//						" is not possible, because there is no supergap present at this position, but a reference to position " + 
+//						unalignedIndices.get(start) + " in the underlying alignment.");
+//			}
+//		}
+//		
+//		// Fire change events:
+//		Collection<Character> removedTokens = createTokenCollection(length);
+//		Iterator<String> iterator = sequenceIDIterator();
+//		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
+//			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
+//		}
 	}
 	
 	
 	public boolean containsSupergap(int column) {
-		return unalignedIndices.get(column) == SUPER_GAP_INDEX;
+		int unalignedIndex = unalignedIndices.get(column);
+		return (unalignedIndex == IndexRelation.OUT_OF_RANGE) || ((column > 0) && (unalignedIndices.get(column - 1) == unalignedIndex));
 	}
 
 
@@ -174,12 +187,11 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 	@Override
 	public Character getTokenAt(String sequenceID, int index) {
-		int unalignedIndex = unalignedIndices.get(index);
-		if (unalignedIndex == SUPER_GAP_INDEX) {
+		if (containsSupergap(index)) {
 			return SUPER_ALIGNMENT_GAP;
 		}
 		else {
-			return getUnderlyingModel().getTokenAt(sequenceID, unalignedIndex);
+			return getUnderlyingModel().getTokenAt(sequenceID, unalignedIndices.get(index));
 		}
 	}
 

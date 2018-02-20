@@ -86,5 +86,8 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 			receiver.add(new LiteralMetadataContentEvent(elementString.toString(), false));
 		}
 		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
+		
+		throw new InternalError("Refactoring needed");
+		//TODO Refactor this method to either compress the output or to deal with the new type of index list.
 	}
 }
