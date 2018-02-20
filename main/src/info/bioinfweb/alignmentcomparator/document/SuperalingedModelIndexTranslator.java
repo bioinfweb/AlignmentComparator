@@ -41,7 +41,8 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 		super(model, new HashSet<Character>());
 		getGapTokens().add(SequenceUtils.GAP_CHAR);
 		getGapTokens().add(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP);
-
+		this.unalignedIndices = unalignedIndices;
+		
 		int columnCount = model.getUnderlyingModel().getMaxSequenceLength();
 		alignedIndices = new PackedObjectArrayList<>(columnCount, columnCount);
 		int alignedIndex = 0;
@@ -82,14 +83,19 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 	@Override
 	public IndexRelation getUnalignedIndex(String sequenceID, int alignedIndex) {
 		if (getModel().containsSupergap(alignedIndex)) {
-			//TODO Implement
-			// Problem: unalignedIndices contains supergap constants at gap positions, while respective list in RandomAccessIndexTranslator
-			// contains the position of the unaligned token before this gap. The neighboring positions cannot be returned here directly.
-			// Refactoring the list to contain the same values as in RandomAccessIndexTranslator could work. Checking for a supergap would
-			// then have to be done by checking whether the current index is higher than its left neighbor or not (or OUT_OF_RANGE) in leading
-			// supergaps, instead of checking for a specific constant. (That constant should probably still be used when writing to NeXML or
-			// compression (see ticket) could directly be implemented.)
-			return null;
+			int unalignedIndexBefore = unalignedIndices.get(alignedIndex);
+			int unalignedIndexAfter;
+			if (unalignedIndexBefore == IndexRelation.OUT_OF_RANGE) {
+				unalignedIndexAfter = 0;
+			}
+			else {
+				unalignedIndexBefore = getUnderlyingIndexTranslator().getUnalignedIndex(sequenceID, unalignedIndexBefore).getBefore();
+				unalignedIndexAfter = unalignedIndexBefore + 1;
+			}
+			if (unalignedIndexAfter >= getUnderlyingIndexTranslator().getUnalignedLength(sequenceID)) {
+				unalignedIndexAfter = IndexRelation.OUT_OF_RANGE;
+			}
+			return new IndexRelation(unalignedIndexBefore, IndexRelation.GAP, unalignedIndexAfter);
 		}
 		else {
 			return getUnderlyingIndexTranslator().getUnalignedIndex(sequenceID, unalignedIndices.get(alignedIndex));
