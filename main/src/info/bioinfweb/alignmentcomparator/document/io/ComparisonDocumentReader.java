@@ -35,7 +35,6 @@ import info.bioinfweb.jphyloio.formats.nexml.NeXMLEventReader;
 import info.bioinfweb.jphyloio.push.EventForwarder;
 import info.bioinfweb.jphyloio.utils.JPhyloIOReadingUtils;
 import info.bioinfweb.libralign.model.AlignmentModel;
-import info.bioinfweb.libralign.model.implementations.SequenceIDManager;
 import info.bioinfweb.libralign.model.io.AlignmentModelEventReader;
 
 import java.io.File;
@@ -115,7 +114,7 @@ public class ComparisonDocumentReader implements IOConstants {
 	
 	private void addUnlignedIndex(List<Integer> list, String token) throws IOException {
 		if (SUPER_GAP_ENTITY.equals(token)) {
-			list.add(SuperalignedModelDecorator.SUPER_GAP_INDEX);
+			list.add(SuperalignedModelDecorator.SUPER_GAP_INDEX);  //TODO Currently still works this way, but the neighboring index could be added instead of SUPER_GAP_INDEX later, to make converting the list SuperalignedModelDecorator.convertUnalignedIndices() unnecessary.
 		}
 		else {
 			try {

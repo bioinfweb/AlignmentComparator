@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.document.io;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
@@ -64,21 +65,22 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 				new URIOrStringIdentifier(null, W3CXSConstants.DATA_TYPE_STRING), LiteralContentSequenceType.SIMPLE));
 		
 		StringBuilder elementString = new StringBuilder();
-		Iterator<Integer> iterator = comparedAlignment.getSuperaligned().getUnalignedIndices().iterator();
-		while (iterator.hasNext()) {
+		List<Integer> indices = comparedAlignment.getSuperaligned().getUnalignedIndices();
+		for (int i = 0; i < indices.size(); i++) {
+			boolean notLastElement = i < indices.size() - 1;
+			
 			if (elementString.length() >= MAX_EVENT_LENGTH) {
-				receiver.add(new LiteralMetadataContentEvent(elementString.toString(), iterator.hasNext()));
+				receiver.add(new LiteralMetadataContentEvent(elementString.toString(), notLastElement));
 				elementString.delete(0, elementString.length());
 			}
 			
-			int index = iterator.next();
-			if (index == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
+			if (comparedAlignment.getSuperaligned().containsSupergap(i)) {
 				elementString.append(SUPER_GAP_ENTITY);
 			}
 			else {
-				elementString.append(index);
+				elementString.append(indices.get(i));
 			}
-			if (iterator.hasNext()) {
+			if (notLastElement) {
 				elementString.append(' ');
 			}
 		}
@@ -86,8 +88,5 @@ public class ComparedAlignmentDataAdapter extends AlignmentModelDataAdapter<Char
 			receiver.add(new LiteralMetadataContentEvent(elementString.toString(), false));
 		}
 		receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.LITERAL_META));
-		
-		throw new InternalError("Refactoring needed");
-		//TODO Refactor this method to either compress the output or to deal with the new type of index list.
 	}
 }
