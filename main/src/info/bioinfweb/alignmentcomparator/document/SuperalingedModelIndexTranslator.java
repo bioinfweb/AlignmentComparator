@@ -35,6 +35,7 @@ import java.util.List;
 public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Character, Object> {
 	private List<Integer> alignedIndices;
 	private List<Integer> unalignedIndices;
+	private boolean updateRequired;
 	
 	
 	public SuperalingedModelIndexTranslator(SuperalignedModelDecorator model, List<Integer> unalignedIndices) {
@@ -42,24 +43,31 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 		getGapTokens().add(SequenceUtils.GAP_CHAR);
 		getGapTokens().add(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP);
 		this.unalignedIndices = unalignedIndices;
-		
-		int columnCount = model.getUnderlyingModel().getMaxSequenceLength();
-		alignedIndices = new PackedObjectArrayList<>(columnCount, columnCount);
-		int alignedIndex = 0;
-		while (alignedIndex < model.getMaxSequenceLength()) {
-			if (!model.containsSupergap(alignedIndex)) {
-				alignedIndices.add(alignedIndex);
-			}
-			alignedIndex++;
-		}
+		updateRequired = true;
+		recreateAlignedIndexList();
 		
 		getModel().getChangeListeners().add(new AlignmentModelChangeAdapter() {
 			@Override
 			public <T> void afterTokenChange(TokenChangeEvent<T> e) {
-				throw new InternalError("Editing superalignment currently not supported by SuperalingedModelIndexTranslator.");
-				// TODO Update index list when supergap is added or removed.
+				updateRequired = true;
 			}
 		});
+	}
+	
+	
+	public void recreateAlignedIndexList() {
+		if (updateRequired) {
+			int columnCount = getModel().getUnderlyingModel().getMaxSequenceLength();
+			alignedIndices = new PackedObjectArrayList<>(columnCount, columnCount);
+			int alignedIndex = 0;
+			while (alignedIndex < getModel().getMaxSequenceLength()) {
+				if (!getModel().containsSupergap(alignedIndex)) {
+					alignedIndices.add(alignedIndex);
+				}
+				alignedIndex++;
+			}
+			updateRequired = false;
+		}
 	}
 
 

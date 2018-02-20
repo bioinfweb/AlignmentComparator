@@ -142,7 +142,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				Iterator<String> iterator = alignmentA.sequenceIDIterator();
 				while (iterator.hasNext()) {
 					String seqIDInFirst = iterator.next();
-					if (!alignmentA.getTokenSet().isGapToken(alignmentA.getTokenAt(seqIDInFirst, columnInFirst))) {
+					char tokenA = alignmentA.getTokenAt(seqIDInFirst, columnInFirst);
+					if (!alignmentA.getTokenSet().isGapToken(tokenA) && (tokenA != SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP)) {
 						String seqName = alignmentA.sequenceNameByID(seqIDInFirst);
 						for (TranslatableAlignment alignmentB : groupB) {
 							String seqIDInSecond = alignmentB.sequenceIDsByName(seqName).iterator().next();
@@ -154,7 +155,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 							}
 							else {
 								throw new InternalError("Unexpected error: Index (" + columnInFirst + " -> " + unalignedIndex + 
-										") was at a gap or out of range. Contact support@bioinfweb.info if you see this message.");
+										") was at a gap or out of range when mapping sequence " + seqName + " between " + alignmentA + " and " + alignmentB + 
+										". Contact support@bioinfweb.info if you see this message.");
 							}
 						}
 					}
@@ -203,6 +205,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					if (unalignedIndexList.get(i) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
 						((SuperalignedModelDecorator)alignment).insertSupergap(i, 1);
 					}
+					
 				}
 			}
 		}
@@ -273,6 +276,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			List<? extends TranslatableAlignment> groupA = processGuideTree(document, node.getChildNode(0));
 			List<? extends TranslatableAlignment> groupB = processGuideTree(document, node.getChildNode(1));
 			
+			//System.out.println("Superaligning " + groupA + " " + groupB);
 			createSuperAlignment(groupA, groupB);
 			
 			List<TranslatableAlignment> result = new ArrayList<>(groupA.size() + groupB.size());
