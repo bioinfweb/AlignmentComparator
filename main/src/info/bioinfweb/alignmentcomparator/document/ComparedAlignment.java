@@ -33,7 +33,7 @@ public class ComparedAlignment {
 	
 	public ComparedAlignment(AlignmentModel<Character> original) {
 		super();
-		this.original = new OriginalAlignment(original);
+		this.original = new OriginalAlignment(this, original);
 	}
 
 

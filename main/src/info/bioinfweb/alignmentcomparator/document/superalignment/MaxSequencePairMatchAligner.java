@@ -22,8 +22,13 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.OriginalAlignment;
+import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
+import info.bioinfweb.alignmentcomparator.document.TranslatableAlignment;
 import info.bioinfweb.commons.collections.PackedObjectArrayList;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -112,8 +117,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		for (int column = 0; column < alignments.size(); column++) {
 			matrix.setIdentifier(column, alignments.get(column));
 			for (int row = column; row < alignments.size(); row++) {
-				matrix.setValue(column, row, maxScore - calculateDirectionMatrix(
-						new ComparedAlignment[]{alignments.getValue(column), alignments.getValue(row)}).score);
+				matrix.setValue(column, row, maxScore - calculateDirectionMatrix(Arrays.asList(alignments.getValue(column).getOriginal()), 
+						Arrays.asList(alignments.getValue(row).getOriginal())).score);
 				//TODO Path could already be extracted from matrix here for later reuse or using memory for matrix could be avoided here, when it's not used.
 			}
 		}
@@ -124,39 +129,41 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private Matrix calculateDirectionMatrix(ComparedAlignment[] alignments) {
+	private Matrix calculateDirectionMatrix(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
 		//TODO Refactor to use only one row of the score matrix at a time.
 		
-		final OriginalAlignment firstAlignment = alignments[0].getOriginal();
-		final OriginalAlignment secondAlignment = alignments[1].getOriginal();
-		final int columnCountInFirst = firstAlignment.getMaxSequenceLength();
-		final int columnCountInSecond = secondAlignment.getMaxSequenceLength();
-		final long[][] scoreMatrix = new long[columnCountInFirst + 1][columnCountInSecond + 1];  // Values are initialized with 0.
+		final int columnCountA = groupA.get(0).getMaxSequenceLength();  // All alignments in one group should have the length, since they are already superaligned.
+		final int columnCountB = groupB.get(0).getMaxSequenceLength();  // All alignments in one group should have the length, since they are already superaligned.
+		final long[][] scoreMatrix = new long[columnCountA + 1][columnCountB + 1];  // Values are initialized with 0.
 		
 		// Write local scores into matrix:
-		for (int columnInFirst = 0; columnInFirst < columnCountInFirst; columnInFirst++) {
-			Iterator<String> iterator = firstAlignment.sequenceIDIterator();
-			while (iterator.hasNext()) {
-				String seqIDInFirst = iterator.next();
-				if (!firstAlignment.getTokenSet().isGapToken(firstAlignment.getTokenAt(seqIDInFirst, columnInFirst))) {
-					String seqName = firstAlignment.sequenceNameByID(seqIDInFirst);
-					String seqIDInSecond = secondAlignment.sequenceIDsByName(seqName).iterator().next();
-					
-					int unalignedIndex = firstAlignment.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
-					if (unalignedIndex >= 0) {
-						scoreMatrix[columnInFirst + 1][secondAlignment.getIndexTranslator().getAlignedIndex(seqIDInSecond, unalignedIndex) + 1]++;
-								// + 1 because the first column and row in the matrix refer to the position before the first alignment column.
-					}
-					else {
-						throw new InternalError("Unexpected error: Index (" + columnInFirst + " -> " + unalignedIndex + 
-								") was at a gap or out of range. Contact support@bioinfweb.info if you see this message.");
+		for (int columnInFirst = 0; columnInFirst < columnCountA; columnInFirst++) {
+			for (TranslatableAlignment alignmentA : groupA) {
+				Iterator<String> iterator = alignmentA.sequenceIDIterator();
+				while (iterator.hasNext()) {
+					String seqIDInFirst = iterator.next();
+					if (!alignmentA.getTokenSet().isGapToken(alignmentA.getTokenAt(seqIDInFirst, columnInFirst))) {
+						String seqName = alignmentA.sequenceNameByID(seqIDInFirst);
+						for (TranslatableAlignment alignmentB : groupB) {
+							String seqIDInSecond = alignmentB.sequenceIDsByName(seqName).iterator().next();
+							
+							int unalignedIndex = alignmentA.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
+							if (unalignedIndex >= 0) {
+								scoreMatrix[columnInFirst + 1][alignmentB.getIndexTranslator().getAlignedIndex(seqIDInSecond, unalignedIndex) + 1]++;
+										// + 1 because the first column and row in the matrix refer to the position before the first alignment column.
+							}
+							else {
+								throw new InternalError("Unexpected error: Index (" + columnInFirst + " -> " + unalignedIndex + 
+										") was at a gap or out of range. Contact support@bioinfweb.info if you see this message.");
+							}
+						}
 					}
 				}
 			}
 		}
 		
 		// Calculate global scores and directions using DP:
-		byte[][] directionMatrix = new byte[columnCountInFirst + 1][columnCountInSecond + 1];
+		byte[][] directionMatrix = new byte[columnCountA + 1][columnCountB + 1];
 		for (int column = 0; column < directionMatrix.length; column++) {
 			directionMatrix[column][0] = LEFT;
 		}
@@ -181,20 +188,37 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 
-		return new Matrix(directionMatrix, scoreMatrix[columnCountInFirst][columnCountInSecond]);
+		return new Matrix(directionMatrix, scoreMatrix[columnCountA][columnCountB]);
+	}
+
+	
+	private void applySuperalignment(List<? extends TranslatableAlignment> group, List<Integer> unalignedIndexList) {
+		Collections.reverse(unalignedIndexList);
+		for (TranslatableAlignment alignment : group) {
+			if (alignment instanceof OriginalAlignment) {
+				((OriginalAlignment)alignment).getOwner().createSuperaligned(unalignedIndexList);
+			}
+			else {  // SuperalignedModelDecorator
+				for (int i = 0; i < unalignedIndexList.size(); i++) {
+					if (unalignedIndexList.get(i) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
+						((SuperalignedModelDecorator)alignment).insertSupergap(i, 1);
+					}
+				}
+			}
+		}
 	}
 	
 	
-	private void createSuperAlignment(ComparedAlignment[] alignments) {
-		byte[][] matrix = calculateDirectionMatrix(alignments).directionMatrix;
-		int[] unalignedIndex = new int[2];
-		@SuppressWarnings("unchecked")
-		List<Integer>[] unalignedIndexLists = new List[2];
-		for (int i = 0; i < unalignedIndexLists.length; i++) {
-			int length = alignments[i].getOriginal().getMaxSequenceLength();
-			unalignedIndexLists[i] = new PackedObjectArrayList<Integer>(length + 2, (int)(1.2 * length));  // GAP and OUT_OF_RANGE are additional values.
-			unalignedIndex[i] = length - 1;
-		}
+	private void createSuperAlignment(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
+		byte[][] matrix = calculateDirectionMatrix(groupA, groupB).directionMatrix;
+
+		int length = groupA.get(0).getMaxSequenceLength();
+		List<Integer> unalignedIndexListA = new PackedObjectArrayList<Integer>(length + 2, (int)(1.2 * length));  // GAP and OUT_OF_RANGE are additional values.
+		int unalignedIndexA = length - 1;
+		
+		length = groupB.get(0).getMaxSequenceLength();
+		List<Integer> unalignedIndexListB = new PackedObjectArrayList<Integer>(length + 2, (int)(1.2 * length));  // GAP and OUT_OF_RANGE are additional values.
+		int unalignedIndexB = length - 1;
 		
 		// Follow back path:
 		int column = matrix.length - 1;
@@ -202,33 +226,59 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		while ((column > 0) || (row > 0)) {
 			if (matrix[column][row] == UP) {
 				// Align vertical alignment with horizontal supergap 
-				unalignedIndexLists[0].add(Document.GAP_INDEX);
-				unalignedIndexLists[1].add(unalignedIndex[1]);
-				unalignedIndex[1]--;
+				unalignedIndexListA.add(Document.GAP_INDEX);
+				unalignedIndexListB.add(unalignedIndexB);
+				unalignedIndexB--;
 				row--;
 			}
 			else if (matrix[column][row] == LEFT) {
 				// Align horizontal alignment with vertical supergap 
-				unalignedIndexLists[0].add(unalignedIndex[0]);
-				unalignedIndex[0]--;
-				unalignedIndexLists[1].add(Document.GAP_INDEX);
+				unalignedIndexListA.add(unalignedIndexA);
+				unalignedIndexA--;
+				unalignedIndexListB.add(Document.GAP_INDEX);
 				column--;
 			}
 			else {
 				// Align both positions without supergaps
-				unalignedIndexLists[0].add(unalignedIndex[0]);
-				unalignedIndex[0]--;
-				unalignedIndexLists[1].add(unalignedIndex[1]);
-				unalignedIndex[1]--;
+				unalignedIndexListA.add(unalignedIndexA);
+				unalignedIndexA--;
+				unalignedIndexListB.add(unalignedIndexB);
+				unalignedIndexB--;
 				row--;
 				column--;
 			}
 		}
 		
-		// Create superalignment decorators:
-		for (int alignmentIndex = 0; alignmentIndex < alignments.length; alignmentIndex++) {
-			Collections.reverse(unalignedIndexLists[alignmentIndex]);  //TODO Probably not possible with the packed list.
-			alignments[alignmentIndex].createSuperaligned(unalignedIndexLists[alignmentIndex]);
+		// Store superalignment:
+		applySuperalignment(groupA, unalignedIndexListA);
+		applySuperalignment(groupB, unalignedIndexListB);
+	}
+	
+	
+	private void addAlignmentGroup(List<? extends TranslatableAlignment> group, List<TranslatableAlignment> target) {
+		for (TranslatableAlignment alignment : group) {
+			if (alignment instanceof OriginalAlignment) {
+				alignment = ((OriginalAlignment)alignment).getOwner().getSuperaligned();
+			}
+			target.add(alignment);
+		}
+	}
+	
+	
+	private List<? extends TranslatableAlignment> processGuideTree(Document document, PhylogenyNode node) {
+		if (node.getDescendants().isEmpty()) {  // Terminal node. No alignment to perform.
+			return Arrays.asList(document.getAlignments().get(node.getName()).getOriginal());
+		}
+		else {
+			List<? extends TranslatableAlignment> groupA = processGuideTree(document, node.getChildNode(0));
+			List<? extends TranslatableAlignment> groupB = processGuideTree(document, node.getChildNode(1));
+			
+			createSuperAlignment(groupA, groupB);
+			
+			List<TranslatableAlignment> result = new ArrayList<>(groupA.size() + groupB.size());
+			addAlignmentGroup(groupA, result);
+			addAlignmentGroup(groupB, result);
+			return result;
 		}
 	}
 	
@@ -245,13 +295,13 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	public void performAlignment(Document document) throws Exception {
 		if (document.getAlignments().size() > 2) {
 			Phylogeny tree = calculateGuideTree(document);
-//			printNode(tree.getRoot(), "");
-			
-			
+			//printNode(tree.getRoot(), "");
+			processGuideTree(document, tree.getRoot());
 		}
 		else {
 			createSuperAlignment(
-					new ComparedAlignment[]{document.getAlignments().getValue(0), document.getAlignments().getValue(1)});
+					Arrays.asList(document.getAlignments().getValue(1).getOriginal()),
+					Arrays.asList(document.getAlignments().getValue(0).getOriginal()));
 		}
 	}
 }

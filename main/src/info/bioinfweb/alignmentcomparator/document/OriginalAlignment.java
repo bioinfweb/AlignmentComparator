@@ -27,12 +27,19 @@ import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTr
 
 
 public class OriginalAlignment extends DelegatedAlignmentModelView<Character> implements TranslatableAlignment {
+	private ComparedAlignment owner;
 	private IndexTranslator<Character> indexTranslator;
 	
 	
-	public OriginalAlignment(AlignmentModel<Character> underlyingModel) {
+	public OriginalAlignment(ComparedAlignment owner, AlignmentModel<Character> underlyingModel) {
 		super(underlyingModel);
+		this.owner = owner;
 		indexTranslator = new RandomAccessIndexTranslator<Character>(underlyingModel);  // "this" could as well be used.
+	}
+
+
+	public ComparedAlignment getOwner() {
+		return owner;
 	}
 
 
