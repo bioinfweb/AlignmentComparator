@@ -30,8 +30,8 @@ import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 
 
@@ -66,15 +66,13 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	
 	
 	private void convertUnalignedIndices() {
-		ListIterator<Integer> iterator = unalignedIndices.listIterator();
 		int lastPosition = IndexRelation.OUT_OF_RANGE;
-		while (iterator.hasNext()) {
-			int currentPosition = iterator.next();
-			if (currentPosition == SUPER_GAP_INDEX) {
-				iterator.set(lastPosition);
+		for (int i = 0; i < unalignedIndices.size(); i++) {
+			if (unalignedIndices.get(i) == SUPER_GAP_INDEX) {
+				unalignedIndices.set(i, lastPosition);
 			}
 			else {
-				lastPosition = currentPosition;
+				lastPosition = unalignedIndices.get(i);
 			}
 		}
 	}
@@ -109,44 +107,53 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	}
 	
 	
+	private Collection<Character> createTokenCollection(int size) {
+		Collection<Character> result = new ArrayList<Character>();
+		for (int column = 0; column < size; column++) {
+			result.add(SUPER_ALIGNMENT_GAP);
+		}
+		result = Collections.unmodifiableCollection(result);
+		return result;
+	}
+	
+	
 	public void insertSupergap(int start, int length) {
-		throw new InternalError("Currently not supported.");
+		//throw new InternalError("Currently not supported.");
 		
-//		// Add super gap:
-//		for (int pos = start; pos <= start + length - 1; pos++) {
-//			unalignedIndices.add(pos,	SuperalignedModelDecorator.SUPER_GAP_INDEX);
-//		}
-//		
-//		// Fire change events:
-//		Collection<Character> addedTokens = createTokenCollection(length);
-//		Iterator<String> iterator = sequenceIDIterator();
-//		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
-//			fireAfterTokenChange(TokenChangeEvent.newInsertInstance(this, iterator.next(), start, addedTokens));
-//		}
+		// Add super gap:
+		int previousIndex = unalignedIndices.get(start);
+		for (int pos = start; pos <= start + length - 1; pos++) {
+			unalignedIndices.add(pos,	previousIndex);
+		}
+		
+		// Fire change events:
+		Collection<Character> addedTokens = createTokenCollection(length);
+		Iterator<String> iterator = sequenceIDIterator();
+		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
+			fireAfterTokenChange(TokenChangeEvent.newInsertInstance(this, iterator.next(), start, addedTokens));
+		}
 	}
 
 
 	public void removeSupergap(int start, int length) {
-		throw new InternalError("Currently not supported.");
-
-//		// Add super gap:
-//		for (int pos = start; pos <= start + length - 1; pos++) {
-//			if (unalignedIndices.get(start) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
-//				unalignedIndices.remove(start);
-//			}
-//			else {
-//				throw new IllegalArgumentException("Removing a supergap from index " + start + 
-//						" is not possible, because there is no supergap present at this position, but a reference to position " + 
-//						unalignedIndices.get(start) + " in the underlying alignment.");
-//			}
-//		}
-//		
-//		// Fire change events:
-//		Collection<Character> removedTokens = createTokenCollection(length);
-//		Iterator<String> iterator = sequenceIDIterator();
-//		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
-//			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
-//		}
+		// Add super gap:
+		for (int pos = start; pos <= start + length - 1; pos++) {
+			if (containsSupergap(start)) {
+				unalignedIndices.remove(start);
+			}
+			else {
+				throw new IllegalArgumentException("Removing a supergap from index " + start + 
+						" is not possible, because there is no supergap present at this position, but a reference to position " + 
+						unalignedIndices.get(start) + " in the underlying alignment.");
+			}
+		}
+		
+		// Fire change events:
+		Collection<Character> removedTokens = createTokenCollection(length);
+		Iterator<String> iterator = sequenceIDIterator();
+		while (iterator.hasNext()) {  //TODO Will all sequences be repainted for each event or only the affected sequence area?
+			fireAfterTokenChange(TokenChangeEvent.newRemoveInstance(this, iterator.next(), start, removedTokens));
+		}
 	}
 	
 	

@@ -192,7 +192,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		List<Integer>[] unalignedIndexLists = new List[2];
 		for (int i = 0; i < unalignedIndexLists.length; i++) {
 			int length = alignments[i].getOriginal().getMaxSequenceLength();
-			unalignedIndexLists[i] = new PackedObjectArrayList<Integer>(length + 1, (int)(1.2 * length));
+			unalignedIndexLists[i] = new PackedObjectArrayList<Integer>(length + 2, (int)(1.2 * length));  // GAP and OUT_OF_RANGE are additional values.
 			unalignedIndex[i] = length - 1;
 		}
 		
