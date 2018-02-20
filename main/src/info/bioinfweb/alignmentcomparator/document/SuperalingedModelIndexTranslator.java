@@ -64,8 +64,10 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 				if (!getModel().containsSupergap(alignedIndex)) {
 					alignedIndices.add(alignedIndex);
 				}
+				System.out.print(getModel().getTokenAt(getModel().sequenceIDsByName("Spiridens ").iterator().next(), alignedIndex));
 				alignedIndex++;
 			}
+			System.out.println();
 			updateRequired = false;
 		}
 	}
@@ -113,7 +115,12 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 	
 	@Override
 	public int getAlignedIndex(String sequenceID, int unalignedIndex) {
-		return getUnderlyingIndexTranslator().getAlignedIndex(sequenceID, alignedIndices.get(unalignedIndex));
+		if (unalignedIndex == 1514) {
+			System.out.println(unalignedIndex + " -> " + alignedIndices.get(unalignedIndex) + " (" + alignedIndices.size() + ")");
+			System.out.println("  " + alignedIndices.get(unalignedIndex - 1) + " " + alignedIndices.get(unalignedIndex + 1));
+		}
+		return alignedIndices.get(getUnderlyingIndexTranslator().getAlignedIndex(sequenceID, unalignedIndex));
+		//return getUnderlyingIndexTranslator().getAlignedIndex(sequenceID, alignedIndices.get(unalignedIndex));
 	}
 
 	
