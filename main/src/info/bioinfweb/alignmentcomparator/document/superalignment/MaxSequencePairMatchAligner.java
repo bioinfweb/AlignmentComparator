@@ -26,6 +26,7 @@ import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.TranslatableAlignment;
 import info.bioinfweb.commons.collections.PackedObjectArrayList;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -129,6 +130,17 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
+	private void printScoreMatrix(long[][] matrix) {
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				System.out.print(String.format("% 3d", matrix[i][j]) + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	
+	
 	private Matrix calculateDirectionMatrix(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
 		//TODO Refactor to use only one row of the score matrix at a time.
 		
@@ -137,6 +149,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		final long[][] scoreMatrix = new long[columnCountA + 1][columnCountB + 1];  // Values are initialized with 0.
 		
 		// Write local scores into matrix:
+		if ((groupA.size() > 3) || (groupB.size() > 3)) {
+			System.out.println(columnCountA + " " + columnCountB);
+		}
 		for (int columnInFirst = 0; columnInFirst < columnCountA; columnInFirst++) {
 			for (TranslatableAlignment alignmentA : groupA) {
 				Iterator<String> iterator = alignmentA.sequenceIDIterator();
@@ -145,24 +160,33 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					char tokenA = alignmentA.getTokenAt(seqIDInFirst, columnInFirst);
 					if (!alignmentA.getTokenSet().isGapToken(tokenA) && (tokenA != SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP)) {
 						String seqName = alignmentA.sequenceNameByID(seqIDInFirst);
-						for (TranslatableAlignment alignmentB : groupB) {
-							String seqIDInSecond = alignmentB.sequenceIDsByName(seqName).iterator().next();
-							
-							int unalignedIndex = alignmentA.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
-							if (unalignedIndex >= 0) {
-								scoreMatrix[columnInFirst + 1][alignmentB.getIndexTranslator().getAlignedIndex(seqIDInSecond, unalignedIndex) + 1]++;
+						int unalignedIndex = alignmentA.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
+						if (unalignedIndex >= 0) {
+							for (TranslatableAlignment alignmentB : groupB) {
+								if ((groupA.size() > 3) || (groupB.size() > 3)) {
+									System.out.print(columnInFirst + " " + unalignedIndex + " " + alignmentB.getIndexTranslator().getAlignedIndex(
+											alignmentB.sequenceIDsByName(seqName).iterator().next(), unalignedIndex) + "|");
+								}
+								scoreMatrix[columnInFirst + 1][alignmentB.getIndexTranslator().getAlignedIndex(
+										alignmentB.sequenceIDsByName(seqName).iterator().next(), unalignedIndex) + 1]++;
 										// + 1 because the first column and row in the matrix refer to the position before the first alignment column.
 							}
-							else {
-								throw new InternalError("Unexpected error: Index (" + columnInFirst + " -> " + unalignedIndex + 
-										") was at a gap or out of range when mapping sequence " + seqName + " between " + alignmentA + " and " + alignmentB + 
-										". Contact support@bioinfweb.info if you see this message.");
-							}
+						}
+						else {
+							throw new InternalError("Unexpected error: Index (" + columnInFirst + " -> " + unalignedIndex + 
+									") was at a gap or out of range when mapping sequence " + seqName + " in " + alignmentA +  
+									". Contact support@bioinfweb.info if you see this message.");
 						}
 					}
 				}
 			}
+			if ((groupA.size() > 3) || (groupB.size() > 3)) {
+				System.out.println();
+			}
 		}
+//		if ((groupA.size() > 3) || (groupB.size() > 3)) {
+//			printScoreMatrix(scoreMatrix);
+//		}
 		
 		// Calculate global scores and directions using DP:
 		byte[][] directionMatrix = new byte[columnCountA + 1][columnCountB + 1];
@@ -190,6 +214,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 
+		System.out.println("Score: " + scoreMatrix[columnCountA][columnCountB] + " (" + groupA + " with " + groupB + ")");
 		return new Matrix(directionMatrix, scoreMatrix[columnCountA][columnCountB]);
 	}
 
@@ -206,6 +231,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 						((SuperalignedModelDecorator)alignment).insertSupergap(i, 1);
 					}
 				}
+				((SuperalignedModelDecorator)alignment).getIndexTranslator().recreateAlignedIndexList();  // Necessary if supergaps have been edited.
 			}
 		}
 	}
@@ -275,8 +301,12 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			List<? extends TranslatableAlignment> groupA = processGuideTree(document, node.getChildNode(0));
 			List<? extends TranslatableAlignment> groupB = processGuideTree(document, node.getChildNode(1));
 			
-			//System.out.println("Superaligning " + groupA + " " + groupB);
-			createSuperAlignment(groupA, groupB);
+			//if (groupA.size() >= groupB.size()) {
+				createSuperAlignment(groupA, groupB);
+//			}
+//			else {
+//				createSuperAlignment(groupB, groupA);
+//			}
 			
 			List<TranslatableAlignment> result = new ArrayList<>(groupA.size() + groupB.size());
 			addAlignmentGroup(groupA, result);
@@ -286,19 +316,19 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-//	private static void printNode(PhylogenyNode node, String prefix) {
-//		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
-//		for (PhylogenyNode child : node.getDescendants()) {
-//			printNode(child, prefix + "  ");
-//		}
-//	}
+	private static void printNode(PhylogenyNode node, String prefix) {
+		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
+		for (PhylogenyNode child : node.getDescendants()) {
+			printNode(child, prefix + "  ");
+		}
+	}
 	
 	
 	@Override
 	public void performAlignment(Document document) throws Exception {
 		if (document.getAlignments().size() > 2) {
 			Phylogeny tree = calculateGuideTree(document);
-			//printNode(tree.getRoot(), "");
+			printNode(tree.getRoot(), "");
 			processGuideTree(document, tree.getRoot());
 		}
 		else {

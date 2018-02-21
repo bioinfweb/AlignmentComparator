@@ -20,13 +20,13 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import info.bioinfweb.commons.bio.SequenceUtils;
-import info.bioinfweb.commons.collections.PackedObjectArrayList;
 import info.bioinfweb.libralign.model.AlignmentModelChangeAdapter;
 import info.bioinfweb.libralign.model.events.TokenChangeEvent;
 import info.bioinfweb.libralign.model.utils.indextranslation.AbstractIndexTranslator;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexRelation;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 	public void recreateAlignedIndexList() {
 		if (updateRequired) {
 			int columnCount = getModel().getUnderlyingModel().getMaxSequenceLength();
-			alignedIndices = new PackedObjectArrayList<>(columnCount, columnCount);
+			alignedIndices = new ArrayList<Integer>(columnCount);
 			int alignedIndex = 0;
 			while (alignedIndex < getModel().getMaxSequenceLength()) {
 				if (!getModel().containsSupergap(alignedIndex)) {

@@ -201,6 +201,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		Iterator<String> iterator = getDocument().getAlignments().keySet().iterator();
 		while (iterator.hasNext()) {
 			String name = iterator.next();
+			System.out.println(name);
 			AlignmentArea area = previousComparisonParts.get(getDocument().getAlignments().get(name).getSuperaligned());
 			if (area != null) {
 				getAlignmentAreas().add(area);

@@ -279,7 +279,7 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 
 
 	@Override
-	public IndexTranslator<Character> getIndexTranslator() {
+	public SuperalingedModelIndexTranslator getIndexTranslator() {
 		return translator;
 	}
 }
