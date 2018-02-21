@@ -119,7 +119,10 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	
 	public void insertSupergap(int start, int length) {
 		// Add super gap:
-		int previousIndex = unalignedIndices.get(start);
+		int previousIndex = IndexRelation.OUT_OF_RANGE;
+		if ((start > 0) && !unalignedIndices.isEmpty()) {
+			previousIndex = unalignedIndices.get(start - 1);
+		}
 		for (int pos = start; pos <= start + length - 1; pos++) {
 			unalignedIndices.add(pos,	previousIndex);
 		}
