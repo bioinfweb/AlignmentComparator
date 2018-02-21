@@ -41,7 +41,7 @@ public class SuperalingedModelIndexTranslatorTest {
 		AlignmentModel<Character> model = new PackedAlignmentModel<>(CharacterTokenSet.newDNAInstance(false));
 		String id = model.addSequence("A");
 		model.appendTokens(id, AlignmentModelUtils.charSequenceToTokenList("-A-TGC-", model.getTokenSet()));
-		ComparedAlignment comparedAlignment = new ComparedAlignment(model);
+		ComparedAlignment comparedAlignment = new ComparedAlignment("A", model);
 		// 01234567891
 		// .-A-T..GC.-
 		comparedAlignment.createSuperaligned(Arrays.asList(SuperalignedModelDecorator.SUPER_GAP_INDEX, 0, 1, 2, 3, 
