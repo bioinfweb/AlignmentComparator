@@ -130,15 +130,15 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private void printScoreMatrix(long[][] matrix) {
-		for (int i = 0; i < matrix.length; i++) {
-			for (int j = 0; j < matrix[i].length; j++) {
-				System.out.print(String.format("% 3d", matrix[i][j]) + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
-	}
+//	private void printScoreMatrix(long[][] matrix) {
+//		for (int i = 0; i < matrix.length; i++) {
+//			for (int j = 0; j < matrix[i].length; j++) {
+//				System.out.print(String.format("% 3d", matrix[i][j]) + " ");
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//	}
 	
 	
 	private Matrix calculateDirectionMatrix(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
@@ -149,9 +149,6 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		final long[][] scoreMatrix = new long[columnCountA + 1][columnCountB + 1];  // Values are initialized with 0.
 		
 		// Write local scores into matrix:
-		if ((groupA.size() > 3) || (groupB.size() > 3)) {
-			System.out.println(columnCountA + " " + columnCountB);
-		}
 		for (int columnInFirst = 0; columnInFirst < columnCountA; columnInFirst++) {
 			for (TranslatableAlignment alignmentA : groupA) {
 				Iterator<String> iterator = alignmentA.sequenceIDIterator();
@@ -163,10 +160,6 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 						int unalignedIndex = alignmentA.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
 						if (unalignedIndex >= 0) {
 							for (TranslatableAlignment alignmentB : groupB) {
-								if ((groupA.size() > 3) || (groupB.size() > 3)) {
-									System.out.print(columnInFirst + " " + unalignedIndex + " " + alignmentB.getIndexTranslator().getAlignedIndex(
-											alignmentB.sequenceIDsByName(seqName).iterator().next(), unalignedIndex) + "|");
-								}
 								scoreMatrix[columnInFirst + 1][alignmentB.getIndexTranslator().getAlignedIndex(
 										alignmentB.sequenceIDsByName(seqName).iterator().next(), unalignedIndex) + 1]++;
 										// + 1 because the first column and row in the matrix refer to the position before the first alignment column.
@@ -180,13 +173,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					}
 				}
 			}
-			if ((groupA.size() > 3) || (groupB.size() > 3)) {
-				System.out.println();
-			}
 		}
-//		if ((groupA.size() > 3) || (groupB.size() > 3)) {
-//			printScoreMatrix(scoreMatrix);
-//		}
 		
 		// Calculate global scores and directions using DP:
 		byte[][] directionMatrix = new byte[columnCountA + 1][columnCountB + 1];
@@ -214,7 +201,6 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 
-		System.out.println("Score: " + scoreMatrix[columnCountA][columnCountB] + " (" + groupA + " with " + groupB + ")");
 		return new Matrix(directionMatrix, scoreMatrix[columnCountA][columnCountB]);
 	}
 
@@ -301,12 +287,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			List<? extends TranslatableAlignment> groupA = processGuideTree(document, node.getChildNode(0));
 			List<? extends TranslatableAlignment> groupB = processGuideTree(document, node.getChildNode(1));
 			
-			//if (groupA.size() >= groupB.size()) {
-				createSuperAlignment(groupA, groupB);
-//			}
-//			else {
-//				createSuperAlignment(groupB, groupA);
-//			}
+			createSuperAlignment(groupA, groupB);
 			
 			List<TranslatableAlignment> result = new ArrayList<>(groupA.size() + groupB.size());
 			addAlignmentGroup(groupA, result);
@@ -316,19 +297,19 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private static void printNode(PhylogenyNode node, String prefix) {
-		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
-		for (PhylogenyNode child : node.getDescendants()) {
-			printNode(child, prefix + "  ");
-		}
-	}
+//	private static void printNode(PhylogenyNode node, String prefix) {
+//		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
+//		for (PhylogenyNode child : node.getDescendants()) {
+//			printNode(child, prefix + "  ");
+//		}
+//	}
 	
 	
 	@Override
 	public void performAlignment(Document document) throws Exception {
 		if (document.getAlignments().size() > 2) {
 			Phylogeny tree = calculateGuideTree(document);
-			printNode(tree.getRoot(), "");
+			//printNode(tree.getRoot(), "");
 			processGuideTree(document, tree.getRoot());
 		}
 		else {
