@@ -37,7 +37,7 @@ import static info.bioinfweb.libralign.test.LibrAlignTestTools.*;
 
 public class SuperalingedModelIndexTranslatorTest {
 	@Test
-	public void test_getAlignedIndex() {
+	public void test_getUnAlignedIndex() {
 		AlignmentModel<Character> model = new PackedAlignmentModel<>(CharacterTokenSet.newDNAInstance(false));
 		String id = model.addSequence("A");
 		model.appendTokens(id, AlignmentModelUtils.charSequenceToTokenList("-A-TGC-", model.getTokenSet()));
@@ -60,5 +60,10 @@ public class SuperalingedModelIndexTranslatorTest {
 		assertIndexRelation(3, 3, 3, t.getUnalignedIndex(id, 8));
 		assertIndexRelation(3, IndexRelation.GAP, IndexRelation.OUT_OF_RANGE, t.getUnalignedIndex(id, 9));
 		assertIndexRelation(3, IndexRelation.GAP, IndexRelation.OUT_OF_RANGE, t.getUnalignedIndex(id, 10));
+
+		assertEquals(2, t.getAlignedIndex(id, 0));
+		assertEquals(4, t.getAlignedIndex(id, 1));
+		assertEquals(7, t.getAlignedIndex(id, 2));
+		assertEquals(8, t.getAlignedIndex(id, 3));
 	}
 }
