@@ -20,6 +20,7 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
 
@@ -235,7 +236,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	
 	@Override
-	public void performAlignment(Document document) throws Exception {
+	public void performAlignment(Document document, ApplicationLogger logger) throws Exception {
 		// Calculate positions:
 		Map<String, Deque<Double>> unalignedPositions = new TreeMap<String, Deque<Double>>();
 		for (String name : document.getAlignments().keyList()) {

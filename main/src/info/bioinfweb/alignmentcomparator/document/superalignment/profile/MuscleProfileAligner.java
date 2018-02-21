@@ -25,6 +25,7 @@ import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.superalignment.ExternalProgramAligner;
 import info.bioinfweb.alignmentcomparator.document.superalignment.SuperAlignmentAlgorithm;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.ConsoleOutputDialog;
+import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 import info.bioinfweb.jphyloio.formats.fasta.FASTAEventReader;
@@ -164,7 +165,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 	
 	
 	@Override
-	public void performAlignment(Document document) throws Exception {
+	public void performAlignment(Document document, ApplicationLogger logger) throws Exception {
 		if (document.getAlignments().size() != 2) {
 			throw new IllegalArgumentException("This algorithm currently only supports comparing two alignments.");
 		}

@@ -25,5 +25,7 @@ import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 
 
 public interface TranslatableAlignment extends AlignmentModel<Character> {
+	public ComparedAlignment getOwner();
+	
 	public IndexTranslator<Character> getIndexTranslator();
 }

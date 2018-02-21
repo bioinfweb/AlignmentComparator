@@ -26,14 +26,21 @@ import info.bioinfweb.libralign.model.AlignmentModel;
 
 
 public class ComparedAlignment {
+	private String name;
 	private OriginalAlignment original;
 	private SuperalignedModelDecorator superAligned = null;
 	private List<Double> averagePositions = null;  //TODO Replace this field by an entry in a map for algorithm-specific annotations 
 	
 	
-	public ComparedAlignment(AlignmentModel<Character> original) {
+	public ComparedAlignment(String name, AlignmentModel<Character> original) {
 		super();
+		this.name = name;
 		this.original = new OriginalAlignment(this, original);
+	}
+
+
+	public String getName() {
+		return name;
 	}
 
 

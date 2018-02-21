@@ -25,6 +25,7 @@ import info.bioinfweb.alignmentcomparator.document.io.ImportedAlignmentModelFact
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
 import info.bioinfweb.alignmentcomparator.gui.dialogs.StartComparisonDialog;
+import info.bioinfweb.commons.log.TextFileApplicationLogger;
 import info.bioinfweb.jphyloio.JPhyloIOEventReader;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
@@ -99,8 +100,8 @@ public class CompareAlignmentsAction extends DocumentAction {
 					if (iterator.hasNext()) {
 						do {
 							//TODO Am besten evtl. Namen aus Datei laden.
-							map.put(fileSelection.getFile().getAbsolutePath() + " [" + index + "]", 
-									new ComparedAlignment((AlignmentModel<Character>)iterator.next()));  //TODO Use shorter key?
+							String name = fileSelection.getFile().getAbsolutePath() + " [" + index + "]";  //TODO Use shorter name?
+							map.put(name, new ComparedAlignment(name, (AlignmentModel<Character>)iterator.next()));
 							index++;
 						} while (iterator.hasNext());
 					}
@@ -115,7 +116,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 							warningMessage.toString(), "Empty file(s)", JOptionPane.WARNING_MESSAGE);
 				}
 				
-				dialog.getAlgorithm().performAlignment(getDocument());
+				dialog.getAlgorithm().performAlignment(getDocument(), TextFileApplicationLogger.newStandardOutInstance());  //TODO Use Swing logger.
 				getDocument().registerChange();
 			}
 			catch (Exception ex) {

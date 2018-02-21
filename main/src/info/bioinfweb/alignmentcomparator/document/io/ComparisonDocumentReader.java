@@ -222,7 +222,7 @@ public class ComparisonDocumentReader implements IOConstants {
 			else {
 				@SuppressWarnings("unchecked")  // Factory ensures correct token type.
 				ComparedAlignment alignment = 
-						new ComparedAlignment((AlignmentModel<Character>)alignmentReader.getCompletedModels().remove(0));  // Only one model can be read from one ALIGNMENT event node.
+						new ComparedAlignment(startEvent.getLabel(), (AlignmentModel<Character>)alignmentReader.getCompletedModels().remove(0));  // Only one model can be read from one ALIGNMENT event node.
 				alignment.createSuperaligned(unalignedIndices);
 				document.getAlignments().put(startEvent.getLabel(), alignment);
 			}

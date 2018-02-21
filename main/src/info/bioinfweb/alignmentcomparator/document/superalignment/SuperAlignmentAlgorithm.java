@@ -20,9 +20,10 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.commons.log.ApplicationLogger;
 
 
 
 public interface SuperAlignmentAlgorithm {
-  public void performAlignment(Document alignments) throws Exception;
+  public void performAlignment(Document alignments, ApplicationLogger logger) throws Exception;
 }

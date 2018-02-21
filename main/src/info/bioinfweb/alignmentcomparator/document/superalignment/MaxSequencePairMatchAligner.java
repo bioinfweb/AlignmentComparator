@@ -25,11 +25,10 @@ import info.bioinfweb.alignmentcomparator.document.OriginalAlignment;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.TranslatableAlignment;
 import info.bioinfweb.commons.collections.PackedObjectArrayList;
+import info.bioinfweb.commons.log.ApplicationLogger;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -111,21 +110,27 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private Phylogeny calculateGuideTree(Document document) {
+	private Phylogeny calculateGuideTree(Document document, ApplicationLogger logger) {
 		long maxScore = calculateMaxScore(document);
+		logger.addMessage("Maximum possible score is " + maxScore + ".");
+		logger.addMessage("Calculating pairwise distances...");
 		ListOrderedMap<String, ComparedAlignment> alignments = document.getAlignments();
 		BasicSymmetricalDistanceMatrix matrix = new BasicSymmetricalDistanceMatrix(alignments.size());
 		for (int column = 0; column < alignments.size(); column++) {
 			matrix.setIdentifier(column, alignments.get(column));
-			for (int row = column; row < alignments.size(); row++) {
+			for (int row = column + 1; row < alignments.size(); row++) {
 				matrix.setValue(column, row, maxScore - calculateDirectionMatrix(Arrays.asList(alignments.getValue(column).getOriginal()), 
 						Arrays.asList(alignments.getValue(row).getOriginal())).score);
+				logger.addMessage(matrix.getValue(column, row) + " is the distance between " + alignments.getValue(column).getName() + " and " + alignments.getValue(row).getName() + ".");
 				//TODO Path could already be extracted from matrix here for later reuse or using memory for matrix could be avoided here, when it's not used.
 			}
 		}
-
+		logger.addMessage("Calculating pairwise distances done.");
+		
+		logger.addMessage("Calculating NJ guide tree...");
 		Phylogeny result = NeighborJoining.createInstance().execute(matrix);
 		reroot(result);
+		logger.addMessage("Calculating guide tree done.");
 		return result;
 	}
 	
@@ -223,8 +228,9 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private void createSuperAlignment(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
-		byte[][] matrix = calculateDirectionMatrix(groupA, groupB).directionMatrix;
+	private long createSuperAlignment(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
+		MaxSequencePairMatchAligner.Matrix m = calculateDirectionMatrix(groupA, groupB);
+		byte[][] matrix = m.directionMatrix;
 
 		int length = groupA.get(0).getMaxSequenceLength();
 		List<Integer> unalignedIndexListA = new PackedObjectArrayList<Integer>(length + 2, (int)(1.2 * length));  // GAP and OUT_OF_RANGE are additional values.
@@ -266,6 +272,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		// Store superalignment:
 		applySuperalignment(groupA, unalignedIndexListA);
 		applySuperalignment(groupB, unalignedIndexListB);
+		
+		return m.score;
 	}
 	
 	
@@ -279,15 +287,32 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private List<? extends TranslatableAlignment> processGuideTree(Document document, PhylogenyNode node) {
+	private CharSequence groupToString(List<? extends TranslatableAlignment> group) {
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		Iterator<? extends TranslatableAlignment> iterator = group.iterator();
+		while (iterator.hasNext()) {
+			result.append(iterator.next().getOwner().getName());
+			if (iterator.hasNext()) {
+				result.append(", ");
+			}
+		}
+		result.append("]");
+		return result;
+	}
+	
+	
+	private List<? extends TranslatableAlignment> processGuideTree(Document document, PhylogenyNode node, ApplicationLogger logger) {
 		if (node.getDescendants().isEmpty()) {  // Terminal node. No alignment to perform.
 			return Arrays.asList(document.getAlignments().get(node.getName()).getOriginal());
 		}
 		else {
-			List<? extends TranslatableAlignment> groupA = processGuideTree(document, node.getChildNode(0));
-			List<? extends TranslatableAlignment> groupB = processGuideTree(document, node.getChildNode(1));
+			List<? extends TranslatableAlignment> groupA = processGuideTree(document, node.getChildNode(0), logger);
+			List<? extends TranslatableAlignment> groupB = processGuideTree(document, node.getChildNode(1), logger);
 			
-			createSuperAlignment(groupA, groupB);
+			logger.addMessage("Superaligning " + groupToString(groupA) + " and " + groupToString(groupB) + "...");
+			long score = createSuperAlignment(groupA, groupB);
+			logger.addMessage("Superalignment done with score " + score + ".");
 			
 			List<TranslatableAlignment> result = new ArrayList<>(groupA.size() + groupB.size());
 			addAlignmentGroup(groupA, result);
@@ -306,16 +331,18 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	
 	
 	@Override
-	public void performAlignment(Document document) throws Exception {
+	public void performAlignment(Document document, ApplicationLogger logger) throws Exception {
 		if (document.getAlignments().size() > 2) {
-			Phylogeny tree = calculateGuideTree(document);
+			Phylogeny tree = calculateGuideTree(document, logger);
 			//printNode(tree.getRoot(), "");
-			processGuideTree(document, tree.getRoot());
+			processGuideTree(document, tree.getRoot(), logger);
 		}
 		else {
+			logger.addMessage("Starting paiwise superalignment...");
 			createSuperAlignment(
 					Arrays.asList(document.getAlignments().getValue(1).getOriginal()),
 					Arrays.asList(document.getAlignments().getValue(0).getOriginal()));
 		}
+		logger.addMessage("Finished.");
 	}
 }
