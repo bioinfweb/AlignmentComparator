@@ -116,7 +116,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 							warningMessage.toString(), "Empty file(s)", JOptionPane.WARNING_MESSAGE);
 				}
 				
-				dialog.getAlgorithm().performAlignment(getDocument(), TextFileApplicationLogger.newStandardOutInstance());  //TODO Use Swing logger.
+				dialog.getAlgorithm().performAlignment(getDocument(), TextFileApplicationLogger.newStandardOutInstance());  //TODO Use Swing logger. (Currently available dialog is cannot display during processing but only presents results after. The superalignment would have to be performed in a separate thread and another dialog would be needed.)
 				getDocument().registerChange();
 			}
 			catch (Exception ex) {
