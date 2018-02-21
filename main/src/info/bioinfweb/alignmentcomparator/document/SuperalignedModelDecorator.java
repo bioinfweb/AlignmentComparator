@@ -118,8 +118,6 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	
 	
 	public void insertSupergap(int start, int length) {
-		//throw new InternalError("Currently not supported.");
-		
 		// Add super gap:
 		int previousIndex = unalignedIndices.get(start);
 		for (int pos = start; pos <= start + length - 1; pos++) {
