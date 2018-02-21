@@ -42,6 +42,7 @@ import info.bioinfweb.libralign.alignmentarea.selection.SelectionModel;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.NucleotideTokenPainter;
+import info.bioinfweb.libralign.dataarea.implementations.LabelDataArea;
 import info.bioinfweb.libralign.dataarea.implementations.sequenceindex.SequenceIndexArea;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
@@ -100,7 +101,9 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	private AlignmentArea createComparisonPartArea(String alignmentName) {
 		AlignmentArea result = new AlignmentArea(this);
 		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperaligned(), false);
-		result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
+		
+		result.getDataAreas().getTopAreas().add(new LabelDataArea(result.getContentArea(), result, alignmentName));
+		//result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
 		
 		NucleotideTokenPainter painter = new NucleotideTokenPainter();
 		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
