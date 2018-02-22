@@ -35,6 +35,7 @@ import java.util.List;
 public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Character, Object> {
 	private List<Integer> alignedIndices;
 	private List<Integer> unalignedIndices;
+	private boolean autoUpdateMapping;
 	private boolean updateRequired;
 	
 	
@@ -43,6 +44,8 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 		getGapTokens().add(SequenceUtils.GAP_CHAR);
 		getGapTokens().add(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP);
 		this.unalignedIndices = unalignedIndices;
+		
+		autoUpdateMapping = true;
 		updateRequired = true;
 		recreateAlignedIndexList();
 		
@@ -55,10 +58,33 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 	}
 	
 	
-	public void recreateAlignedIndexList() {
-		if (updateRequired) {
-			int columnCount = getModel().getUnderlyingModel().getMaxSequenceLength();
-			alignedIndices = new ArrayList<Integer>(columnCount);
+	public boolean isAutoUpdateMapping() {
+		return autoUpdateMapping;
+	}
+
+
+	public void setAutoUpdateMapping(boolean autoUpdateMapping) {
+		this.autoUpdateMapping = autoUpdateMapping;
+		if (autoUpdateMapping) {
+			recreateAlignedIndexList();
+		}
+	}
+
+
+	public boolean isUpdateRequired() {
+		return updateRequired;
+	}
+
+
+	private void recreateAlignedIndexList() {
+		if (isAutoUpdateMapping() && isUpdateRequired()) {
+			if (alignedIndices == null) {
+				alignedIndices = new ArrayList<Integer>(getModel().getUnderlyingModel().getMaxSequenceLength());
+			}
+			else {
+				alignedIndices.clear();
+			}
+			
 			int alignedIndex = 0;
 			while (alignedIndex < getModel().getMaxSequenceLength()) {
 				if (!getModel().containsSupergap(alignedIndex)) {

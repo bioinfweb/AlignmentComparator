@@ -217,12 +217,18 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				((OriginalAlignment)alignment).getOwner().createSuperaligned(unalignedIndexList);
 			}
 			else {  // SuperalignedModelDecorator
-				for (int i = 0; i < unalignedIndexList.size(); i++) {
-					if (unalignedIndexList.get(i) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
-						((SuperalignedModelDecorator)alignment).insertSupergap(i, 1);
+				SuperalignedModelDecorator decorator = (SuperalignedModelDecorator)alignment;
+				decorator.getIndexTranslator().setAutoUpdateMapping(false);
+				try {
+					for (int i = 0; i < unalignedIndexList.size(); i++) {
+						if (unalignedIndexList.get(i) == SuperalignedModelDecorator.SUPER_GAP_INDEX) {
+							decorator.insertSupergap(i, 1);
+						}
 					}
 				}
-				((SuperalignedModelDecorator)alignment).getIndexTranslator().recreateAlignedIndexList();  // Necessary if supergaps have been edited.
+				finally {
+					decorator.getIndexTranslator().setAutoUpdateMapping(true);  // Will also perform update if necessary.
+				}
 			}
 		}
 	}
