@@ -53,6 +53,7 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 			@Override
 			public <T> void afterTokenChange(TokenChangeEvent<T> e) {
 				updateRequired = true;
+				recreateAlignedIndexList();  // Will only be executed if isAutoUpdateMapping() return true.
 			}
 		});
 	}
