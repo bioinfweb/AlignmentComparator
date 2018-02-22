@@ -61,7 +61,8 @@ public class ImportedAlignmentModelFactory extends AbstractAlignmentModelFactory
 				break;
 			//TODO Support other types in future versions.
 			default:
-				throw new InternalError("An unsupported token type was specified for this comparison. Please inform the AlignmentComparator developers on this error.");
+				throw new InternalError("An unsupported token type (" + tokenType + 
+						") was specified for this comparison. Please inform the AlignmentComparator developers on this error.");
 		}
 		return new PackedAlignmentModel<Character>(tokenSet, getSharedIDManager(), true, tokenSet.size());
 	}
