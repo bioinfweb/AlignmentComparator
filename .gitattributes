@@ -93,6 +93,15 @@ main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/AverageD
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/MaxSequencePairMatchPanel.java -text svneol=unset#text/plain
 main/src/info/bioinfweb/alignmentcomparator/gui/dialogs/algorithmpanels/MuscleProfilePanel.java -text svneol=unset#text/plain
 main/src/resources/about/Style.css -text svneol=unset#text/plain
+main/src/resources/symbols/AlignmentComparator128.png -text
+main/src/resources/symbols/AlignmentComparator16.png -text
+main/src/resources/symbols/AlignmentComparator20.png -text
+main/src/resources/symbols/AlignmentComparator22.png -text
+main/src/resources/symbols/AlignmentComparator24.png -text
+main/src/resources/symbols/AlignmentComparator256.png -text
+main/src/resources/symbols/AlignmentComparator32.png -text
+main/src/resources/symbols/AlignmentComparator48.png -text
+main/src/resources/symbols/AlignmentComparator64.png -text
 main/src/resources/symbols/Delete16.png -text
 main/src/resources/symbols/Delete22.png -text
 main/src/resources/symbols/NewComment16.png -text

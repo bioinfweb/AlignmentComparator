@@ -43,7 +43,7 @@ public class AboutAction extends ExtendedAbstractAction {
 		super();
 		putValue(Action.NAME, "About..."); 
 	  putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
-	  //loadSymbols("AlignmentComarator");
+	  loadSymbols("AlignmentComparator");
   }
 
 

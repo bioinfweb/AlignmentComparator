@@ -39,6 +39,6 @@ public class ACMainPageAction extends OpenWebsiteAction {
 		
 		putValue(Action.NAME, "AlignmentComparator website"); 
 	  putValue(Action.MNEMONIC_KEY, KeyEvent.VK_W);
-	  //loadSymbols("AlignmentComparator");
+	  loadSymbols("AlignmentComparator");
 	}
 }

@@ -27,8 +27,10 @@ import info.bioinfweb.tic.SwingComponentFactory;
 
 import java.awt.BorderLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -39,6 +41,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -106,8 +112,29 @@ public class MainFrame extends JFrame {
 		this.setSize(640, 480);
 		this.setJMenuBar(getMainMenu());
 		this.setContentPane(getJContentPane());
+		loadIcons();
 		getDocument().addDocumentListener(getComparisonComponent());
 		getActionManagement().refreshActionStatus();
+	}
+
+	
+	private void loadIcons() {
+		List<BufferedImage> icons = new ArrayList<BufferedImage>(8);
+		try {
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator16.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator20.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator22.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator24.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator32.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator48.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator64.png")));
+			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator256.png")));
+			setIconImages(icons);
+		}
+		catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "The application symbols could not be loaded.", 
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	
