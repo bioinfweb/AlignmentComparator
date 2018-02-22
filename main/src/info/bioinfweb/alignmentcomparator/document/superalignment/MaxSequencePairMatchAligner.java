@@ -345,9 +345,10 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		}
 		else {
 			logger.addMessage("Starting paiwise superalignment...");
-			createSuperAlignment(
+			long score = createSuperAlignment(
 					Arrays.asList(document.getAlignments().getValue(1).getOriginal()),
 					Arrays.asList(document.getAlignments().getValue(0).getOriginal()));
+			logger.addMessage("Superalignment done with score " + score + ".");
 		}
 		logger.addMessage("Finished.");
 	}
