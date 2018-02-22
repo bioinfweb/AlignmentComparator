@@ -19,12 +19,7 @@
 package info.bioinfweb.alignmentcomparator.document.io;
 
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
-import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
 import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
@@ -36,6 +31,9 @@ import info.bioinfweb.jphyloio.events.meta.LiteralMetadataEvent;
 import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.libralign.model.io.AlignmentModelDataAdapter;
+
+import java.io.IOException;
+import java.util.List;
 
 
 
