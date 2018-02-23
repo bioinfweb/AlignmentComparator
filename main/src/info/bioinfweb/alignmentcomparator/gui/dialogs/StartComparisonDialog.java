@@ -34,33 +34,36 @@ import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
 import info.bioinfweb.jphyloio.formatinfo.JPhyloIOFormatInfo;
 import info.bioinfweb.wikihelp.client.OkCancelApplyWikiHelpDialog;
 
-import java.awt.Frame;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
-import javax.swing.JComboBox;
-import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.collections4.set.ListOrderedSet;
 
@@ -115,6 +118,8 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private JRadioButton otherRadioButton;
 	
 	private ExtensionFileFilter allFormatsFilter;
+	private JScrollPane fileListScrollPane;
+	private JLabel filler;
 	
 	
 	/**
@@ -233,33 +238,37 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	 */
 	private JPanel getAlignmentsPanel() {
 		if (alignmentsPanel == null) {
-			GridBagConstraints firstButtonGBC = new GridBagConstraints();
-			firstButtonGBC.insets = new Insets(0, 0, 5, 0);
-			firstButtonGBC.fill = GridBagConstraints.HORIZONTAL;
-			firstButtonGBC.gridx = 1;
-			firstButtonGBC.gridy = 0;
-			GridBagConstraints secondButtonGBC = new GridBagConstraints();
-			secondButtonGBC.fill = GridBagConstraints.HORIZONTAL;
-			secondButtonGBC.gridx = 1;
-			secondButtonGBC.gridy = 1;
 			alignmentsPanel = new JPanel();
 			GridBagLayout gbl_alignmentsPanel = new GridBagLayout();
-			gbl_alignmentsPanel.rowWeights = new double[]{1.0, 0.0};
+			gbl_alignmentsPanel.rowWeights = new double[]{1.0, 0.0, 0.0};
 			gbl_alignmentsPanel.columnWeights = new double[]{1.0, 0.0};
 			alignmentsPanel.setLayout(gbl_alignmentsPanel);
 			alignmentsPanel.setBorder(BorderFactory.createTitledBorder(null, "Alignments", 
 					TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-			GridBagConstraints gbc_list = new GridBagConstraints();
-			gbc_list.gridheight = 2;
-			gbc_list.weighty = 1.0;
-			gbc_list.weightx = 1.0;
-			gbc_list.insets = new Insets(0, 0, 5, 5);
-			gbc_list.fill = GridBagConstraints.BOTH;
-			gbc_list.gridx = 0;
-			gbc_list.gridy = 0;
-			alignmentsPanel.add(getFileList(), gbc_list);
-			alignmentsPanel.add(getAddButton(), firstButtonGBC);
-			alignmentsPanel.add(getRemoveButton(), secondButtonGBC);
+			GridBagConstraints gbc_fileListScrollPane = new GridBagConstraints();
+			gbc_fileListScrollPane.gridheight = 4;
+			gbc_fileListScrollPane.fill = GridBagConstraints.BOTH;
+			gbc_fileListScrollPane.insets = new Insets(0, 0, 0, 5);
+			gbc_fileListScrollPane.gridx = 0;
+			gbc_fileListScrollPane.gridy = 0;
+			alignmentsPanel.add(getFileListScrollPane(), gbc_fileListScrollPane);
+			GridBagConstraints gbc_addPathButton = new GridBagConstraints();
+			gbc_addPathButton.fill = GridBagConstraints.HORIZONTAL;
+			gbc_addPathButton.insets = new Insets(0, 0, 5, 0);
+			gbc_addPathButton.gridx = 1;
+			gbc_addPathButton.gridy = 0;
+			alignmentsPanel.add(getAddButton(), gbc_addPathButton);
+			GridBagConstraints gbc_removeButton = new GridBagConstraints();
+			gbc_removeButton.insets = new Insets(0, 0, 5, 0);
+			gbc_removeButton.gridx = 1;
+			gbc_removeButton.gridy = 1;
+			alignmentsPanel.add(getRemoveButton(), gbc_removeButton);
+			GridBagConstraints gbc_filler = new GridBagConstraints();
+			gbc_filler.weighty = 10.0;
+			gbc_filler.fill = GridBagConstraints.BOTH;
+			gbc_filler.gridx = 1;
+			gbc_filler.gridy = 2;
+			alignmentsPanel.add(getFiller(), gbc_filler);
 		}
 		return alignmentsPanel;
 	}
@@ -274,6 +283,7 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private JButton getAddButton() {
 		if (addPathButton == null) {
 			addPathButton = new JButton();
+			addPathButton.setVerticalAlignment(SwingConstants.TOP);
 			addPathButton.setText("Add...");
 			final StartComparisonDialog thisDialog = this;
 			addPathButton.addActionListener(new ActionListener() {
@@ -294,8 +304,8 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 						}
 						if (skippedFiles.length() > 0) {
 							JOptionPane.showMessageDialog(thisDialog, 
-									"The following files were skipped, because the do not exist or are already in the list:\n\n" 
-									 + skippedFiles.toString(), "Invalid file(s)", JOptionPane.WARNING_MESSAGE);
+									"The following files were skipped, because the do not exist or are already in the list:\n\n" + 
+									skippedFiles.toString(), "Invalid file(s)", JOptionPane.WARNING_MESSAGE);
 						}
 					}
 				}
@@ -313,6 +323,7 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private JButton getRemoveButton() {
 		if (removeButton == null) {
 			removeButton = new JButton();
+			removeButton.setVerticalAlignment(SwingConstants.TOP);
 			removeButton.setText("Remove");
 			removeButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -383,11 +394,12 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	private JComboBox<CompareAlgorithm> getAlgorithmComboBox() {
 		if (algorithmComboBox == null) {
 			algorithmComboBox = new JComboBox<CompareAlgorithm>();
-			algorithmComboBox.addPropertyChangeListener(new PropertyChangeListener() {
-						public void propertyChange(PropertyChangeEvent e) {
-							setPereferencesPanel((CompareAlgorithm)getAlgorithmComboBox().getSelectedItem());
-						}
-					});
+			algorithmComboBox.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					setPereferencesPanel((CompareAlgorithm)getAlgorithmComboBox().getSelectedItem());
+				}
+			});
 			CompareAlgorithm[] algorithms = CompareAlgorithm.class.getEnumConstants();
 			for (int i = 0; i < algorithms.length; i++) {
 		    algorithmComboBox.addItem(algorithms[i]);
@@ -431,7 +443,7 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 			getTokenTypeGroup();
 			tokenTypePanel.add(getNucleotideRadioButton());
 			tokenTypePanel.add(getAminoAcidRadioButton());
-			//tokenTypePanel.add(getOtherRadioButton());  //TODO If other token types are supported, String tokens instead of chacter tokens must be used in such cases.
+			//tokenTypePanel.add(getOtherRadioButton());  //TODO If other token types are supported, String tokens instead of character tokens must be used in such cases.
 		}
 		return tokenTypePanel;
 	}
@@ -470,5 +482,20 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 			otherRadioButton = new JRadioButton("Other discrete tokens");
 		}
 		return otherRadioButton;
+	}
+	private JScrollPane getFileListScrollPane() {
+		if (fileListScrollPane == null) {
+			fileListScrollPane = new JScrollPane();
+			fileListScrollPane.setViewportView(getFileList());
+		}
+		return fileListScrollPane;
+	}
+	
+	
+	private JLabel getFiller() {
+		if (filler == null) {
+			filler = new JLabel(" ");
+		}
+		return filler;
 	}
 }
