@@ -102,7 +102,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		AlignmentArea result = new AlignmentArea(this);
 		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperaligned(), false);
 		
-		result.getDataAreas().getTopAreas().add(new LabelDataArea(result.getContentArea(), result, alignmentName));
+		result.getDataAreas().getTopAreas().add(new LabelDataArea(result.getContentArea(), result, alignmentName, false, true));
 		//result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
 		
 		NucleotideTokenPainter painter = new NucleotideTokenPainter();
