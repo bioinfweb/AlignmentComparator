@@ -65,7 +65,7 @@ public class OpenResultsAction extends DocumentAction {
   
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
+		if (getDocument().askToSave() && getFileChooser().showOpenDialog(getMainFrame()) == JFileChooser.APPROVE_OPTION) {
 			try {
 				ComparisonDocumentReader reader = new ComparisonDocumentReader();
 				reader.read(getFileChooser().getSelectedFile(), getMainFrame().getDocument());

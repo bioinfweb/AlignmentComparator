@@ -85,7 +85,7 @@ public class CompareAlignmentsAction extends DocumentAction {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (dialog.execute()) {
+		if (getDocument().askToSave() && dialog.execute()) {
 			try {
 				getDocument().setTokenType(dialog.getTokenType());
 		  	alignmentModelFactory.setTokenType(dialog.getTokenType());
