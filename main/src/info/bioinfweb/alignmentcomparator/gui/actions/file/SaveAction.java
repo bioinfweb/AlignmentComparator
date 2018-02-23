@@ -52,6 +52,6 @@ public class SaveAction extends DocumentAction{
 	
 	@Override
 	public void setEnabled() {
-		setEnabled(!getDocument().isEmpty());
+		setEnabled(!getDocument().isEmpty() && getDocument().hasChanged());
 	}
 }
