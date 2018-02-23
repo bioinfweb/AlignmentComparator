@@ -28,6 +28,7 @@ import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter;
 import info.bioinfweb.commons.io.ContentExtensionFileFilter.TestStrategy;
 import info.bioinfweb.commons.io.ExtensionFileFilter;
+import info.bioinfweb.commons.swing.OkCancelApplyDialog;
 import info.bioinfweb.jphyloio.JPhyloIOFormatSpecificObject;
 import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.factory.JPhyloIOReaderWriterFactory;
@@ -69,7 +70,7 @@ import org.apache.commons.collections4.set.ListOrderedSet;
 
 
 
-public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
+public class StartComparisonDialog extends OkCancelApplyDialog /*OkCancelApplyWikiHelpDialog*/ {  //TODO Inherit from OkCancelApplyWikiHelpDialog as soon as a help wiki is present.
 	public static final class FileSelection {
 		private File file;
 		private String format;
@@ -126,9 +127,9 @@ public class StartComparisonDialog extends OkCancelApplyWikiHelpDialog {
 	 * @param owner
 	 */
 	public StartComparisonDialog(Frame owner) {
-		super(owner, Main.getInstance().getWikiHelp());
+		super(owner/*, Main.getInstance().getWikiHelp()*/);
 		setModal(true);
-		setHelpCode(3);  //TODO Adjust help code before next release.
+		//setHelpCode(3);  //TODO Adjust help code before next release.
 		initialize();
 	}
 
