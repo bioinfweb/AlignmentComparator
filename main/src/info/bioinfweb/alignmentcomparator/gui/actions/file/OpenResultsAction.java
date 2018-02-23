@@ -19,10 +19,13 @@
 package info.bioinfweb.alignmentcomparator.gui.actions.file;
 
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentReader;
 import info.bioinfweb.alignmentcomparator.gui.MainFrame;
 import info.bioinfweb.alignmentcomparator.gui.actions.DocumentAction;
+import info.bioinfweb.commons.io.ContentExtensionFileFilter.TestStrategy;
 import info.bioinfweb.jphyloio.exception.JPhyloIOReaderException;
+import info.bioinfweb.jphyloio.formats.JPhyloIOFormatIDs;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -55,7 +58,8 @@ public class OpenResultsAction extends DocumentAction {
   		fileChooser = new JFileChooser();
   		fileChooser.setDialogTitle("Open comparison results");
   		fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
-  		//fileChooser.addChoosableFileFilter(ResultsFileFilter.getInstance());  //TODO Add NeXML filter here?
+  		fileChooser.addChoosableFileFilter(Main.getInstance().getReaderWriterFactory().getFormatInfo(
+  				JPhyloIOFormatIDs.NEXML_FORMAT_ID).createFileFilter(TestStrategy.BOTH));
   		fileChooser.addChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
   		//TODO zu DirModel hinzufügen
   	}
