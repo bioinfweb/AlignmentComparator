@@ -77,6 +77,7 @@ public class OpenResultsAction extends DocumentAction {
 				
 				getDocument().registerChange();
 				getDocument().reset();  // Set change flag to false again.
+				getMainFrame().getActionManagement().refreshActionStatus();  // Needs to be done again here, after the change flag of the document was set to disable SaveAction.
 			}
 			catch (Exception ex) {
 				String position = "";
