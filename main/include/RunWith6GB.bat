@@ -1,0 +1,1 @@
+java -Xmx6g -jar AlignmentComparator.jar

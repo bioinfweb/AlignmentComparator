@@ -8,11 +8,11 @@ Class-Path: lib/bioinfweb-commons-java-core-3.2.0.jar
             lib/forester.jar
             lib/guava-13.0.1.jar
             lib/info.webinsel.wikihelp.client.jar
-            lib/jphyloio-core-0.5.1.jar
-            lib/libralign-core-0.7.0.jar
+            lib/jphyloio-core-0.5.2.jar
+            lib/libralign-core-0.8.0.jar
             lib/libralign-io-0.6.0.jar
             lib/libralign-swing-0.5.0.jar
             lib/org.jdesktop.swingx.scrollpaneselector.jar
             lib/owlapi-XMLUtils-4.1.4.jar
             lib/tic-core-3.0.1.jar
-            lib/tic-swing-3.0.0.jar
+            lib/tic-swing-3.0.2.jar
