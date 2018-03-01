@@ -19,6 +19,7 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
+import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.comment.Comment;
 import info.bioinfweb.alignmentcomparator.document.comment.CommentAnchor;
 
@@ -70,6 +71,14 @@ public class AlignmentComparisonSelection {
 	}
 
 
+	public void setComment(Comment comment) {
+		if (this.comment != comment) {
+			this.comment = comment;
+			Main.getInstance().getMainFrame().getComparisonComponent().getCommentArea().repaint();  //TODO Is this sufficient/the optimal way?
+		}
+	}
+
+
 	public boolean isCommentSelected() {
 		return getComment() != null;
 	}
@@ -80,10 +89,15 @@ public class AlignmentComparisonSelection {
 	}
 	
 	
+	public void clearComment() {
+		setComment(null);
+	}
+	
+	
 	public void clear() {
 		if (getOwner().getFirstAlignmentArea() != null) {
 			getOwner().getFirstAlignmentArea().getSelection().clear();
 		}
-		comment = null;
+		clearComment();
 	}
 }

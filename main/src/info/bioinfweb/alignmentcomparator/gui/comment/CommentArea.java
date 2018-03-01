@@ -28,7 +28,8 @@ import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.events.SequenceChangeEvent;
 import info.bioinfweb.libralign.model.events.SequenceRenamedEvent;
 import info.bioinfweb.libralign.model.events.TokenChangeEvent;
-import info.bioinfweb.tic.TICPaintEvent;
+import info.bioinfweb.tic.input.TICMouseAdapter;
+import info.bioinfweb.tic.input.TICMouseEvent;
 
 import java.awt.SystemColor;
 import java.util.EnumSet;
@@ -48,6 +49,24 @@ public class CommentArea extends DataArea {
 	
 	public CommentArea(AlignmentContentArea owner) {
 		super(owner, null);  //TODO Specify labeled area
+		
+		addMouseListener(new TICMouseAdapter() {
+			@Override
+			public boolean mousePressed(TICMouseEvent event) {
+				if (event.getClickCount() == 1) {
+					if (event.isMouseButton1Down()) {
+						getComparisonComponent().getSelection().setComment(getCommentPositioner().getCommentByMousePosition(
+								getComparisonComponent(), 0, 0, event.getComponentX(), event.getComponentY()));
+						return true;
+					}
+					else if (event.isMouseButton3Down()) {
+						getComparisonComponent().getSelection().clearComment();
+						return true;
+					}
+				}
+				return false;
+			}
+		});
 	}
 	
 	
