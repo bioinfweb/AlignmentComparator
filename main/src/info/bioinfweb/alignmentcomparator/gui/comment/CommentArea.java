@@ -19,13 +19,9 @@
 package info.bioinfweb.alignmentcomparator.gui.comment;
 
 
-import java.awt.Color;
-import java.awt.SystemColor;
-import java.util.EnumSet;
-import java.util.Set;
-
 import info.bioinfweb.alignmentcomparator.gui.AlignmentComparisonComponent;
 import info.bioinfweb.libralign.alignmentarea.content.AlignmentContentArea;
+import info.bioinfweb.libralign.alignmentarea.content.AlignmentPaintEvent;
 import info.bioinfweb.libralign.dataarea.DataArea;
 import info.bioinfweb.libralign.dataarea.DataAreaListType;
 import info.bioinfweb.libralign.model.AlignmentModel;
@@ -33,6 +29,10 @@ import info.bioinfweb.libralign.model.events.SequenceChangeEvent;
 import info.bioinfweb.libralign.model.events.SequenceRenamedEvent;
 import info.bioinfweb.libralign.model.events.TokenChangeEvent;
 import info.bioinfweb.tic.TICPaintEvent;
+
+import java.awt.SystemColor;
+import java.util.EnumSet;
+import java.util.Set;
 
 
 
@@ -69,19 +69,18 @@ public class CommentArea extends DataArea {
 
 	@Override
 	public double getHeight() {
-		//return getCommentPositioner().getCommentDimension(getComparisonComponent()).height;
 		return getCommentPositioner().getNeededHeight(getComparisonComponent());
 	}
 	
 
 	@Override
-	public void paint(TICPaintEvent e) {
-		e.getGraphics().setColor(SystemColor.control);
-		e.getGraphics().fill(e.getRectangle());
-		commentPositioner.paint(getComparisonComponent(), getOwner().getOwner().getGlobalMaxSequenceLength(), e.getGraphics(), 0, 0);
+	public void paintPart(AlignmentPaintEvent event) {
+		event.getGraphics().setColor(SystemColor.control);
+		event.getGraphics().fill(event.getRectangle());
+		commentPositioner.paint(getComparisonComponent(), getOwner().getOwner().getGlobalMaxSequenceLength(), event.getGraphics(), 0, 0);
 	}
-	
-	
+
+
 	@Override
 	public double getLengthAfterEnd() {
 		return getCommentPositioner().getNeededLengthAfterEnd(getComparisonComponent());
@@ -89,29 +88,17 @@ public class CommentArea extends DataArea {
 
 
 	@Override
-	public <T> void afterSequenceChange(SequenceChangeEvent<T> e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public <T> void afterSequenceChange(SequenceChangeEvent<T> e) {}
 	
 
 	@Override
-	public <T> void afterSequenceRenamed(SequenceRenamedEvent<T> e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public <T> void afterSequenceRenamed(SequenceRenamedEvent<T> e) {}
 	
 
 	@Override
-	public <T> void afterTokenChange(TokenChangeEvent<T> e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public <T> void afterTokenChange(TokenChangeEvent<T> e) {}
 	
 
 	@Override
-	public <T, U> void afterModelChanged(AlignmentModel<T> previous, AlignmentModel<U> current) {
-		// TODO Auto-generated method stub
-		
-	}
+	public <T, U> void afterModelChanged(AlignmentModel<T> previous, AlignmentModel<U> current) {}
 }
