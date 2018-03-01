@@ -19,6 +19,10 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
+import info.bioinfweb.alignmentcomparator.document.comment.Comment;
+import info.bioinfweb.alignmentcomparator.document.comment.CommentAnchor;
+
+
 
 /**
  * Represents the selection in a {@link AlignmentComparisonPanel}.
@@ -27,6 +31,7 @@ package info.bioinfweb.alignmentcomparator.gui;
  */
 public class AlignmentComparisonSelection {
   private AlignmentComparisonComponent owner;
+  private Comment comment = null;
   
   
 	public AlignmentComparisonSelection(AlignmentComparisonComponent owner) {
@@ -60,9 +65,25 @@ public class AlignmentComparisonSelection {
 	}
 	
 	
+	public Comment getComment() {
+		return comment;
+	}
+
+
+	public boolean isCommentSelected() {
+		return getComment() != null;
+	}
+	
+	
+	public CommentAnchor createCommentAnchor() {
+		return new CommentAnchor(getFirstPos(), getLastPos());
+	}
+	
+	
 	public void clear() {
 		if (getOwner().getFirstAlignmentArea() != null) {
 			getOwner().getFirstAlignmentArea().getSelection().clear();
 		}
+		comment = null;
 	}
 }

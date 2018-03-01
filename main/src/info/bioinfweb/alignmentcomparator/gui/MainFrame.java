@@ -261,6 +261,11 @@ public class MainFrame extends JFrame {
 			editMenu.add(getUndoMenu());
 			editMenu.add(getRedoMenu());
 			editMenu.addSeparator();
+			editMenu.add(getActionManagement().get("edit.addComment"));
+			editMenu.add(getActionManagement().get("edit.removeComment"));
+			editMenu.add(getActionManagement().get("edit.moveComment"));
+			editMenu.add(getActionManagement().get("edit.editCommentText"));
+			editMenu.addSeparator();
 			editMenu.add(new JCheckBoxMenuItem(getActionManagement().get("edit.syncSelection")));
 		}
 		return editMenu;

@@ -35,6 +35,7 @@ import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
+import info.bioinfweb.alignmentcomparator.gui.comment.CommentArea;
 import info.bioinfweb.commons.events.GenericEventObject;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
@@ -57,7 +58,7 @@ import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
  */
 public class AlignmentComparisonComponent extends MultipleAlignmentsContainer implements DocumentListener {
 	public static final int FIRST_ALIGNMENT_INDEX = 1;
-	public static final int BOTTOM_AREAS_COUNT = 0;
+	public static final int BOTTOM_AREAS_COUNT = 1;
 
 	private final SelectionListener<GenericEventObject<SelectionModel>> SELECTION_LISTENER = new SelectionListener<GenericEventObject<SelectionModel>>() {
 				@Override
@@ -68,6 +69,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	
 	private MainFrame owner;
+	private CommentArea commentArea;
 	private VerticalScrollingSynchronizer verticalScrollingSynchronizer = new VerticalScrollingSynchronizer(this);
 	private SelectionSynchronizer selectionSynchronizer = new SelectionSynchronizer();
 	private AlignmentComparisonSelection selection = new AlignmentComparisonSelection(this);
@@ -82,6 +84,11 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	public MainFrame getOwner() {
 		return owner;
+	}
+
+
+	public CommentArea getCommentArea() {
+		return commentArea;
 	}
 
 
@@ -127,6 +134,15 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
+	private AlignmentArea createCommentAlignmentArea() {
+		AlignmentArea result = new AlignmentArea(this);
+		commentArea = new CommentArea(result.getContentArea());
+		result.getDataAreas().getBottomAreas().add(commentArea);
+		result.setAllowVerticalScrolling(false);
+		return result;
+	}
+
+	
 	private void addSelectionListener() {  //TODO Why does that only have to be done on the first area?
 		if (getDocument().getAlignments().size() > 0) {
 			getFirstAlignmentArea().getSelection().addSelectionListener(SELECTION_LISTENER);
@@ -143,6 +159,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 				getAlignmentAreas().add(createComparisonPartArea(name));
 			}
 		}
+		getAlignmentAreas().add(createCommentAlignmentArea());
 		addSelectionListener();
 	}
 	

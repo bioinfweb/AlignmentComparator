@@ -20,10 +20,14 @@ package info.bioinfweb.alignmentcomparator.document;
 
 
 import info.bioinfweb.alignmentcomparator.Main;
+import info.bioinfweb.alignmentcomparator.document.comment.CommentList;
+import info.bioinfweb.alignmentcomparator.document.comment.SequencePositionAdapter;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentEvent;
 import info.bioinfweb.alignmentcomparator.document.event.DocumentListener;
 import info.bioinfweb.alignmentcomparator.document.io.ComparisonDocumentDataAdapter;
 import info.bioinfweb.alignmentcomparator.document.undo.DocumentEdit;
+import info.bioinfweb.alignmentcomparator.gui.comment.CommentPositioner;
+import info.bioinfweb.alignmentcomparator.gui.comment.CommentPositionerFactory;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.changemonitor.ChangeMonitorable;
 import info.bioinfweb.commons.io.Savable;
@@ -60,6 +64,7 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	private CharacterStateSetType tokenType = CharacterStateSetType.DISCRETE;
 	private ListOrderedMap<String, ComparedAlignment> alignments = 
 			ListOrderedMap.listOrderedMap(new TreeMap<String, ComparedAlignment>());
+	private CommentList comments = new CommentList(new SequencePositionAdapter());
 	
 	private AccessibleUndoManager undoManager = new AccessibleUndoManager();
   private List<DocumentListener> views = new LinkedList<DocumentListener>();
@@ -104,95 +109,9 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	}
 	
 	
-//	public Iterator<Integer> sequenceIDIterator() {
-//		if (isEmpty()) {
-//			return Collections.emptyIterator();
-//		}
-//		else {
-//			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceIDIterator();  // Important that always the same provider is used, because the order might differ between the different providers.
-//		}
-//	}
-//	
-//	
-//	public String sequenceNameByID(int sequenceID) {
-//		if (isEmpty()) {
-//			return null;
-//		}
-//		else {
-//			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceNameByID(sequenceID);
-//		}
-//	}
-//	
-//	
-//	public int sequenceIDByName(String sequenceName) {
-//		if (isEmpty()) {
-//			return -1;
-//		}
-//		else {
-//			return originalAlignmentProviders.get(getAlignmentName(0)).sequenceIDByName(sequenceName);
-//		}
-//	}
-//	
-//	
-//	private void addSuperAlignment(String alignmentName, int alignmentIndex, Map<String, DNASequence> alignment, 
-//			TokenSet<T> tokenSet) {  //TODO Remove alignmentIndex and use alignmentName in new SuperAlignmentSequenceView().
-//		
-//		BioJavaSequenceDataProvider provider = new BioJavaSequenceDataProvider(tokenSet, Collections.EMPTY_MAP);
-//		for (String sequenceName : alignment.keySet()) {
-//			provider.addSequence(sequenceName, new SuperAlignmentSequenceView(this, alignmentIndex, alignment.get(sequenceName)));
-//		}
-//		superAlignmentProviders.put(alignmentName, provider);
-//	}
-	
-	
-//	private void setData(String firstName, Map<String, DNASequence> firstMap, 
-//			String secondName, Map<String, DNASequence> secondMap, TokenSet<T> tokenSet) {
-//		
-//		// Sort maps to ensure identical sequence IDs are assigned to both alignments (BioJava readers provide HashMaps here.):
-//		TreeMap<String, DNASequence> firstAlignment = new TreeMap<String, DNASequence>();
-//		firstAlignment.putAll(firstMap);
-//		TreeMap<String, DNASequence> secondAlignment = new TreeMap<String, DNASequence>();
-//		secondAlignment.putAll(secondMap);
-//		
-//		clear();
-//		alignmentNames.add(firstName);
-//		originalAlignmentProviders.put(firstName, new BioJavaSequenceDataProvider(tokenSet, firstAlignment)); //new AlignmentComparatorDataProvider<T>(tokenSet));
-//		alignmentNames.add(secondName);
-//		originalAlignmentProviders.put(secondName, new BioJavaSequenceDataProvider(tokenSet, secondAlignment));
-//
-//		addSuperAlignment(firstName, 0, firstAlignment, tokenSet);
-//		addSuperAlignment(secondName, 1, secondAlignment, tokenSet);
-//		
-//		unalignedIndices = new ArrayList[2];
-//		for (int i = 0; i < 2; i++) {
-//			unalignedIndices[i] = new ArrayList<Integer>();
-//		}
-//	}
-	
-	
-//	public void setUnalignedData(String firstName, Map<String, DNASequence> firstAlignment, 
-//			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet, 
-//			SuperAlignmentAlgorithm algorithm) throws Exception {
-//		
-//		setData(firstName, firstAlignment, secondName, secondAlignment, tokenSet);
-//		algorithm.performAlignment(this);
-//		registerChange();
-//		fireNamesChanged();
-//	}
-//	
-//	
-//	public void setAlignedData(String firstName, Map<String, DNASequence> firstAlignment, 
-//			String secondName, Map<String, DNASequence> secondAlignment, TokenSet<T> tokenSet, 
-//			List<Integer>[] unalignedIndices) {
-//		
-//		setData(firstName, firstAlignment, secondName, secondAlignment, tokenSet);
-//		for (int i = 0; i < unalignedIndices.length; i++) {
-//			setUnalignedIndexList(i, unalignedIndices[i]);
-//		}
-//
-//		performChange();  // Hier nicht registerChange(), da Dokument am Anfang nicht als ungespeichert angezeigt werden soll.
-//		fireNamesChanged();
-//	}
+	public CommentList getComments() {
+		return comments;
+	}
 
 	
 	@Override
@@ -427,6 +346,15 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 	}
 	
 	
+  /** Alerts all comment positioners to reposition the comments because of made changes. */
+  private void alertPositioners() {
+  	Iterator<CommentPositioner> iterator = CommentPositionerFactory.getInstance().getAllPositioners().iterator();
+  	while (iterator.hasNext()) {
+  		iterator.next().position(this);
+  	}
+  }
+
+  
   /** Alerts all registered views to display made changes. */
   private void fireChangeHappened() {
   	DocumentEvent e = new DocumentEvent(this);
@@ -453,6 +381,7 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
   @Override
 	public void registerChange() {
 		super.registerChange();
+		alertPositioners();  // Positioners must be alerted first
 		fireChangeHappened();
 		Main.getInstance().getMainFrame().updateTitle();
 	}
