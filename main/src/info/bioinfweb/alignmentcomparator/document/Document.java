@@ -121,9 +121,9 @@ public class Document extends SwingSaver implements ChangeMonitorable, Savable, 
 			parameters.put(ReadWriteParameterNames.KEY_APPLICATION_NAME, Main.APPLICATION_NAME);
 			parameters.put(ReadWriteParameterNames.KEY_APPLICATION_VERSION, Main.getInstance().getVersion());
 			parameters.put(ReadWriteParameterNames.KEY_APPLICATION_URL, Main.APPLICATION_URL);
-			parameters.put(ReadWriteParameterNames.KEY_LOGGER, Main.getInstance().getMainFrame().getReadWriteLogDialog());
+			//parameters.put(ReadWriteParameterNames.KEY_LOGGER, Main.getInstance().getMainFrame().getReadWriteLogDialog());
 			writer.writeDocument(writerAdapter, file, parameters);
-			Main.getInstance().getMainFrame().getReadWriteLogDialog().display();  //TODO Showing this dialog should be removed, if NeXML warnings in the future are always the same and intended.
+			//Main.getInstance().getMainFrame().getReadWriteLogDialog().display();  //TODO Showing this dialog should be removed, if NeXML warnings in the future are always the same and intended.
 		}
 		catch (Exception e) {
 			String position = "";
