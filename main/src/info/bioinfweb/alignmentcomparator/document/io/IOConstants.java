@@ -26,7 +26,8 @@ import javax.xml.namespace.QName;
 
 
 public interface IOConstants {
-	public static final FormatVersion NEXML_OUTPUT_VERSION = new FormatVersion(0, 0);  //TODO Increase to 1.x before release of AC 1.x.
+	public static final FormatVersion NEXML_OUTPUT_VERSION = new FormatVersion(1, 0);
+	// 1.0 since reintroduction of comments. (0.0 before.)
 	
 	public static final String UNALIGNED_INDICES_ID_SUFFIX = "indices";
 
@@ -38,5 +39,12 @@ public interface IOConstants {
 	public static final QName PREDICATE_APPLICATION_VERSION = new QName(ONTOLOGY_NAMESPACE_URI, "applicationVersion", DEFAULT_NAMESPACE_PREFIX);
 	public static final QName PREDICATE_FORMAT_VERSION = new QName(ONTOLOGY_NAMESPACE_URI, "formatVersion", DEFAULT_NAMESPACE_PREFIX);
 	public static final QName PREDICATE_TOKEN_TYPE = new QName(ONTOLOGY_NAMESPACE_URI, "tokenType", DEFAULT_NAMESPACE_PREFIX);
+	
+	public static final QName PREDICATE_COMMENT_LIST = new QName(ONTOLOGY_NAMESPACE_URI, "comments", DEFAULT_NAMESPACE_PREFIX);
+	public static final QName PREDICATE_COMMENT = new QName(ONTOLOGY_NAMESPACE_URI, "comment", DEFAULT_NAMESPACE_PREFIX);
+	public static final QName PREDICATE_COMMENT_TEXT = new QName(ONTOLOGY_NAMESPACE_URI, "text", DEFAULT_NAMESPACE_PREFIX);
+	public static final QName PREDICATE_COMMENT_FIRST_POS = new QName(ONTOLOGY_NAMESPACE_URI, "start", DEFAULT_NAMESPACE_PREFIX);
+	public static final QName PREDICATE_COMMENT_LAST_POS = new QName(ONTOLOGY_NAMESPACE_URI, "end", DEFAULT_NAMESPACE_PREFIX);
+	
 	public static final QName PREDICATE_UNALIGNED_INDICES = new QName(ONTOLOGY_NAMESPACE_URI, "unalignedIndices", DEFAULT_NAMESPACE_PREFIX);
 }

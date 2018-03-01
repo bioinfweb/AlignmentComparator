@@ -24,6 +24,8 @@ import java.util.Iterator;
 
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.comment.Comment;
+import info.bioinfweb.alignmentcomparator.document.comment.CommentList;
 import info.bioinfweb.commons.io.W3CXSConstants;
 import info.bioinfweb.jphyloio.ReadWriteConstants;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -31,6 +33,10 @@ import info.bioinfweb.jphyloio.dataadapters.JPhyloIOEventReceiver;
 import info.bioinfweb.jphyloio.dataadapters.MatrixDataAdapter;
 import info.bioinfweb.jphyloio.dataadapters.implementations.EmptyDocumentDataAdapter;
 import info.bioinfweb.jphyloio.events.CommentEvent;
+import info.bioinfweb.jphyloio.events.ConcreteJPhyloIOEvent;
+import info.bioinfweb.jphyloio.events.meta.ResourceMetadataEvent;
+import info.bioinfweb.jphyloio.events.meta.URIOrStringIdentifier;
+import info.bioinfweb.jphyloio.events.type.EventContentType;
 import info.bioinfweb.jphyloio.utils.JPhyloIOWritingUtils;
 
 
@@ -44,6 +50,31 @@ public class ComparisonDocumentDataAdapter extends EmptyDocumentDataAdapter impl
 		this.document = document;
 	}
 
+	
+	private void writeCommentList(JPhyloIOEventReceiver receiver) throws IOException {
+		CommentList list = document.getComments();
+		if (!list.isEmpty()) {
+			receiver.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + "4", null, 
+					new URIOrStringIdentifier(null, PREDICATE_COMMENT_LIST), null, null));
+			
+			int idIndex = 5;
+			for (Comment comment : list) {
+				receiver.add(new ResourceMetadataEvent(ReadWriteConstants.DEFAULT_META_ID_PREFIX + idIndex++, null, 
+						new URIOrStringIdentifier(null, PREDICATE_COMMENT), null, null));
+				
+				JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + idIndex++, null, 
+						PREDICATE_COMMENT_TEXT, W3CXSConstants.DATA_TYPE_STRING, comment.getText());
+				JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + idIndex++, null, 
+						PREDICATE_COMMENT_FIRST_POS, W3CXSConstants.DATA_TYPE_INT, comment.getAnchor().getFirstPos());
+				JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + idIndex++, null, 
+						PREDICATE_COMMENT_LAST_POS, W3CXSConstants.DATA_TYPE_INT, comment.getAnchor().getLastPos());
+				
+				receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+			}
+			receiver.add(ConcreteJPhyloIOEvent.createEndEvent(EventContentType.RESOURCE_META));
+		}
+	}
+	
 
 	@Override
 	public void writeMetadata(ReadWriteParameterMap parameters, JPhyloIOEventReceiver receiver) throws IOException {
@@ -56,6 +87,8 @@ public class ComparisonDocumentDataAdapter extends EmptyDocumentDataAdapter impl
 				PREDICATE_APPLICATION_VERSION, W3CXSConstants.DATA_TYPE_TOKEN, Main.getInstance().getVersion());
 		JPhyloIOWritingUtils.writeSimpleLiteralMetadata(receiver, ReadWriteConstants.DEFAULT_META_ID_PREFIX + "3", null, 
 				PREDICATE_TOKEN_TYPE, W3CXSConstants.DATA_TYPE_TOKEN, document.getTokenType().name());
+		
+		writeCommentList(receiver);
 		//TODO Special data types restricting the current ones could be defined.
 	}
 	// TODO Create OTU lists for alignments?

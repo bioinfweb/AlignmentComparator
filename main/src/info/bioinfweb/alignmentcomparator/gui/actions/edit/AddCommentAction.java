@@ -40,8 +40,7 @@ public class AddCommentAction extends DocumentAction {
 		putValue(Action.NAME, "Add comment"); 
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
 		putValue(Action.SHORT_DESCRIPTION, "Add comment"); 
-		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('N', 
-		    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('N', Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	  loadSymbols("NewComment");
 	}
 

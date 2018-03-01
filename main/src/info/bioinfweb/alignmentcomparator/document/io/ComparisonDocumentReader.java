@@ -23,6 +23,7 @@ import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.ComparedAlignment;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
+import info.bioinfweb.alignmentcomparator.document.comment.Comment;
 import info.bioinfweb.commons.bio.CharacterStateSetType;
 import info.bioinfweb.commons.io.FormatVersion;
 import info.bioinfweb.jphyloio.ReadWriteParameterMap;
@@ -79,7 +80,7 @@ public class ComparisonDocumentReader implements IOConstants {
 	}
 	
 	
-	private void readDocumentMetadata() throws IOException {
+	private void readDocumentLiteralMetadata() throws IOException {
 		QName predicate = reader.next().asLiteralMetadataEvent().getPredicate().getURI();
 		
 		if (PREDICATE_FORMAT_VERSION.equals(predicate)) {
@@ -109,6 +110,67 @@ public class ComparisonDocumentReader implements IOConstants {
 		}
 		
 		JPhyloIOReadingUtils.reachElementEnd(reader);  // Consume end event and possibly contents.
+	}
+	
+	
+	private void readComment() throws IOException {
+		String text = null;
+		int firstPos = -1;
+		int lastPos = -1;
+		
+		JPhyloIOEvent event = reader.next();   
+		while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {
+			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+				if (event.getType().getContentType().equals(EventContentType.LITERAL_META)) {
+					if (PREDICATE_COMMENT_TEXT.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
+						text = JPhyloIOReadingUtils.readLiteralMetadataContentAsString(reader);
+					}
+					else if (PREDICATE_COMMENT_FIRST_POS.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
+						firstPos = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Integer.class);
+					}
+					else if (PREDICATE_COMMENT_LAST_POS.equals(event.asLiteralMetadataEvent().getPredicate().getURI())) {
+						lastPos = JPhyloIOReadingUtils.readLiteralMetadataContentAsObject(reader, Integer.class);
+					}
+					else {  // Possible additional element, which is not read
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				else {  // Possible additional element, which is not read
+					JPhyloIOReadingUtils.reachElementEnd(reader);
+				}
+			}
+			event = reader.next();
+		}
+		
+		if ((text != null) && (firstPos >= 0) && (lastPos >= firstPos)) {
+			document.getComments().add(firstPos, lastPos, text);
+		}
+		else {
+			throw new IOException("An invalid comment was found (text = \"" + text + "\", firstPos = \"" + firstPos + 
+					"\", lastPos = \"" + lastPos + "\").");  //TODO Alternatively ignore invalid comments?
+		}
+	}
+	
+	
+	private void readComments() throws IOException {
+		QName predicate = reader.next().asResourceMetadataEvent().getRel().getURI();
+		
+		if (PREDICATE_COMMENT_LIST.equals(predicate)) {
+			JPhyloIOEvent event = reader.next();   
+			while (!event.getType().getTopologyType().equals(EventTopologyType.END)) {
+				if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
+					if (event.getType().getContentType().equals(EventContentType.RESOURCE_META) && 
+							PREDICATE_COMMENT.equals(event.asResourceMetadataEvent().getRel().getURI())) {
+						
+						readComment();
+					}
+					else {  // Possible additional element, which is not read
+						JPhyloIOReadingUtils.reachElementEnd(reader);
+					}
+				}
+				event = reader.next();
+			}
+		}
 	}
 	
 	
@@ -236,9 +298,11 @@ public class ComparisonDocumentReader implements IOConstants {
 			if (event.getType().getTopologyType().equals(EventTopologyType.START)) {
 				switch (event.getType().getContentType()) {
 					case LITERAL_META:
-						readDocumentMetadata();
+						readDocumentLiteralMetadata();
 						break;
-					//TODO Read comments, when they are written (maybe from according resource meta).
+					case RESOURCE_META:
+						readComments();
+						break;
 					case ALIGNMENT:
 						readAlignment();
 						break;
