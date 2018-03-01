@@ -1,6 +1,6 @@
 /*
  * AlignmentComparator - Compare and annotate two alternative multiple sequence alignments
- * Copyright (C) 2014-2016  Ben Stöver
+ * Copyright (C) 2014-2018  Ben Stöver
  * <http://bioinfweb.info/Software>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ import java.util.Map;
 
 
 
-public class CommentList extends SequenceIntervalList<Comment> {
+public class CommentList extends SequenceIntervalList<Comment> {  //TODO Is is necessary to have a sequence interval list here and in the global positioner data?
 	public static final int INITIAL_EXPECTED_SEQUENCE_LENGTH = 5000;
 	public static final int INTERVAL_LENGTH = 100;
 	
