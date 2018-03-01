@@ -51,7 +51,7 @@ public class Main extends ProgramMainClass {
 	
 	
   private Main() {
-		super(new ApplicationVersion(1, 0, 0, 248, ApplicationType.BETA));
+		super(new ApplicationVersion(1, 0, 0, 250, ApplicationType.BETA));
 	}
   
   
