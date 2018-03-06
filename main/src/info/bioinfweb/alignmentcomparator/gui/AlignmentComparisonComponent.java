@@ -42,7 +42,10 @@ import info.bioinfweb.libralign.alignmentarea.selection.SelectionListener;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionModel;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionSynchronizer;
 import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
+import info.bioinfweb.libralign.alignmentarea.tokenpainter.AminoAcidTokenPainter;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.NucleotideTokenPainter;
+import info.bioinfweb.libralign.alignmentarea.tokenpainter.SingleColorTokenPainter;
+import info.bioinfweb.libralign.alignmentarea.tokenpainter.TokenPainter;
 import info.bioinfweb.libralign.dataarea.implementations.LabelDataArea;
 import info.bioinfweb.libralign.dataarea.implementations.sequenceindex.SequenceIndexArea;
 import info.bioinfweb.libralign.model.AlignmentModel;
@@ -105,6 +108,25 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 	
 	
+	private SingleColorTokenPainter createTokenPainter() {
+		SingleColorTokenPainter painter;
+		switch (getDocument().getTokenType()) {
+			case NUCLEOTIDE:
+				painter = new NucleotideTokenPainter();
+				break;
+			case AMINO_ACID:
+				painter = new AminoAcidTokenPainter();
+				break;
+			default:
+				throw new InternalError("The unexpected document token type " + getDocument().getTokenType() + 
+						" was encountered. Contact the developers if you see this error.");
+		}
+		//TODO Use decorator to display highlight.
+		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
+		return painter;
+	}
+	
+	
 	private AlignmentArea createComparisonPartArea(String alignmentName) {
 		AlignmentArea result = new AlignmentArea(this);
 		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperaligned(), false);
@@ -112,9 +134,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		result.getDataAreas().getTopAreas().add(new LabelDataArea(result.getContentArea(), result, alignmentName, false, true));
 		//result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
 		
-		NucleotideTokenPainter painter = new NucleotideTokenPainter();
-		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
-		result.getPaintSettings().getTokenPainterList().set(0, painter);  //TODO Set amino acid painter, when necessary.
+		result.getPaintSettings().getTokenPainterList().set(0, createTokenPainter());
 		
 		result.getSequenceOrder().setAlphabeticalSequenceOrder(true);  //TODO Use order of first alignment instead (or allow the user to choose between this and the alphabetical order)
 		result.getSelection().setType(SelectionType.COLUMN_ONLY);

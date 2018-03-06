@@ -22,6 +22,7 @@ package info.bioinfweb.alignmentcomparator.gui;
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.comment.Comment;
 import info.bioinfweb.alignmentcomparator.document.comment.CommentAnchor;
+import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
 
 
 
@@ -46,18 +47,31 @@ public class AlignmentComparisonSelection {
 	}
 
 
+	private AlignmentArea getFocusedOrFirstArea() {
+		//TODO A better implementation would be to store the area that has the focus before, of none currently has it.
+		//     Something like a focus listener would be necessary for this.
+		//     Such a behavior could be implemented MultipleAlignmentsContainer.getFocusedAlignmentArea() in the future.
+		
+		AlignmentArea result = getOwner().getFocusedAlignmentArea();  // Returns null if the focus is outside of the MultipleAlignmentsContainer.
+		if (result == null) {
+			result = getOwner().getFirstAlignmentArea();
+		}
+		return result;
+	}
+	
+	
 	public int getFirstPos() {
-		return getOwner().getFirstAlignmentArea().getSelection().getFirstColumn();
+		return getFocusedOrFirstArea().getSelection().getFirstColumn();
 	}
 	
 	
 	public int getLastPos() {
-		return getOwner().getFirstAlignmentArea().getSelection().getLastColumn();
+		return getFocusedOrFirstArea().getSelection().getLastColumn();
 	}
 	
 	
 	public boolean isColumnSelected(int columnIndex) {
-		return getOwner().getFirstAlignmentArea().getSelection().isSelected(columnIndex, 0);
+		return getFocusedOrFirstArea().getSelection().isSelected(columnIndex, 0);
 	}
 	
 	
