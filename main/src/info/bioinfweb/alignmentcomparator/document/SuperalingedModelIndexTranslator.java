@@ -125,7 +125,12 @@ public class SuperalingedModelIndexTranslator extends AbstractIndexTranslator<Ch
 			}
 			else {
 				unalignedIndexBefore = getUnderlyingIndexTranslator().getUnalignedIndex(sequenceID, unalignedIndexBefore).getBefore();
-				unalignedIndexAfter = unalignedIndexBefore + 1;
+				if (unalignedIndexBefore == IndexRelation.OUT_OF_RANGE) {
+					unalignedIndexAfter = 0;
+				}
+				else {
+					unalignedIndexAfter = unalignedIndexBefore + 1;
+				}
 			}
 			if (unalignedIndexAfter >= getUnderlyingIndexTranslator().getUnalignedLength(sequenceID)) {
 				unalignedIndexAfter = IndexRelation.OUT_OF_RANGE;
