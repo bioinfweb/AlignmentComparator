@@ -37,33 +37,34 @@ import static info.bioinfweb.libralign.test.LibrAlignTestTools.*;
 
 public class SuperalingedModelIndexTranslatorTest {
 	@Test
-	public void test_getUnAlignedIndex() {
+	public void test_getUnalignedIndex() {
 		AlignmentModel<Character> model = new PackedAlignmentModel<>(CharacterTokenSet.newDNAInstance(false));
 		String id = model.addSequence("A");
 		model.appendTokens(id, AlignmentModelUtils.charSequenceToTokenList("-A-TGC-", model.getTokenSet()));
 		ComparedAlignment comparedAlignment = new ComparedAlignment("A", model);
-		// 01234567891
-		// .-A-T..GC.-
-		comparedAlignment.createSuperaligned(Arrays.asList(SuperalignedModelDecorator.SUPER_GAP_INDEX, 0, 1, 2, 3, 
-				SuperalignedModelDecorator.SUPER_GAP_INDEX, SuperalignedModelDecorator.SUPER_GAP_INDEX, 4, 5, 
-				SuperalignedModelDecorator.SUPER_GAP_INDEX, 6));
+		// 012345678910
+		// ..-A-T..GC.-
+		comparedAlignment.createSuperaligned(Arrays.asList(SuperalignedModelDecorator.SUPER_GAP_INDEX, 
+				SuperalignedModelDecorator.SUPER_GAP_INDEX, 0, 1, 2, 3,	SuperalignedModelDecorator.SUPER_GAP_INDEX, 
+				SuperalignedModelDecorator.SUPER_GAP_INDEX, 4, 5, SuperalignedModelDecorator.SUPER_GAP_INDEX, 6));
 		
 		IndexTranslator<Character> t = comparedAlignment.getSuperaligned().getIndexTranslator();
 		assertIndexRelation(IndexRelation.OUT_OF_RANGE, IndexRelation.GAP, 0, t.getUnalignedIndex(id, 0));
 		assertIndexRelation(IndexRelation.OUT_OF_RANGE, IndexRelation.GAP, 0, t.getUnalignedIndex(id, 1));
-		assertIndexRelation(0, 0, 0, t.getUnalignedIndex(id, 2));
-		assertIndexRelation(0, IndexRelation.GAP, 1, t.getUnalignedIndex(id, 3));
-		assertIndexRelation(1, 1, 1, t.getUnalignedIndex(id, 4));
-		assertIndexRelation(1, IndexRelation.GAP, 2, t.getUnalignedIndex(id, 5));
+		assertIndexRelation(IndexRelation.OUT_OF_RANGE, IndexRelation.GAP, 0, t.getUnalignedIndex(id, 2));
+		assertIndexRelation(0, 0, 0, t.getUnalignedIndex(id, 3));
+		assertIndexRelation(0, IndexRelation.GAP, 1, t.getUnalignedIndex(id, 4));
+		assertIndexRelation(1, 1, 1, t.getUnalignedIndex(id, 5));
 		assertIndexRelation(1, IndexRelation.GAP, 2, t.getUnalignedIndex(id, 6));
-		assertIndexRelation(2, 2, 2, t.getUnalignedIndex(id, 7));
-		assertIndexRelation(3, 3, 3, t.getUnalignedIndex(id, 8));
-		assertIndexRelation(3, IndexRelation.GAP, IndexRelation.OUT_OF_RANGE, t.getUnalignedIndex(id, 9));
+		assertIndexRelation(1, IndexRelation.GAP, 2, t.getUnalignedIndex(id, 7));
+		assertIndexRelation(2, 2, 2, t.getUnalignedIndex(id, 8));
+		assertIndexRelation(3, 3, 3, t.getUnalignedIndex(id, 9));
 		assertIndexRelation(3, IndexRelation.GAP, IndexRelation.OUT_OF_RANGE, t.getUnalignedIndex(id, 10));
+		assertIndexRelation(3, IndexRelation.GAP, IndexRelation.OUT_OF_RANGE, t.getUnalignedIndex(id, 11));
 
-		assertEquals(2, t.getAlignedIndex(id, 0));
-		assertEquals(4, t.getAlignedIndex(id, 1));
-		assertEquals(7, t.getAlignedIndex(id, 2));
-		assertEquals(8, t.getAlignedIndex(id, 3));
+		assertEquals(3, t.getAlignedIndex(id, 0));
+		assertEquals(5, t.getAlignedIndex(id, 1));
+		assertEquals(8, t.getAlignedIndex(id, 2));
+		assertEquals(9, t.getAlignedIndex(id, 3));
 	}
 }
