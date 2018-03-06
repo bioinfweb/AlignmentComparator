@@ -25,7 +25,6 @@ import info.bioinfweb.libralign.model.exception.AlignmentSourceNotWritableExcept
 import info.bioinfweb.libralign.model.exception.SequenceNotFoundException;
 import info.bioinfweb.libralign.model.implementations.decorate.AbstractAlignmentModelDecorator;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexRelation;
-import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,8 +86,8 @@ public class SuperalignedModelDecorator extends AbstractAlignmentModelDecorator<
 	public ComparedAlignment getOwner() {
 		return owner;
 	}
-
-
+	
+	
 	@Override
 	protected Iterable<TokenChangeEvent<Character>> convertTokenChangeEvent(TokenChangeEvent<Character> event) {
 		throw new InternalError("Operation not supported");

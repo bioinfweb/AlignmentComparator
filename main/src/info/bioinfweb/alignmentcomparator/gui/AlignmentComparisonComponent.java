@@ -19,17 +19,6 @@
 package info.bioinfweb.alignmentcomparator.gui;
 
 
-import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.SuperalignedModelDecorator;
@@ -45,11 +34,21 @@ import info.bioinfweb.libralign.alignmentarea.selection.SelectionType;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.AminoAcidTokenPainter;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.NucleotideTokenPainter;
 import info.bioinfweb.libralign.alignmentarea.tokenpainter.SingleColorTokenPainter;
-import info.bioinfweb.libralign.alignmentarea.tokenpainter.TokenPainter;
 import info.bioinfweb.libralign.dataarea.implementations.LabelDataArea;
 import info.bioinfweb.libralign.dataarea.implementations.sequenceindex.SequenceIndexArea;
 import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
+
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 
 
@@ -60,15 +59,19 @@ import info.bioinfweb.libralign.multiplealignments.MultipleAlignmentsContainer;
  * @since 1.1.0
  */
 public class AlignmentComparisonComponent extends MultipleAlignmentsContainer implements DocumentListener {
+	public static final Color SUPER_GAP_COLOR = Color.LIGHT_GRAY;	
+	public static final Color HIGHLIGHT_COLOR = Color.RED;	
+	
 	public static final int FIRST_ALIGNMENT_INDEX = 1;
 	public static final int BOTTOM_AREAS_COUNT = 1;
 
-	private final SelectionListener<GenericEventObject<SelectionModel>> SELECTION_LISTENER = new SelectionListener<GenericEventObject<SelectionModel>>() {
+	private final SelectionListener<GenericEventObject<SelectionModel>> FIRST_SELECTION_LISTENER = new SelectionListener<GenericEventObject<SelectionModel>>() {
 				@Override
-				public void selectionChanged(GenericEventObject<SelectionModel> event) {  //TODO Check if this implementation needs to changed due to update and object recreation strategies.
+				public void selectionChanged(GenericEventObject<SelectionModel> event) {  //TODO Check if this implementation needs to be changed due to update and object recreation strategies.
 					Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();	
 				}
-			}; 
+			};
+	private final PosHighlightOverlay OVERLAY = new PosHighlightOverlay();
 	
 	
 	private MainFrame owner;
@@ -109,6 +112,8 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	
 	
 	private SingleColorTokenPainter createTokenPainter() {
+		//TODO Can't this method be replaced by functionality available in LibrAlign?
+		
 		SingleColorTokenPainter painter;
 		switch (getDocument().getTokenType()) {
 			case NUCLEOTIDE:
@@ -121,8 +126,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 				throw new InternalError("The unexpected document token type " + getDocument().getTokenType() + 
 						" was encountered. Contact the developers if you see this error.");
 		}
-		//TODO Use decorator to display highlight.
-		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), Color.LIGHT_GRAY);
+		painter.getBackgroundColorMap().put(Character.toString(SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP), SUPER_GAP_COLOR);
 		return painter;
 	}
 	
@@ -142,6 +146,8 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		//TODO Add consensus sequence area on bottom
 		result.setAllowVerticalScrolling(true);
 		result.getScrollListeners().add(verticalScrollingSynchronizer);
+		
+		result.getOverlays().add(OVERLAY);  //TODO Is the triggerd repaint here a problem?
 		
 		result.getContentArea().getActionMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), 
 				getOwner().getActionManagement().get("edit.insertSupergap"));
@@ -163,9 +169,9 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 	}
 
 	
-	private void addSelectionListener() {  //TODO Why does that only have to be done on the first area?
+	private void addSelectionListener() {  // Due to selection synchronization this listener only needs to be registered with the one alignment area.
 		if (getDocument().getAlignments().size() > 0) {
-			getFirstAlignmentArea().getSelection().addSelectionListener(SELECTION_LISTENER);
+			getFirstAlignmentArea().getSelection().addSelectionListener(FIRST_SELECTION_LISTENER);
 		}
 	}
 	
@@ -229,7 +235,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		// Remove current GUI elements:
 		AlignmentArea firstArea = getFirstAlignmentArea();
 		if (firstArea != null) {
-			firstArea.getSelection().removeSelectionListener(SELECTION_LISTENER);
+			firstArea.getSelection().removeSelectionListener(FIRST_SELECTION_LISTENER);
 		}
 		getAlignmentAreas().clear();
 		selectionSynchronizer.clear();
