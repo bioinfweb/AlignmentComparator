@@ -91,7 +91,7 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 		int superalignedLength = combinedModel.getMaxSequenceLength();
 		AlignmentModel<Character> originalAlignment = document.getAlignments().getValue(alignmentIndex).getOriginal();
 		ArrayList<Integer> indexList = new ArrayList<Integer>(superalignedLength);
-		int unalignedPos = 0;
+		int unalignedIndex = 0;
 		for (int superIndex = 0; superIndex < superalignedLength; superIndex++) {
 			Iterator<String> iterator = combinedModel.sequenceIDIterator();
 			boolean gap = false;
@@ -99,17 +99,17 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 				String superAlignedSequenceID = iterator.next();
 				String superAlignedSequenceName = combinedModel.sequenceNameByID(superAlignedSequenceID);
 				if (superAlignedSequenceName.startsWith(sequencePrefix)) {
-					Character newBase = combinedModel.getTokenAt(superAlignedSequenceID, superIndex); 
+					Character newToken = combinedModel.getTokenAt(superAlignedSequenceID, superIndex); 
 					
-					Character oldBase = null;
+					Character oldToken = null;
 					String originalSequenceID = 
 							originalAlignment.sequenceIDsByName(superAlignedSequenceName.substring(sequencePrefix.length())).iterator().next();  //TODO Handle case of multiple results, e.g., by throwing an exception.
 					
-					if (originalAlignment.getSequenceLength(originalSequenceID) > unalignedPos) {  // Otherwise terminal super gaps need to inserted from now on.
-						oldBase = originalAlignment.getTokenAt(originalSequenceID, unalignedPos);
+					if (originalAlignment.getSequenceLength(originalSequenceID) > unalignedIndex) {  // Otherwise terminal super gaps need to be inserted from now on.
+						oldToken = originalAlignment.getTokenAt(originalSequenceID, unalignedIndex);
 					}
 					
-					if (!newBase.equals(oldBase)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contains columns only consisting of gaps.
+					if (!newToken.equals(oldToken)) {  // Just checking if a column consists only of gaps does not work, if the input alignments already contains columns only consisting of gaps.
 						gap = true;
 						break;
 					}
@@ -120,8 +120,8 @@ public class MuscleProfileAligner extends ExternalProgramAligner implements Supe
 			  indexList.add(SuperalignedModelDecorator.SUPER_GAP_INDEX);
 			}
 			else {
-			  indexList.add(unalignedPos);
-				unalignedPos++;
+			  indexList.add(unalignedIndex);
+				unalignedIndex++;
 			}
 		}
 		document.getAlignments().getValue(alignmentIndex).createSuperaligned(indexList);
