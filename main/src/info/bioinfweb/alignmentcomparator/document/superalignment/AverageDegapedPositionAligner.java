@@ -22,10 +22,7 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 import info.bioinfweb.alignmentcomparator.document.Document;
 import info.bioinfweb.alignmentcomparator.document.OriginalAlignment;
 import info.bioinfweb.commons.log.ApplicationLogger;
-import info.bioinfweb.libralign.model.AlignmentModel;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexRelation;
-import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
-import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
