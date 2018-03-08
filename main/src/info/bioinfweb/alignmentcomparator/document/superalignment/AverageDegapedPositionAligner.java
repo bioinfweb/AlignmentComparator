@@ -20,8 +20,11 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 
 import info.bioinfweb.alignmentcomparator.document.Document;
+import info.bioinfweb.alignmentcomparator.document.OriginalAlignment;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.libralign.model.AlignmentModel;
+import info.bioinfweb.libralign.model.utils.indextranslation.IndexRelation;
+import info.bioinfweb.libralign.model.utils.indextranslation.IndexTranslator;
 import info.bioinfweb.libralign.model.utils.indextranslation.RandomAccessIndexTranslator;
 
 import java.util.ArrayDeque;
@@ -41,36 +44,66 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	private static final double REMOVE_LATER = -1.0;
 	
 	
-	private Deque<Double> calculateAverageIndices(AlignmentModel<Character> model) {
-		//SequentialAccessIndexTranslator<Character> calculator = new SequentialAccessIndexTranslator<>(model);
-		RandomAccessIndexTranslator<Character> calculator = new RandomAccessIndexTranslator<>(model);
+	private double calculateRelativeIndex(OriginalAlignment model, String sequenceID, int alignedIndex) {
+		IndexRelation relation = model.getIndexTranslator().getUnalignedIndex(sequenceID, alignedIndex);
+		double unalignedIndex;
+		if (relation.getCorresponding() == IndexRelation.GAP) {
+			// Calculate positions before the gap:
+			int unalignedPosBefore;  // the unaligned position of the first token before the gap (starting with index 1) or 0 if the gap is leading
+			int gapStartPos;  // The first position of the gap.
+			if (relation.getBefore() == IndexRelation.OUT_OF_RANGE) {
+				unalignedPosBefore = 0;
+				gapStartPos = 0;
+			}
+			else {
+				unalignedPosBefore = relation.getBefore() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
+				gapStartPos = model.getIndexTranslator().getAlignedIndex(sequenceID, relation.getBefore()) + 1;  // + 1, since the first position of the gap and not before it is meant here.
+				if (gapStartPos == IndexRelation.OUT_OF_RANGE) {
+					gapStartPos = model.getSequenceLength(sequenceID);
+				}
+			}
 
-		// Save degaped length:
-		double[] degapedLengths = new double[model.getSequenceCount()];
-		Iterator<String> seqIDIterator = model.sequenceIDIterator();  // This iterator may have a alignment dependent order. That is not problematic, since degapedLengths is only used for the current alignment. 
-		int sequenceIndex = 0;
-		while (seqIDIterator.hasNext()) {
-			String id = seqIDIterator.next();
-			degapedLengths[sequenceIndex] = calculator.getUnalignedIndex(id, model.getSequenceLength(id) - 1).getCorresponding();  //TODO Could GAP or OUT_OF_RANGE be returned here?
-			sequenceIndex++;
+			// Calculate positions after the gap:
+			int unalignedPosAfter;  // the unaligned position of the first token behind the gap (starting with index 1) or (unalignedLength + 1) if the gap is trailing
+			int gapEndPos = IndexRelation.OUT_OF_RANGE;  // The first position after the gap.
+			if (relation.getAfter() == IndexRelation.OUT_OF_RANGE) {
+				unalignedPosAfter = model.getIndexTranslator().getUnalignedLength(sequenceID) + 1;
+			}
+			else {
+				unalignedPosAfter = relation.getAfter() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
+				gapEndPos = model.getIndexTranslator().getAlignedIndex(sequenceID, relation.getAfter());  // The first unaligned position after the gap is translated to the first aligned position after the gap.
+			}
+			if (gapEndPos == IndexRelation.OUT_OF_RANGE) {
+				gapEndPos = model.getSequenceLength(sequenceID);  // The position behind the alignment.
+			}
+			
+			// Calculate position in the gap:
+			int gapLength = gapEndPos - gapStartPos;
+			double gapCenterPos = alignedIndex + 0.5;  // A gap of length 1 should have an index between the indices of both ends and not one equal to its start.
+			unalignedIndex =
+					unalignedPosBefore * (gapCenterPos - gapStartPos) / (double)gapLength +  // The position before the gap weighted by the distance of the current position to the start of the gap relative to the gap length. 
+					unalignedPosAfter * (gapEndPos - gapCenterPos) / (double)gapLength;  // The position after the gap weighted by the distance of the current position to the end of the gap relative to the gap length.
+		}
+		else {  // Aligned index is outside of a gap.
+			unalignedIndex = relation.getCorresponding() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
 		}
 		
-		// Calculate average indices:
+		
+		return unalignedIndex / (double)(model.getIndexTranslator().getUnalignedLength(sequenceID) + 1);  // + 1 since the positions before and after the alignment are also modeled.
+	}
+	
+	
+	private Deque<Double> calculateAverageIndices(OriginalAlignment model) {
 		int alignmentLength = model.getMaxSequenceLength();
 		Deque<Double> result = new ArrayDeque<Double>(alignmentLength);
 		for (int column = 0; column < alignmentLength; column++) {
 			double averageIndex = 0.0;
-			seqIDIterator = model.sequenceIDIterator();
-			sequenceIndex = 0;
+			Iterator<String> seqIDIterator = model.sequenceIDIterator();
 			while (seqIDIterator.hasNext()) {
-				String id = seqIDIterator.next();
-				//averageIndex += (double)calculator.degapedIndex(id, column) / degapedLengths[sequenceIndex];
-				averageIndex += (double)calculator.getUnalignedIndex(id, column).getCorresponding() / degapedLengths[sequenceIndex];  //TODO Could GAP or OUT_OF_RANGE be returned here?
-				sequenceIndex++;
+				averageIndex += calculateRelativeIndex(model, seqIDIterator.next(), column);
 			}
 			result.add(averageIndex / model.getSequenceCount());
 		}
-		
 		return result;
 	}
 	
