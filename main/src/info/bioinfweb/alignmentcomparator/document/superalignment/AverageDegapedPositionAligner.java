@@ -168,7 +168,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		Iterator<String> iterator = positions.keySet().iterator();
 		while (iterator.hasNext()) {
 			Double result = positions.get(iterator.next()).get(column);
-			if (!result.isNaN()) {
+			if (!result.isNaN() && (result != REMOVE_LATER)) {
 				return result;
 			}
 		}
@@ -247,14 +247,28 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		if (secondColumn > 0) {  // First entry contains distance to 0 and cannot be combined.
 			for (String name : alignedPositions.keySet()) {
 				List<Double> list = alignedPositions.get(name);
-				if (list.get(secondColumn).isNaN()) {  // Mark for later removal to maintain indices:
-					list.set(secondColumn, REMOVE_LATER);
+				if (list.get(secondColumn).isNaN()) {
+					if (list.get(secondColumn - 1).isNaN()) {  // Gap could be removed on both sides.
+						if ((secondColumn == 1) || 
+								((secondColumn < list.size() - 1) &&
+										columnsCombinable(alignedPositions, secondColumn + 1) && // Check if the right columns could be combined
+										(findPrealignedValue(alignedPositions, secondColumn - 1) - findPrealignedValue(alignedPositions, secondColumn - 2) > 
+										findPrealignedValue(alignedPositions, secondColumn + 1) - findPrealignedValue(alignedPositions, secondColumn)))) {
+								// Distance left of the current merge is higher or we are on the left end of the alignment => Remove left gap.
+							
+							list.set(secondColumn - 1, REMOVE_LATER);
+						}
+						else {  // Distance right of the current merge is higher or we are on the right end of the alignment => Remove right gap.
+							list.set(secondColumn, REMOVE_LATER);
+						}
+					}
+					else {  // Gap can only be removed in the right.
+						list.set(secondColumn, REMOVE_LATER);
+					}
 				}
-				else {
+				else {  // Gap can only be removed in the left.
 					list.set(secondColumn - 1, REMOVE_LATER);
 				}
-				//TODO If both are gaps, currently always the second is removed. Does that make sense?
-				//     => No. Ideally the decision would be made based upon the neighboring distances.
 			}
 		}
 	}
