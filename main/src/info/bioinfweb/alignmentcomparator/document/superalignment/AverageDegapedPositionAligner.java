@@ -247,7 +247,12 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		if (secondColumn > 0) {  // First entry contains distance to 0 and cannot be combined.
 			boolean preferGapLeft = (secondColumn == 1) || 
 					((secondColumn < alignedPositions.values().iterator().next().size() - 1) &&
-							columnsCombinable(alignedPositions, secondColumn + 1) && // Check if the right columns could be combined
+							columnsCombinable(alignedPositions, secondColumn + 1) &&  // Check if the right columns could be combined  
+							//TODO The result of columnsCombinable() could change during the loop in this method. Therefore both sides could 
+							//     be blocked unnecessarily if a gap is moved away from the side with the lower distance that will anyway be 
+							//     blocked after this method.
+							//     Maybe both sides should be marked and the decision be made after the loop or optional left and right 
+							//     markings could be used and no check needs to be performed in here.
 							(findPrealignedValue(alignedPositions, secondColumn - 1) - findPrealignedValue(alignedPositions, secondColumn - 2) > 
 							findPrealignedValue(alignedPositions, secondColumn + 1) - findPrealignedValue(alignedPositions, secondColumn)));
 			
