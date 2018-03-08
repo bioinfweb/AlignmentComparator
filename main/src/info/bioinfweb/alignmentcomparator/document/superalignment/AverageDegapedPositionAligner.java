@@ -245,17 +245,17 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	private void markTwoColumns(Map<String, List<Double>> alignedPositions, int secondColumn) {
 		if (secondColumn > 0) {  // First entry contains distance to 0 and cannot be combined.
+			boolean preferGapLeft = (secondColumn == 1) || 
+					((secondColumn < alignedPositions.values().iterator().next().size() - 1) &&
+							columnsCombinable(alignedPositions, secondColumn + 1) && // Check if the right columns could be combined
+							(findPrealignedValue(alignedPositions, secondColumn - 1) - findPrealignedValue(alignedPositions, secondColumn - 2) > 
+							findPrealignedValue(alignedPositions, secondColumn + 1) - findPrealignedValue(alignedPositions, secondColumn)));
+			
 			for (String name : alignedPositions.keySet()) {
 				List<Double> list = alignedPositions.get(name);
 				if (list.get(secondColumn).isNaN()) {
 					if (list.get(secondColumn - 1).isNaN()) {  // Gap could be removed on both sides.
-						if ((secondColumn == 1) || 
-								((secondColumn < list.size() - 1) &&
-										columnsCombinable(alignedPositions, secondColumn + 1) && // Check if the right columns could be combined
-										(findPrealignedValue(alignedPositions, secondColumn - 1) - findPrealignedValue(alignedPositions, secondColumn - 2) > 
-										findPrealignedValue(alignedPositions, secondColumn + 1) - findPrealignedValue(alignedPositions, secondColumn)))) {
-								// Distance left of the current merge is higher or we are on the left end of the alignment => Remove left gap.
-							
+						if (preferGapLeft) {  // Distance left of the current merge is higher or we are on the left end of the alignment => Remove left gap.
 							list.set(secondColumn - 1, REMOVE_LATER);
 						}
 						else {  // Distance right of the current merge is higher or we are on the right end of the alignment => Remove right gap.
