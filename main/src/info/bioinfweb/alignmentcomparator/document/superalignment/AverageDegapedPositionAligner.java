@@ -75,11 +75,11 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			}
 			
 			// Calculate position in the gap:
-			int gapLength = gapEndPos - gapStartPos;
+			double gapLength = gapEndPos - gapStartPos;
 			double gapCenterPos = alignedIndex + 0.5;  // A gap of length 1 should have an index between the indices of both ends and not one equal to its start.
 			unalignedIndex =
-					unalignedPosBefore * (gapCenterPos - gapStartPos) / (double)gapLength +  // The position before the gap weighted by the distance of the current position to the start of the gap relative to the gap length. 
-					unalignedPosAfter * (gapEndPos - gapCenterPos) / (double)gapLength;  // The position after the gap weighted by the distance of the current position to the end of the gap relative to the gap length.
+					unalignedPosBefore * (gapCenterPos - gapStartPos) / gapLength +  // The position before the gap weighted by the distance of the current position to the start of the gap relative to the gap length. 
+					unalignedPosAfter * (gapEndPos - gapCenterPos) / gapLength;  // The position after the gap weighted by the distance of the current position to the end of the gap relative to the gap length.
 		}
 		else {  // Aligned index is outside of a gap.
 			unalignedIndex = relation.getCorresponding() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
