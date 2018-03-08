@@ -121,33 +121,48 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private Map<String, List<Double>> alignPositions(Map<String, Deque<Double>> unalignedPositions) {
-		Map<String, List<Double>> alignedPositions = new TreeMap<String, List<Double>>();
-		Iterator<String> iterator = unalignedPositions.keySet().iterator();
+	private Map<String, List<Double>> superalignPositions(Map<String, Deque<Double>> averageUnalignedPositions) {
+		// Create empty lists:
+		Map<String, List<Double>> averageAlignedPositions = new TreeMap<String, List<Double>>();
+		Iterator<String> iterator = averageUnalignedPositions.keySet().iterator();
 		while (iterator.hasNext()) {
-			alignedPositions.put(iterator.next(), new ArrayList<Double>());
+			averageAlignedPositions.put(iterator.next(), new ArrayList<Double>());
 		}
 		
-		Double nextPosition = new Double(nextMin(unalignedPositions));
-		while (!nextPosition.isNaN()) {
-			iterator = unalignedPositions.keySet().iterator();
+		// Calculate initial superalignment:
+		Double nextPosition = new Double(nextMin(averageUnalignedPositions));  // Take next minimal position from queue.
+		while (!nextPosition.isNaN()) {  // while queues are not empty
+			// Align current minimum with other equal indices or with supergaps:
+			iterator = averageUnalignedPositions.keySet().iterator();
 			while (iterator.hasNext()) {
 				String name = iterator.next();
-				Deque<Double> currentQueue = unalignedPositions.get(name); 
+				Deque<Double> currentQueue = averageUnalignedPositions.get(name); 
 				if (nextPosition.equals(currentQueue.peekFirst())) {  // Needs to be done with wrappers to handle currentQueue.peekFirst() == null.
 					currentQueue.pollFirst();
-					alignedPositions.get(name).add(nextPosition);
+					averageAlignedPositions.get(name).add(nextPosition);
 				}
 				else {
-					alignedPositions.get(name).add(Double.NaN);  // Add gap.
+					averageAlignedPositions.get(name).add(Double.NaN);  // Add gap.
 				}
 			}
-			nextPosition = nextMin(unalignedPositions);
+			
+			// Obtain next minimum from queues:
+			nextPosition = nextMin(averageUnalignedPositions);
 		}
-		return alignedPositions;
+		return averageAlignedPositions;
 	}
 	
 	
+	/**
+	 * Returns the first average position in the specified column that is not a supergap ({@link Double#isNaN()}).
+	 * <p>
+	 * Note that all average indices in one column at this stage are equal, therefore the returned average position
+	 * if equal to all non-gap entries for the specified column. 
+	 * 
+	 * @param positions the positions to searched
+	 * @param column the column to be searched
+	 * @return the average index of this column
+	 */
 	private double findPrealignedValue(Map<String, List<Double>> positions, int column) {
 		Iterator<String> iterator = positions.keySet().iterator();
 		while (iterator.hasNext()) {
@@ -156,7 +171,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 				return result;
 			}
 		}
-		throw new InternalError("Empty column found in prealignment.");  // Should not happen.
+		throw new InternalError("Empty column found in prealignment.");  // Should not happen, since all columns should contain at least one value.
 	}
 	
 	
@@ -168,13 +183,13 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	 * @return the sorted multimap
 	 */
 	private SortedSetMultimap<Double, Integer> calculateColumnDistances(Map<String, List<Double>> alignedPositions) {
-		int length = alignedPositions.values().iterator().next().size();
+		int length = alignedPositions.values().iterator().next().size();  // All lists should have equal lengths.
 		SortedSetMultimap<Double, Integer> result = TreeMultimap.create();
 		double current = 0.0;
 		double next;
 		for (int column = 0; column < length; column++) {
-			next = findPrealignedValue(alignedPositions, column);
-			result.put(next - current, column);
+			next = findPrealignedValue(alignedPositions, column);  // Returns the average position stored in this column.
+			result.put(next - current, column);  // Calculate position to the left neighbor.
 			current = next;
 		}
 		return result;
@@ -199,15 +214,27 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private boolean columnsCombinable(Map<String, List<Double>> alignedPositions, int secondColumn) {
-		if (secondColumn > 0) {  // First entry contains distance to 0 and cannot be combined.
+	/**
+	 * Checks if the specified column could be combined with its left neighbor.
+	 * <p>
+	 * Two columns are not combinable if positions in both columns of the same sequence (of average indices 
+	 * of one alignment to be compared) are occupied either by an average index or a marking to remove this
+	 * position (currently a supergap) later. Only if at least one column for each sequence contains a 
+	 * supergap, combining both columns is possible. 
+	 * 
+	 * @param alignedPositions the position lists
+	 * @param column the column to be checked for combination with its left neighbor
+	 * @return {@code true} if the columns can be combined, {@code false} otherwise
+	 */
+	private boolean columnsCombinable(Map<String, List<Double>> alignedPositions, int column) {
+		if (column > 0) {  // First entry contains distance to 0 and cannot be combined.
 			for (String name : alignedPositions.keySet()) {
 				List<Double> list = alignedPositions.get(name);
-				if (!list.get(secondColumn - 1).isNaN() && !list.get(secondColumn).isNaN()) {
+				if (!list.get(column - 1).isNaN() && !list.get(column).isNaN()) {  // Check if two neighboring positions are both not gaps. (This includes possible marking to remove this position later.)
 					return false;
 				}
 			}
-			return true;
+			return true;  // Return true only of no pairs of non-gap entries were found.
 		}
 		else {
 			return false;
@@ -244,16 +271,16 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	private void compressAlignment(Map<String, List<Double>> alignedPositions, SortedSetMultimap<Double, Integer> columnDistances) {
 		Iterator<Double> distanceIterator = columnDistances.keys().iterator();
-		while (distanceIterator.hasNext()) {
+		while (distanceIterator.hasNext()) {  // Iterate over all existing distances between neighboring columns, starting with the shortest and then increasing.
 			Iterator<Integer> columnIterator = columnDistances.get(distanceIterator.next()).iterator();
-			while (columnIterator.hasNext()) {
+			while (columnIterator.hasNext()) {  // Iterate over all columns that have the current distance to their left neighbor. 
 				int secondColumn = columnIterator.next();
-				if (columnsCombinable(alignedPositions, secondColumn)) {
-					markTwoColumns(alignedPositions, secondColumn);
+				if (columnsCombinable(alignedPositions, secondColumn)) {  // Check if the current column can be aligned with its left neighbor.
+					markTwoColumns(alignedPositions, secondColumn);  // Mark all supergaps in this and the neighboring column for removal.
 				}
 			}
 		}
-		
+
 		removeMarkedCells(alignedPositions);
 	}
 	
@@ -267,16 +294,18 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	@Override
 	public void performAlignment(Document document, ApplicationLogger logger) throws Exception {
-		// Calculate positions:
-		Map<String, Deque<Double>> unalignedPositions = new TreeMap<String, Deque<Double>>();
+		// Calculate average positions:
+		Map<String, Deque<Double>> averageUnalignedPositions = new TreeMap<String, Deque<Double>>();
 		for (String name : document.getAlignments().keyList()) {
-			unalignedPositions.put(name, calculateAverageIndices(document.getAlignments().get(name).getOriginal()));
+			averageUnalignedPositions.put(name, calculateAverageIndices(document.getAlignments().get(name).getOriginal()));
 		}
 		
-		Map<String, List<Double>> alignedPositions = alignPositions(unalignedPositions);
-		compressAlignment(alignedPositions, calculateColumnDistances(alignedPositions));
+		// Calculate superalignment:
+		Map<String, List<Double>> averageAlignedPositions = superalignPositions(averageUnalignedPositions);
+		compressAlignment(averageAlignedPositions, calculateColumnDistances(averageAlignedPositions));
 	
-		calculateUnalignedIndices(document, alignedPositions);
-		setAveragePositions(document, alignedPositions);
+		// Apply superalignment to model:
+		calculateUnalignedIndices(document, averageAlignedPositions);
+		setAveragePositions(document, averageAlignedPositions);
 	}
 }
