@@ -21,6 +21,7 @@ package info.bioinfweb.alignmentcomparator.document.superalignment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import info.bioinfweb.commons.testing.TestTools;
 
 import org.junit.*;
 
+import com.google.common.collect.SortedSetMultimap;
 
 import static org.junit.Assert.*;
 
@@ -92,4 +94,50 @@ public class AverageDegapedPositionAlignerTest {
 //			System.out.println(alignesPositions.get("A").get(i) + "\t" + alignesPositions.get("B").get(i));
 //		}
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test_compressAlignment() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		AverageDegapedPositionAligner aligner = new AverageDegapedPositionAligner();
+		Map<String, List<Double>> superalignedUnalignedPositions = new TreeMap<String, List<Double>>();
+		
+		List<Double> list = new ArrayList<Double>();
+		list.add(Double.NaN);
+		list.add(Double.NaN);
+		list.add(0.5);
+		list.add(Double.NaN);
+		superalignedUnalignedPositions.put("A", list);
+		
+		list = new ArrayList<Double>();
+		list.add(Double.NaN);
+		list.add(0.4);
+		list.add(Double.NaN);
+		list.add(0.6);
+		superalignedUnalignedPositions.put("B", list);
+		
+		list = new ArrayList<Double>();
+		list.add(0.1);
+		list.add(Double.NaN);
+		list.add(Double.NaN);
+		list.add(Double.NaN);
+		superalignedUnalignedPositions.put("C", list);
+
+		TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "compressAlignment", Map.class, SortedSetMultimap.class).invoke(
+				aligner, superalignedUnalignedPositions, 
+				(SortedSetMultimap<Double, Integer>)TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "calculateColumnDistances", 
+						Map.class).invoke(aligner, superalignedUnalignedPositions));
+		
+		list = superalignedUnalignedPositions.get("A");
+		assertEquals(0.5, list.get(0), 0.0000001);
+		assertTrue(Double.isNaN(list.get(1)));
+		
+		list = superalignedUnalignedPositions.get("B");
+		assertEquals(0.4, list.get(0), 0.0000001);
+		assertEquals(0.6, list.get(0), 0.0000001);
+		
+		list = superalignedUnalignedPositions.get("C");
+		assertEquals(0.1, list.get(0), 0.0000001);
+		assertTrue(Double.isNaN(list.get(1)));
+	}	
 }

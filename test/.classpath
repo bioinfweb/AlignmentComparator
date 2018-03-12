@@ -21,5 +21,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.commons.experimental"/>
 	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/forester.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.bioinfweb.libralign.test"/>
+	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/guava-13.0.1.jar"/>
+	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/info.webinsel.wikihelp.client.jar"/>
+	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/org.jdesktop.swingx.scrollpaneselector.jar"/>
+	<classpathentry kind="lib" path="/AlignmentComparator/include/lib/owlapi-XMLUtils-4.1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
