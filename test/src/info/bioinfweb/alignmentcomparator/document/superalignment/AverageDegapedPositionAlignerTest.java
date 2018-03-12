@@ -62,7 +62,7 @@ public class AverageDegapedPositionAlignerTest {
 		
 		@SuppressWarnings("unchecked")
 		Map<String, List<Double>> alignesPositions = (Map<String, List<Double>>)TestTools.getPrivateMethod(
-				AverageDegapedPositionAligner.class, "alignPositions", Map.class).invoke(aligner, unalignedPositions);
+				AverageDegapedPositionAligner.class, "superalignPositions", Map.class).invoke(aligner, unalignedPositions);
 		
 		List<Double> list = alignesPositions.get("A");
 		assertEquals(0.1, list.get(0), 0.0000001);
