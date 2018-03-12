@@ -39,7 +39,8 @@ import com.google.common.collect.TreeMultimap;
 
 
 public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
-	private static final double REMOVE_LATER = -1.0;
+	private static final double REMOVE = -1.0;
+	private static final double REMOVE_OPTION = -2.0;
 	
 	
 	private double calculateRelativeIndex(OriginalAlignment model, String sequenceID, int alignedIndex) {
@@ -168,7 +169,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		Iterator<String> iterator = positions.keySet().iterator();
 		while (iterator.hasNext()) {
 			Double result = positions.get(iterator.next()).get(column);
-			if (!result.isNaN() && (result != REMOVE_LATER)) {
+			if (!result.isNaN() && (result != REMOVE)) {
 				return result;
 			}
 		}
@@ -184,6 +185,9 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	 * @return the sorted multimap
 	 */
 	private SortedSetMultimap<Double, Integer> calculateColumnDistances(Map<String, List<Double>> alignedPositions) {
+		// As an alternative to a sorted multimap, this implementation could also just return a sorted list. In this case the map 
+		// must either be converted in the end or a sorting algorithm would have to be applied to sort a list of pairs.
+		
 		int length = alignedPositions.values().iterator().next().size();  // All lists should have equal lengths.
 		SortedSetMultimap<Double, Integer> result = TreeMultimap.create();
 		double current = 0.0;
@@ -215,6 +219,11 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
+	private boolean isCellDeletable(Double value) {
+		return value.isNaN() || (value == REMOVE_OPTION);  // Average indices and REMOVE markings cannot be deleted.
+	}
+	
+	
 	/**
 	 * Checks if the specified column could be combined with its left neighbor.
 	 * <p>
@@ -231,11 +240,11 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		if (column > 0) {  // First entry contains distance to 0 and cannot be combined.
 			for (String name : alignedPositions.keySet()) {
 				List<Double> list = alignedPositions.get(name);
-				if (!list.get(column - 1).isNaN() && !list.get(column).isNaN()) {  // Check if two neighboring positions are both not gaps. (This includes possible marking to remove this position later.)
+				if (!isCellDeletable(list.get(column - 1)) && !isCellDeletable(list.get(column))) {  // Check if at least one position could be deleted.
 					return false;
 				}
 			}
-			return true;  // Return true only of no pairs of non-gap entries were found.
+			return true;  // Return true only of no pairs of non-deletable entries were found.
 		}
 		else {
 			return false;
@@ -243,36 +252,78 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
+	private void removeOuterOptionMarking(List<Double> list, int pos, int direction) {
+		while (list.get(pos) != REMOVE_OPTION) {  // No bound check is performed, since a remove option must appear before the end of the list. If an IndexOutOfBoundsException happens here, the contents of the list were incorrect.
+			pos += direction;
+		}
+		list.set(pos, Double.NaN);  // Replace remove option by gap again.
+	}
+	
+	
 	private void markTwoColumns(Map<String, List<Double>> alignedPositions, int secondColumn) {
 		if (secondColumn > 0) {  // First entry contains distance to 0 and cannot be combined.
-			boolean preferGapLeft = (secondColumn == 1) || 
-					((secondColumn < alignedPositions.values().iterator().next().size() - 1) &&
-							columnsCombinable(alignedPositions, secondColumn + 1) &&  // Check if the right columns could be combined  
-							//TODO The result of columnsCombinable() could change during the loop in this method. Therefore both sides could 
-							//     be blocked unnecessarily if a gap is moved away from the side with the lower distance that will anyway be 
-							//     blocked after this method.
-							//     Maybe both sides should be marked and the decision be made after the loop or optional left and right 
-							//     markings could be used and no check needs to be performed in here.
-							(findPrealignedValue(alignedPositions, secondColumn - 1) - findPrealignedValue(alignedPositions, secondColumn - 2) > 
-							findPrealignedValue(alignedPositions, secondColumn + 1) - findPrealignedValue(alignedPositions, secondColumn)));
-			
 			for (String name : alignedPositions.keySet()) {
 				List<Double> list = alignedPositions.get(name);
-				if (list.get(secondColumn).isNaN()) {
-					if (list.get(secondColumn - 1).isNaN()) {  // Gap could be removed on both sides.
-						if (preferGapLeft) {  // Distance left of the current merge is higher or we are on the left end of the alignment => Remove left gap.
-							list.set(secondColumn - 1, REMOVE_LATER);
-						}
-						else {  // Distance right of the current merge is higher or we are on the right end of the alignment => Remove right gap.
-							list.set(secondColumn, REMOVE_LATER);
-						}
+				if (list.get(secondColumn - 1).isNaN()) {  // -
+					if (list.get(secondColumn).isNaN()) {  // -- -> OO
+						list.set(secondColumn - 1, REMOVE_OPTION);
+						list.set(secondColumn, REMOVE_OPTION);
 					}
-					else {  // Gap can only be removed in the right.
-						list.set(secondColumn, REMOVE_LATER);
+					else if (list.get(secondColumn) == REMOVE_OPTION) {  // -O -> OR
+						list.set(secondColumn - 1, REMOVE_OPTION);
+						list.set(secondColumn, REMOVE);
+					}
+					else {  // -R -> RR or -Z -> RZ
+						list.set(secondColumn - 1, REMOVE);
 					}
 				}
-				else {  // Gap can only be removed in the left.
-					list.set(secondColumn - 1, REMOVE_LATER);
+				else if (list.get(secondColumn - 1) == REMOVE_OPTION) {  // O
+					if (list.get(secondColumn).isNaN()) {  // O- -> RO
+						list.set(secondColumn - 1, REMOVE);
+						list.set(secondColumn, REMOVE_OPTION);
+					}
+					else if (list.get(secondColumn) == REMOVE_OPTION) {  // OO -> RR (Both neighboring pairs are two remove options.)
+						list.set(secondColumn - 1, REMOVE);
+						list.set(secondColumn, REMOVE);
+					}
+					else {  // O(R*)OR -> -$1RR or O(R*)OZ -> -$1RZ (The other rules do not allow anything else then R to be between Os. Therefore no additional checks are necessary.)
+						list.set(secondColumn - 1, REMOVE);
+						removeOuterOptionMarking(list, secondColumn - 2, -1);  // Replace further left O by -.
+					}
+				}
+				else {  // R or Z
+					if (list.get(secondColumn).isNaN()) {  // R- -> RR or Z- -> ZR
+						list.set(secondColumn, REMOVE);
+					}
+					else if (list.get(secondColumn) == REMOVE_OPTION) {  // RO(R*)O -> RR$1- or ZO(R*)O -> ZR$1- (The other rules do not allow anything else then R to be between Os. Therefore no additional checks are necessary.)
+						list.set(secondColumn, REMOVE);
+						removeOuterOptionMarking(list, secondColumn + 1, 1);  // Replace further right O by -.
+					}
+					// The else case would RR, RZ, ZR or ZZ which all should not occur when this method was called, because the column would not be combinable.
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Replaces possible remaining remove options.
+	 * 
+	 * @param alignedPositions
+	 */
+	private void processRemoveOptions(Map<String, List<Double>> alignedPositions) {
+		for (String name : alignedPositions.keySet()) {
+			List<Double> list = alignedPositions.get(name);
+			boolean isLeftOption = true;
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i) == REMOVE_OPTION) {
+					if (isLeftOption) {
+						list.set(i, REMOVE);  // Replace left option by REMOVE marking.
+					}
+					else {
+						list.set(i, Double.NaN);  // Replace right option by gap.
+					}
+					isLeftOption = !isLeftOption;
 				}
 			}
 		}
@@ -283,7 +334,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		for (String name : alignedPositions.keySet()) {
 			Iterator<Double> iterator = alignedPositions.get(name).iterator();
 			while (iterator.hasNext()) {
-				if (iterator.next() == REMOVE_LATER) {
+				if (iterator.next() == REMOVE) {
 					iterator.remove();
 				}
 			}
@@ -305,6 +356,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		}
 
 		printSuperAlignment(alignedPositions);
+		processRemoveOptions(alignedPositions);
 		removeMarkedCells(alignedPositions);
 	}
 	
@@ -325,7 +377,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 				if (position.isNaN()) {
 					System.out.print("-");
 				}
-				else if (position == REMOVE_LATER) {
+				else if (position == REMOVE) {
 					System.out.print("R");
 				}
 				else {
