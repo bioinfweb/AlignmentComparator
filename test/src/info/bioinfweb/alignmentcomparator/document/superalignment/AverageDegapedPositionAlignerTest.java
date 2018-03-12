@@ -99,6 +99,8 @@ public class AverageDegapedPositionAlignerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test_compressAlignment() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		// See also "Optimale Seitenwahl beim der Spaltenzusammenfassung in AverageIndex.xlsx".
+		
 		AverageDegapedPositionAligner aligner = new AverageDegapedPositionAligner();
 		Map<String, List<Double>> superalignedUnalignedPositions = new TreeMap<String, List<Double>>();
 		
@@ -134,7 +136,7 @@ public class AverageDegapedPositionAlignerTest {
 		
 		list = superalignedUnalignedPositions.get("B");
 		assertEquals(0.4, list.get(0), 0.0000001);
-		assertEquals(0.6, list.get(0), 0.0000001);
+		assertEquals(0.6, list.get(1), 0.0000001);
 		
 		list = superalignedUnalignedPositions.get("C");
 		assertEquals(0.1, list.get(0), 0.0000001);
