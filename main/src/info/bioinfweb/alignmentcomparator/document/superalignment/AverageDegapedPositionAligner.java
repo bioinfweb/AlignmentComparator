@@ -256,7 +256,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		while (list.get(pos) != REMOVE_OPTION) {  // No bound check is performed, since a remove option must appear before the end of the list. If an IndexOutOfBoundsException happens here, the contents of the list were incorrect.
 			pos += direction;
 		}
-		list.set(pos, Double.NaN);  // Replace remove option by gap again.
+		list.set(pos, REMOVE);
 	}
 	
 	
