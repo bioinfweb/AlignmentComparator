@@ -125,7 +125,7 @@ public class AverageDegapedPositionAlignerTest {
 		list.add(Double.NaN);
 		superalignedUnalignedPositions.put("C", list);
 
-		TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "compressAlignment", Map.class, SortedSetMultimap.class).invoke(
+		TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "shortenAlignment", Map.class, SortedSetMultimap.class).invoke(
 				aligner, superalignedUnalignedPositions, 
 				(SortedSetMultimap<Double, Integer>)TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "calculateColumnDistances", 
 						Map.class).invoke(aligner, superalignedUnalignedPositions));
@@ -190,7 +190,7 @@ public class AverageDegapedPositionAlignerTest {
 		list.add(Double.NaN);
 		superalignedUnalignedPositions.put("E", list);
 
-		TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "compressAlignment", Map.class, SortedSetMultimap.class).invoke(
+		TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "shortenAlignment", Map.class, SortedSetMultimap.class).invoke(
 				aligner, superalignedUnalignedPositions, 
 				(SortedSetMultimap<Double, Integer>)TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "calculateColumnDistances", 
 						Map.class).invoke(aligner, superalignedUnalignedPositions));
