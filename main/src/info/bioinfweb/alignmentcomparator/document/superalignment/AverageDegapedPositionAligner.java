@@ -342,7 +342,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private void compressAlignment(Map<String, List<Double>> alignedPositions, SortedSetMultimap<Double, Integer> columnDistances) {
+	private void shortenAlignment(Map<String, List<Double>> alignedPositions, SortedSetMultimap<Double, Integer> columnDistances) {
 		Iterator<Double> distanceIterator = columnDistances.keys().iterator();
 		while (distanceIterator.hasNext()) {  // Iterate over all existing distances between neighboring columns, starting with the shortest and then increasing.
 			Iterator<Integer> columnIterator = columnDistances.get(distanceIterator.next()).iterator();
@@ -404,7 +404,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		// Calculate superalignment:
 		Map<String, List<Double>> superalignedUnalignedPositions = superalignPositions(averageUnalignedPositions);
 		//printSuperAlignment(superalignedUnalignedPositions);
-		compressAlignment(superalignedUnalignedPositions, calculateColumnDistances(superalignedUnalignedPositions));
+		shortenAlignment(superalignedUnalignedPositions, calculateColumnDistances(superalignedUnalignedPositions));
 		//printSuperAlignment(superalignedUnalignedPositions);
 	
 		// Apply superalignment to model:
