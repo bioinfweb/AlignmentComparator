@@ -195,24 +195,10 @@ public class AverageDegapedPositionAlignerTest {
 				(SortedSetMultimap<Double, Integer>)TestTools.getPrivateMethod(AverageDegapedPositionAligner.class, "calculateColumnDistances", 
 						Map.class).invoke(aligner, superalignedUnalignedPositions));
 		
-		list = superalignedUnalignedPositions.get("A");
-		assertTrue(Double.isNaN(list.get(0)));
-		assertEquals(0.8, list.get(1), 0.0000001);
-		
-		list = superalignedUnalignedPositions.get("B");
-		assertEquals(0.1, list.get(0), 0.0000001);
-		assertTrue(Double.isNaN(list.get(1)));
-		
-		list = superalignedUnalignedPositions.get("C");
-		assertEquals(0.2, list.get(0), 0.0000001);
-		assertTrue(Double.isNaN(list.get(1)));
-
-		list = superalignedUnalignedPositions.get("D");
-		assertTrue(Double.isNaN(list.get(0)));
-		assertEquals(0.4, list.get(1), 0.0000001);
-		
-		list = superalignedUnalignedPositions.get("E");
-		assertTrue(Double.isNaN(list.get(0)));
-		assertEquals(0.5, list.get(1), 0.0000001);
+		assertEquals(0.8, superalignedUnalignedPositions.get("A").get(0), 0.0000001);
+		assertEquals(0.1, superalignedUnalignedPositions.get("B").get(0), 0.0000001);
+		assertEquals(0.2, superalignedUnalignedPositions.get("C").get(0), 0.0000001);
+		assertEquals(0.4, superalignedUnalignedPositions.get("D").get(0), 0.0000001);
+		assertEquals(0.5, superalignedUnalignedPositions.get("E").get(0), 0.0000001);
 	}	
 }
