@@ -380,6 +380,9 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 				else if (position == REMOVE) {
 					System.out.print("R");
 				}
+				else if (position == REMOVE_OPTION) {
+					System.out.print("O");
+				}
 				else {
 					System.out.print(format.format(position));
 				}
