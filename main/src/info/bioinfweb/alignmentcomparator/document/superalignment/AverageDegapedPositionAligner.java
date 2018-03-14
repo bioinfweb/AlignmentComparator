@@ -31,6 +31,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeMap;
 
 import com.google.common.collect.SortedSetMultimap;
@@ -45,7 +46,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	private double calculateRelativeIndex(OriginalAlignment model, String sequenceID, int alignedIndex) {
 		IndexRelation relation = model.getIndexTranslator().getUnalignedIndex(sequenceID, alignedIndex);
-		double unalignedIndex;
+		double unalignedPosSum;
 		if (relation.getCorresponding() == IndexRelation.GAP) {
 			// Calculate positions before the gap:
 			int unalignedPosBefore;  // the unaligned position of the first token before the gap (starting with index 1) or 0 if the gap is leading
@@ -78,17 +79,14 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			
 			// Calculate position in the gap:
 			double gapLength = gapEndPos - gapStartPos;
-			double gapCenterPos = alignedIndex + 0.5;  // A gap of length 1 should have an index between the indices of both ends and not one equal to its start.
-			unalignedIndex =
-					unalignedPosBefore * (gapCenterPos - gapStartPos) / gapLength +  // The position before the gap weighted by the distance of the current position to the start of the gap relative to the gap length. 
-					unalignedPosAfter * (gapEndPos - gapCenterPos) / gapLength;  // The position after the gap weighted by the distance of the current position to the end of the gap relative to the gap length.
+			double relGapPosition = (alignedIndex + 0.5 - gapStartPos) / gapLength;  // 0.5 is added since a gap of length 1 should have an index between the indices of both ends and not one equal to its start.
+			unalignedPosSum = unalignedPosBefore * (1 - relGapPosition) + unalignedPosAfter * relGapPosition;
 		}
 		else {  // Aligned index is outside of a gap.
-			unalignedIndex = relation.getCorresponding() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
+			unalignedPosSum = relation.getCorresponding() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
 		}
 		
-		
-		return unalignedIndex / (double)(model.getIndexTranslator().getUnalignedLength(sequenceID) + 1);  // + 1 since the positions before and after the alignment are also modeled.
+		return unalignedPosSum / (double)(model.getIndexTranslator().getUnalignedLength(sequenceID) + 1);  // + 1 since the positions before and after the alignment are also modeled.
 	}
 	
 	
@@ -96,12 +94,15 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		int alignmentLength = model.getMaxSequenceLength();
 		Deque<Double> result = new ArrayDeque<Double>(alignmentLength);
 		for (int column = 0; column < alignmentLength; column++) {
-			double averageIndex = 0.0;
+			double positionSum = 0.0;
 			Iterator<String> seqIDIterator = model.sequenceIDIterator();
 			while (seqIDIterator.hasNext()) {
-				averageIndex += calculateRelativeIndex(model, seqIDIterator.next(), column);
+				positionSum += calculateRelativeIndex(model, seqIDIterator.next(), column);
 			}
-			result.add(averageIndex / model.getSequenceCount());
+//			if ((result.size() > 1) && (result.getLast() > (positionSum / model.getSequenceCount()))) {
+//				System.out.println("Decrease at position " + column);
+//			}
+			result.add(positionSum / model.getSequenceCount());
 		}
 		return result;
 	}
@@ -343,9 +344,14 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	
 	private void shortenAlignment(Map<String, List<Double>> alignedPositions, SortedSetMultimap<Double, Integer> columnDistances) {
-		Iterator<Double> distanceIterator = columnDistances.keys().iterator();
+		Iterator<Double> distanceIterator = columnDistances.keySet().iterator();  // keys() would instead return keys with mutiple values multiple times.
 		while (distanceIterator.hasNext()) {  // Iterate over all existing distances between neighboring columns, starting with the shortest and then increasing.
-			Iterator<Integer> columnIterator = columnDistances.get(distanceIterator.next()).iterator();
+			Double distance = distanceIterator.next();
+//			SortedSet<Integer> set = columnDistances.get(distance);
+//			if (set.size() > 1) {
+//				System.out.println(distance + " " + set.size());
+//			}
+			Iterator<Integer> columnIterator = columnDistances.get(distance).iterator();
 			while (columnIterator.hasNext()) {  // Iterate over all columns that have the current distance to their left neighbor. 
 				int secondColumn = columnIterator.next();
 				if (columnsCombinable(alignedPositions, secondColumn)) {  // Check if the current column can be aligned with its left neighbor.
