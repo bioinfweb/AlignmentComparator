@@ -99,9 +99,6 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			while (seqIDIterator.hasNext()) {
 				positionSum += calculateRelativeIndex(model, seqIDIterator.next(), column);
 			}
-//			if ((result.size() > 1) && (result.getLast() > (positionSum / model.getSequenceCount()))) {
-//				System.out.println("Decrease at position " + column);
-//			}
 			result.add(positionSum / model.getSequenceCount());
 		}
 		return result;
