@@ -353,6 +353,8 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 					//System.out.println((secondColumn - 1) + " and " + secondColumn + " marked for merging.");
 				}
 			}
+			//TODO If more than two columns are contained in one map entry, the order of processing them may have an effect on the alignment, since overlapping pairs may block each others merges.
+			//     Even for two overlapping columns, it may matter which one to choose (if both can't be merged) for future neighboring merges. 
 		}
 
 		//printSuperAlignment(alignedPositions);
