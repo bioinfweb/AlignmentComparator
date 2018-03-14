@@ -344,7 +344,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	
 	
 	private void shortenAlignment(Map<String, List<Double>> alignedPositions, SortedSetMultimap<Double, Integer> columnDistances) {
-		Iterator<Double> distanceIterator = columnDistances.keySet().iterator();  // keys() would instead return keys with mutiple values multiple times.
+		Iterator<Double> distanceIterator = columnDistances.keySet().iterator();  // keys() would instead return keys with multiple values multiple times.
 		while (distanceIterator.hasNext()) {  // Iterate over all existing distances between neighboring columns, starting with the shortest and then increasing.
 			Double distance = distanceIterator.next();
 //			SortedSet<Integer> set = columnDistances.get(distance);
