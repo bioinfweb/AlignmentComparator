@@ -344,32 +344,13 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		Iterator<Double> distanceIterator = columnDistances.keySet().iterator();  // keys() would instead return keys with multiple values multiple times.
 		while (distanceIterator.hasNext()) {  // Iterate over all existing distances between neighboring columns, starting with the shortest and then increasing.
 			Double distance = distanceIterator.next();
-//			SortedSet<Integer> set = columnDistances.get(distance);
-//			if (set.size() > 1) {
-//				System.out.print(distance + " " + set.size() + ": ");
-//				int last = -2;
-//				int start = -2;
-//				for (Integer column : set) {
-//					if (last != column - 1) {
-//						if ((start != -2) && (last - start >= 2)) {
-//							System.out.print(start + "-" + last + " ");
-//						}
-//						start = column;
-//					}
-//					last = column;
-//				}
-//				System.out.println();
-//			}
 			Iterator<Integer> columnIterator = columnDistances.get(distance).iterator();
 			while (columnIterator.hasNext()) {  // Iterate over all columns that have the current distance to their left neighbor. 
 				int secondColumn = columnIterator.next();
 				if (columnsCombinable(alignedPositions, secondColumn)) {  // Check if the current column can be aligned with its left neighbor.
 					markTwoColumns(alignedPositions, secondColumn);  // Mark all supergaps in this and the neighboring column for removal.
-					//System.out.println((secondColumn - 1) + " and " + secondColumn + " marked for merging.");
 				}
 			}
-			//TODO If more than two columns are contained in one map entry, the order of processing them may have an effect on the alignment, since overlapping pairs may block each others merges.
-			//     Even for two overlapping columns, it may matter which one to choose (if both can't be merged) for future neighboring merges. 
 		}
 
 		//printSuperAlignment(alignedPositions);
