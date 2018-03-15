@@ -31,7 +31,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.TreeMap;
 
 import com.google.common.collect.SortedSetMultimap;
@@ -343,8 +342,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	private void shortenAlignment(Map<String, List<Double>> alignedPositions, SortedSetMultimap<Double, Integer> columnDistances) {
 		Iterator<Double> distanceIterator = columnDistances.keySet().iterator();  // keys() would instead return keys with multiple values multiple times.
 		while (distanceIterator.hasNext()) {  // Iterate over all existing distances between neighboring columns, starting with the shortest and then increasing.
-			Double distance = distanceIterator.next();
-			Iterator<Integer> columnIterator = columnDistances.get(distance).iterator();
+			Iterator<Integer> columnIterator = columnDistances.get(distanceIterator.next()).iterator();
 			while (columnIterator.hasNext()) {  // Iterate over all columns that have the current distance to their left neighbor. 
 				int secondColumn = columnIterator.next();
 				if (columnsCombinable(alignedPositions, secondColumn)) {  // Check if the current column can be aligned with its left neighbor.
