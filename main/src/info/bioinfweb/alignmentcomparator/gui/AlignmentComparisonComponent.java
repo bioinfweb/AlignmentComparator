@@ -136,7 +136,7 @@ public class AlignmentComparisonComponent extends MultipleAlignmentsContainer im
 		result.setAlignmentModel(getDocument().getAlignments().get(alignmentName).getSuperaligned(), false);
 		
 		result.getDataAreas().getTopAreas().add(new LabelDataArea(result.getContentArea(), result, alignmentName, false, true));
-		//result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
+		result.getDataAreas().getBottomAreas().add(new AveragePositionArea(result.getContentArea(), result, alignmentName));
 		
 		result.getPaintSettings().getTokenPainterList().set(0, createTokenPainter());
 		

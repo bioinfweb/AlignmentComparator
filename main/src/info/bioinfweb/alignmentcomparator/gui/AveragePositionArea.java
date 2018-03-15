@@ -28,6 +28,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JComponent;
+
 import info.bioinfweb.alignmentcomparator.Main;
 import info.bioinfweb.commons.graphics.FontCalculator;
 import info.bioinfweb.libralign.alignmentarea.AlignmentArea;
@@ -47,7 +49,7 @@ public class AveragePositionArea extends DataArea {
 	private static final int BORDER_WIDTH = 1;
 	
 	private String alignmentName;
-	private DecimalFormat format = new DecimalFormat("0.000");
+	private DecimalFormat format = new DecimalFormat("0.00000000");
 	
 	
 	public AveragePositionArea(AlignmentContentArea owner, AlignmentArea labeledArea, String alignmentName) {
@@ -102,6 +104,7 @@ public class AveragePositionArea extends DataArea {
 	@Override
 	public double getHeight() {
 		Font font = getPaintSettings().getTokenHeightFont();
+		//font.getStringBounds(format.format(0.0), ((JComponent)getToolkitComponent()).getGraphics().getf)
 		return FontCalculator.getInstance().getWidth(font, format.format(0.0)) + 2 * BORDER_WIDTH;
 	}
 	
@@ -130,6 +133,8 @@ public class AveragePositionArea extends DataArea {
 	
 			// Paint output:
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 	  	double y = -getLabeledAlignmentArea().getContentArea().paintXByColumn(firstIndex);  // Coordinates in rotated system.
 			g.setColor(SystemColor.menuText);
 	  	g.setFont(font);
