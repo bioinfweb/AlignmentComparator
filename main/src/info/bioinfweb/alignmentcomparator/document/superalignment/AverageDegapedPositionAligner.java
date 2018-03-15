@@ -346,7 +346,19 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			Double distance = distanceIterator.next();
 //			SortedSet<Integer> set = columnDistances.get(distance);
 //			if (set.size() > 1) {
-//				System.out.println(distance + " " + set.size());
+//				System.out.print(distance + " " + set.size() + ": ");
+//				int last = -2;
+//				int start = -2;
+//				for (Integer column : set) {
+//					if (last != column - 1) {
+//						if ((start != -2) && (last - start >= 2)) {
+//							System.out.print(start + "-" + last + " ");
+//						}
+//						start = column;
+//					}
+//					last = column;
+//				}
+//				System.out.println();
 //			}
 			Iterator<Integer> columnIterator = columnDistances.get(distance).iterator();
 			while (columnIterator.hasNext()) {  // Iterate over all columns that have the current distance to their left neighbor. 
