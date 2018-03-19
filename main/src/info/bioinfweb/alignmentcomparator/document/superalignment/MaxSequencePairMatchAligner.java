@@ -147,10 +147,10 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	
 	
 	private Matrix calculateDirectionMatrix(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
-		//TODO Refactor to use only one row of the score matrix at a time.
+		//TODO Refactor to use only one row of the score matrix at a time in the future.
 		
-		final int columnCountA = groupA.get(0).getMaxSequenceLength();  // All alignments in one group should have the length, since they are already superaligned.
-		final int columnCountB = groupB.get(0).getMaxSequenceLength();  // All alignments in one group should have the length, since they are already superaligned.
+		final int columnCountA = groupA.get(0).getMaxSequenceLength();  // All alignments in one group should have the same length, since they are already superaligned.
+		final int columnCountB = groupB.get(0).getMaxSequenceLength();  // All alignments in one group should have the same length, since they are already superaligned.
 		final long[][] scoreMatrix = new long[columnCountA + 1][columnCountB + 1];  // Values are initialized with 0.
 		
 		// Write local scores into matrix:
@@ -163,7 +163,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 					if (!alignmentA.getTokenSet().isGapToken(tokenA) && (tokenA != SuperalignedModelDecorator.SUPER_ALIGNMENT_GAP)) {
 						String seqName = alignmentA.sequenceNameByID(seqIDInFirst);
 						int unalignedIndex = alignmentA.getIndexTranslator().getUnalignedIndex(seqIDInFirst, columnInFirst).getCorresponding();
-						if (unalignedIndex >= 0) {
+						if (unalignedIndex >= 0) {  // This should never happen, because columnInFirst should be in range and the token is not a gap.
 							for (TranslatableAlignment alignmentB : groupB) {
 								scoreMatrix[columnInFirst + 1][alignmentB.getIndexTranslator().getAlignedIndex(
 										alignmentB.sequenceIDsByName(seqName).iterator().next(), unalignedIndex) + 1]++;
