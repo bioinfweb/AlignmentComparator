@@ -89,7 +89,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-	private Deque<Double> calculateAverageIndices(OriginalAlignment model) {
+	private Deque<Double> calculateAveragePositions(OriginalAlignment model) {
 		int alignmentLength = model.getMaxSequenceLength();
 		Deque<Double> result = new ArrayDeque<Double>(alignmentLength);
 		for (int column = 0; column < alignmentLength; column++) {
@@ -394,7 +394,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		// Calculate average positions:
 		Map<String, Deque<Double>> averageUnalignedPositions = new TreeMap<String, Deque<Double>>();
 		for (String name : document.getAlignments().keyList()) {
-			averageUnalignedPositions.put(name, calculateAverageIndices(document.getAlignments().get(name).getOriginal()));
+			averageUnalignedPositions.put(name, calculateAveragePositions(document.getAlignments().get(name).getOriginal()));
 		}
 		
 		// Calculate superalignment:
