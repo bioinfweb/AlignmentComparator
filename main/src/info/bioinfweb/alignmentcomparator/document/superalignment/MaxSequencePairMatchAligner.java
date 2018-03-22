@@ -191,7 +191,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 		
 		for (int column = 1; column < scoreMatrix.length; column++) {
 			for (int row = 1; row < scoreMatrix[0].length; row++) {
-				scoreMatrix[column][row] += scoreMatrix[column - 1][row - 1];
+				scoreMatrix[column][row] += scoreMatrix[column - 1][row - 1];  // Column match score only counts for diagonal moves. 
 				directionMatrix[column][row] = DIAGONAL;
 				
 				if (scoreMatrix[column - 1][row] > scoreMatrix[column][row]) {
