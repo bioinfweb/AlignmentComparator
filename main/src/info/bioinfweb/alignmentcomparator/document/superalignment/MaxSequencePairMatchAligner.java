@@ -135,15 +135,15 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-//	private void printScoreMatrix(long[][] matrix) {
-//		for (int i = 0; i < matrix.length; i++) {
-//			for (int j = 0; j < matrix[i].length; j++) {
-//				System.out.print(String.format("% 3d", matrix[i][j]) + " ");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//	}
+	private void printScoreMatrix(long[][] matrix) {
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				System.out.print(String.format("% 4d", matrix[i][j]));
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
 	
 	
 	private Matrix calculateDirectionMatrix(List<? extends TranslatableAlignment> groupA, List<? extends TranslatableAlignment> groupB) {
@@ -205,7 +205,8 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 				}
 			}
 		}
-
+		
+		printScoreMatrix(scoreMatrix);
 		return new Matrix(directionMatrix, scoreMatrix[columnCountA][columnCountB]);
 	}
 
@@ -328,19 +329,19 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-//	private static void printNode(PhylogenyNode node, String prefix) {
-//		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
-//		for (PhylogenyNode child : node.getDescendants()) {
-//			printNode(child, prefix + "  ");
-//		}
-//	}
+	private static void printNode(PhylogenyNode node, String prefix) {
+		System.out.println(prefix + node.getId() + " " + node.getName() + " " + node.getDistanceToParent());
+		for (PhylogenyNode child : node.getDescendants()) {
+			printNode(child, prefix + "  ");
+		}
+	}
 	
 	
 	@Override
 	public void performAlignment(Document document, ApplicationLogger logger) throws Exception {
 		if (document.getAlignments().size() > 2) {
 			Phylogeny tree = calculateGuideTree(document, logger);
-			//printNode(tree.getRoot(), "");
+			printNode(tree.getRoot(), "");
 			processGuideTree(document, tree.getRoot(), logger);
 		}
 		else {
