@@ -24,7 +24,7 @@ import info.bioinfweb.alignmentcomparator.document.OriginalAlignment;
 import info.bioinfweb.commons.log.ApplicationLogger;
 import info.bioinfweb.libralign.model.utils.indextranslation.IndexRelation;
 
-import java.text.DecimalFormat;
+import java.text.DecimalFormat;  // Needed for optional output methods.
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
