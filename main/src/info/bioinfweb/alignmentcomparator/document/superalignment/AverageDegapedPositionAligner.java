@@ -43,7 +43,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	private static final double REMOVE_OPTION = -2.0;
 	
 	
-	private double calculateRelativeIndex(OriginalAlignment model, String sequenceID, int alignedIndex) {
+	private double calculateUnalignedPosition(OriginalAlignment model, String sequenceID, int alignedIndex) {
 		IndexRelation relation = model.getIndexTranslator().getUnalignedIndex(sequenceID, alignedIndex);
 		double unalignedPosSum;
 		if (relation.getCorresponding() == IndexRelation.GAP) {
@@ -99,12 +99,16 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		int alignmentLength = model.getMaxSequenceLength();
 		Deque<Double> result = new ArrayDeque<Double>(alignmentLength);
 		for (int column = 0; column < alignmentLength; column++) {
+			System.out.print("Column " + column + ": ");
 			double positionSum = 0.0;
 			Iterator<String> seqIDIterator = model.sequenceIDIterator();
 			while (seqIDIterator.hasNext()) {
-				positionSum += calculateRelativeIndex(model, seqIDIterator.next(), column);
+				double value = calculateUnalignedPosition(model, seqIDIterator.next(), column);
+				System.out.print(value + " ");
+				positionSum += value;
 			}
 			result.add(positionSum / model.getSequenceCount());
+			System.out.println();
 		}
 		return result;
 	}
@@ -195,11 +199,26 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		SortedSetMultimap<Double, Integer> result = TreeMultimap.create();
 		double current = 0.0;
 		double next;
+		System.out.print("Column distances: ");
 		for (int column = 0; column < length; column++) {
 			next = findPrealignedValue(alignedPositions, column);  // Returns the average position stored in this column.
 			result.put(next - current, column);  // Calculate position to the left neighbor.
+			System.out.print(new DecimalFormat("0.00").format(next - current) + " ");
 			current = next;
 		}
+		System.out.println();
+		
+		System.out.print("Order: ");
+		for (Double distance : result.keySet()) {
+			System.out.print(new DecimalFormat("0.00").format(distance) + ": [");
+			for (Integer column : result.get(distance)) {
+				System.out.print(column + " ");
+			}
+			System.out.print("] ");
+		}
+		System.out.println();
+		
+		
 		return result;
 	}
 	
@@ -357,7 +376,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 
-		//printSuperAlignment(alignedPositions);
+		printSuperAlignment(alignedPositions);
 		processRemoveOptions(alignedPositions);
 		removeMarkedCells(alignedPositions);
 	}
@@ -370,29 +389,29 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 	}
 	
 	
-//	private void printSuperAlignment(Map<String, List<Double>> alignment) {
-//		DecimalFormat format = new DecimalFormat("0.00000");
-//		for (String name : alignment.keySet()) {
-//			System.out.print(name);
-//			for (Double position : alignment.get(name)) {
-//				System.out.print("\t");
-//				if (position.isNaN()) {
-//					System.out.print("-");
-//				}
-//				else if (position == REMOVE) {
-//					System.out.print("R");
-//				}
-//				else if (position == REMOVE_OPTION) {
-//					System.out.print("O");
-//				}
-//				else {
-//					System.out.print(format.format(position));
-//				}
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//	}
+	private void printSuperAlignment(Map<String, List<Double>> alignment) {
+		DecimalFormat format = new DecimalFormat("0.00000");
+		for (String name : alignment.keySet()) {
+			System.out.print(name);
+			for (Double position : alignment.get(name)) {
+				System.out.print("\t");
+				if (position.isNaN()) {
+					System.out.print("-");
+				}
+				else if (position == REMOVE) {
+					System.out.print("R");
+				}
+				else if (position == REMOVE_OPTION) {
+					System.out.print("O");
+				}
+				else {
+					System.out.print(format.format(position));
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
 	
 	
 	@Override
@@ -405,9 +424,9 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		
 		// Calculate superalignment:
 		Map<String, List<Double>> superalignedUnalignedPositions = superalignPositions(averageUnalignedPositions);
-		//printSuperAlignment(superalignedUnalignedPositions);
+		printSuperAlignment(superalignedUnalignedPositions);
 		shortenAlignment(superalignedUnalignedPositions, calculateColumnDistances(superalignedUnalignedPositions));
-		//printSuperAlignment(superalignedUnalignedPositions);
+		printSuperAlignment(superalignedUnalignedPositions);
 	
 		// Apply superalignment to model:
 		calculateUnalignedIndices(document, superalignedUnalignedPositions);
