@@ -85,7 +85,13 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			unalignedPosSum = relation.getCorresponding() + 1;  // + 1, since the position of the first token and the position at the start of the alignment should be different to model leading gaps.
 		}
 		
-		return unalignedPosSum / (double)(model.getIndexTranslator().getUnalignedLength(sequenceID) + 1);  // + 1 since the positions before and after the alignment are also modeled.
+		return unalignedPosSum;
+		
+		// The following alternative was used to calculate relative indices. This is currently not done, since the same are 
+		// may be differently superaligned if previous columns are removed from both alignments, due to the possibly different 
+		// step length in sequences with different unaligned length.
+		// This method may still have advantages for some use cases, which could be further explored in the future. 
+		//return unalignedPosSum / (double)(model.getIndexTranslator().getUnalignedLength(sequenceID) + 1);  // + 1 since the positions before and after the alignment are also modeled.
 	}
 	
 	
