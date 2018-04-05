@@ -206,7 +206,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 		
-		printScoreMatrix(scoreMatrix);
+		//printScoreMatrix(scoreMatrix);
 		return new Matrix(directionMatrix, scoreMatrix[columnCountA][columnCountB]);
 	}
 
@@ -341,7 +341,7 @@ public class MaxSequencePairMatchAligner implements SuperAlignmentAlgorithm {
 	public void performAlignment(Document document, ApplicationLogger logger) throws Exception {
 		if (document.getAlignments().size() > 2) {
 			Phylogeny tree = calculateGuideTree(document, logger);
-			printNode(tree.getRoot(), "");
+			//printNode(tree.getRoot(), "");
 			processGuideTree(document, tree.getRoot(), logger);
 		}
 		else {
