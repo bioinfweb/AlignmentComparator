@@ -9,7 +9,7 @@ Class-Path: lib/bioinfweb-commons-java-core-3.2.0.jar
             lib/guava-13.0.1.jar
             lib/info.webinsel.wikihelp.client.jar
             lib/jphyloio-core-0.5.2.jar
-            lib/libralign-core-0.8.0.jar
+            lib/libralign-core-0.9.0.jar
             lib/libralign-io-0.6.0.jar
             lib/libralign-swing-0.5.0.jar
             lib/org.jdesktop.swingx.scrollpaneselector.jar
