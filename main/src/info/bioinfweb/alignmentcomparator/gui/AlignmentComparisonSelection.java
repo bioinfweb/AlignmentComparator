@@ -88,6 +88,7 @@ public class AlignmentComparisonSelection {
 	public void setComment(Comment comment) {
 		if (this.comment != comment) {
 			this.comment = comment;
+			Main.getInstance().getMainFrame().getActionManagement().refreshActionStatus();
 			Main.getInstance().getMainFrame().getComparisonComponent().getCommentArea().repaint();  //TODO Is this sufficient/the optimal way?
 		}
 	}
