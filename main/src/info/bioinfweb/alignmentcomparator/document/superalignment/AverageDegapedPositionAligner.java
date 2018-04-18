@@ -99,16 +99,16 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		int alignmentLength = model.getMaxSequenceLength();
 		Deque<Double> result = new ArrayDeque<Double>(alignmentLength);
 		for (int column = 0; column < alignmentLength; column++) {
-			System.out.print("Column " + column + ": ");
+			//System.out.print("Column " + column + ": ");
 			double positionSum = 0.0;
 			Iterator<String> seqIDIterator = model.sequenceIDIterator();
 			while (seqIDIterator.hasNext()) {
 				double value = calculateUnalignedPosition(model, seqIDIterator.next(), column);
-				System.out.print(value + " ");
+				//System.out.print(value + " ");
 				positionSum += value;
 			}
 			result.add(positionSum / model.getSequenceCount());
-			System.out.println();
+			//System.out.println();
 		}
 		return result;
 	}
@@ -199,24 +199,24 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		SortedSetMultimap<Double, Integer> result = TreeMultimap.create();
 		double current = 0.0;
 		double next;
-		System.out.print("Column distances: ");
+		//System.out.print("Column distances: ");
 		for (int column = 0; column < length; column++) {
 			next = findPrealignedValue(alignedPositions, column);  // Returns the average position stored in this column.
 			result.put(next - current, column);  // Calculate position to the left neighbor.
-			System.out.print(new DecimalFormat("0.00").format(next - current) + " ");
+			//System.out.print(new DecimalFormat("0.00").format(next - current) + " ");
 			current = next;
 		}
-		System.out.println();
+		//System.out.println();
 		
-		System.out.print("Order: ");
-		for (Double distance : result.keySet()) {
-			System.out.print(new DecimalFormat("0.00").format(distance) + ": [");
-			for (Integer column : result.get(distance)) {
-				System.out.print(column + " ");
-			}
-			System.out.print("] ");
-		}
-		System.out.println();
+		//System.out.print("Order: ");
+//		for (Double distance : result.keySet()) {
+//			System.out.print(new DecimalFormat("0.00").format(distance) + ": [");
+//			for (Integer column : result.get(distance)) {
+//				System.out.print(column + " ");
+//			}
+//			System.out.print("] ");
+//		}
+//		System.out.println();
 		
 		
 		return result;
@@ -376,7 +376,7 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 			}
 		}
 
-		printSuperAlignment(alignedPositions);
+		//printSuperAlignment(alignedPositions);
 		processRemoveOptions(alignedPositions);
 		removeMarkedCells(alignedPositions);
 	}
@@ -424,9 +424,9 @@ public class AverageDegapedPositionAligner implements SuperAlignmentAlgorithm {
 		
 		// Calculate superalignment:
 		Map<String, List<Double>> superalignedUnalignedPositions = superalignPositions(averageUnalignedPositions);
-		printSuperAlignment(superalignedUnalignedPositions);
+		//printSuperAlignment(superalignedUnalignedPositions);
 		shortenAlignment(superalignedUnalignedPositions, calculateColumnDistances(superalignedUnalignedPositions));
-		printSuperAlignment(superalignedUnalignedPositions);
+		//printSuperAlignment(superalignedUnalignedPositions);
 	
 		// Apply superalignment to model:
 		calculateUnalignedIndices(document, superalignedUnalignedPositions);
