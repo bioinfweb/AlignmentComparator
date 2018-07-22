@@ -8,6 +8,10 @@ More information can be found at http://bioinfweb.info/AlignmentComparator/.
 
 This GitHub repository in a synchronized mirror of the [master repository at bioinfweb](http://bioinfweb.info/Code/sventon/repos/AlignmentComparator/list/). Feedback and pull requests are welcome.
 
+## Issues
+
+If you want to submit a bug report or feature request, please use our public bug tracking system at http://bioinfweb.info/AlignmentComparator/Bugs. (We do not manage issues on GitHub directly.)
+
 ## Feedback
 
 If you have questions, feel free to ask one on our [ResearchGate project page](http://r.bioinfweb.info/RGAlignmentComparator) or contact support@bioinfweb.info.
