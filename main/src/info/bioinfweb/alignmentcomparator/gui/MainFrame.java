@@ -121,14 +121,14 @@ public class MainFrame extends JFrame {
 	private void loadIcons() {
 		List<BufferedImage> icons = new ArrayList<BufferedImage>(8);
 		try {
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator16.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator20.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator22.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator24.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator32.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator48.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator64.png")));
-			icons.add(ImageIO.read(Object.class.getResource("/resources/symbols/AlignmentComparator256.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator16.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator20.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator22.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator24.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator32.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator48.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator64.png")));
+			icons.add(ImageIO.read(MainFrame.class.getResource("/resources/symbols/AlignmentComparator256.png")));
 			setIconImages(icons);
 		}
 		catch (IOException e) {
@@ -276,7 +276,7 @@ public class MainFrame extends JFrame {
 		if (undoMenu == null) {
 			undoMenu = new JMenu("Undo");
 			undoMenu.setMnemonic(KeyEvent.VK_U);
-			undoMenu.setIcon(new ImageIcon(Object.class.getResource("/resources/symbols/Undo16.png")));
+			undoMenu.setIcon(new ImageIcon(MainFrame.class.getResource("/resources/symbols/Undo16.png")));
 		}
 		return undoMenu;
 	}
@@ -286,7 +286,7 @@ public class MainFrame extends JFrame {
 		if (redoMenu == null) {
 			redoMenu = new JMenu("Redo");
 			redoMenu.setMnemonic(KeyEvent.VK_R);
-			redoMenu.setIcon(new ImageIcon(Object.class.getResource("/resources/symbols/Redo16.png")));
+			redoMenu.setIcon(new ImageIcon(MainFrame.class.getResource("/resources/symbols/Redo16.png")));
 		}
 		return redoMenu;
 	}
